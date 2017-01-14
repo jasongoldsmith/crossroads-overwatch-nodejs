@@ -8,7 +8,7 @@ var staging = require('./env/staging');
 var prodURL = require('./env/prodURL');
 var mongoUri = process.env.MONGOLAB_URI ||
   process.env.MONGOHQ_URL || process.env.MONGO_URL ||
-  'mongodb://localhost/travelerbackend';
+  'mongodb://localhost/overwatch';
 
 
 
@@ -39,7 +39,6 @@ var defaults = {
   ENV_STAGING : "staging",
   ENV_DEVELOPMENT: "development",
   ENV_PRODUCTION: "production",
-  ENV_URL_PROD: "prodURL",
   environment: process.env.NODE_ENV || 'development',
   skipMPRequestTracking: process.env.SKIP_MP_REQ_TRACKING || "YES",
   show: function() {
@@ -67,8 +66,6 @@ var defaults = {
   download_URLPattern: "http://feighty-images-dev.s3.amazonaws.com/download/index.html?mode=%MODE%",
   download_staging_URLPattern: "http://feighty-images-dev.s3.amazonaws.com/download/index_staging.html?mode=%MODE%",
   defaultMessagePattern: "%CREATOR% sent you '%CHAT%'. WATCH and CHAT with %CREATOR%. Download app %DOWNLOADURL% & follow instructions",
-  watChatImageUrl: "http://feighty-images-dev.s3.amazonaws.com/intro_phone_login.png",
-  bitlyAccessToken: process.env.bitly_access_token,
   f80SecretKey: process.env.f80SecretKey,
   iosAppVersion: process.env.iosAppVersion,
   androidAppVersion: process.env.androidAppVersion,

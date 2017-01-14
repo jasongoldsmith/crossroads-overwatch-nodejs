@@ -1,6 +1,6 @@
 
 module.exports = {
-  hostName: 'https://live.crossroadsapp.co',
+  hostName: 'https://overwatch.herokuapp.com',
   tinyUrlHost:'http://crsrd.co/',
   enableNewRelic: true,
   portNum: -1,

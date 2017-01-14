@@ -1,7 +1,7 @@
 module.exports = {
-  hostName: 'https://travelerbackendproduction.herokuapp.com',
+  hostName: 'https://overwatch-staging.herokuapp.com',
   tinyUrlHost:'http://stage.crsrd.co/',
-  enableNewRelic: true,
+  enableNewRelic: false,
   portNum: -1,
   s3: {
     imageBucket: "feighty-images",
@@ -12,6 +12,5 @@ module.exports = {
   enableBungieIntegration: process.env.enableBungieIntegration|| false,
   logLevel: 'debug',
   devMode: true,
-  enableNewRelic:true,
   disableEnvetUpdateForComments: process.env.DISABLE_EVENT_UPDATE_COMMENTS || false
 }

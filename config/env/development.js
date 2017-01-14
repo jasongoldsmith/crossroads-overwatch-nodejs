@@ -1,5 +1,5 @@
 module.exports = {
-  hostName: 'https://travelerbackend.herokuapp.com',
+  hostName: 'http://localhost:3000',
   devMode: true,
   portNum: -1,
   enforceSSL: false,
