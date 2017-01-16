@@ -90,6 +90,14 @@ function hasElement(targetArray,searchTxt){
   return isValidNonBlank(searchResult)
 }
 
+function isInvalidOrEmpty(value) {
+  return lodash.isUndefined(value) || lodash.isNull(value) || lodash.isEmpty(value);
+}
+
+function isValidNonEmpty(value) {
+  return !isInvalidOrEmpty(value);
+}
+
 lodash.mixin({
   iterPull: iterPull,
   isInvalid: isInvalid,
@@ -102,7 +110,9 @@ lodash.mixin({
   deepObjectExtend: deepObjectExtend,
   mergeLists: mergeLists,
   deepGet: deepGet,
-  hasElement:hasElement
+  hasElement:hasElement,
+  isInvalidOrEmpty: isInvalidOrEmpty,
+  isValidNonEmpty: isValidNonEmpty
 });
 
 module.exports = lodash;
