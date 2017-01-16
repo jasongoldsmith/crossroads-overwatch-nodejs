@@ -71,7 +71,12 @@ function handleBattlenetCallback(req, res) {
         //create user here
         //u = user;
         if(utils._.isInvalidOrBlank(authData.accessToken)){
-          return callback(new helpers.errors.WError('Access Token is empty. Try loggin in again.'))
+          return callback(new helpers.errors.WError('Access Token is empty. Try logging in again.'))
+        }
+        if(req.user){
+          //if user is already logged in then return
+          //TODO: check and update for user battle tag ???
+          return callback(null, authData, req.user)
         }
         if(!utils._.isEmpty(authData.profile) && utils._.isValidNonEmpty(authData.profile.battletag)){
           models.user.getUserByBattleTag(authData.profile.battletag, function(err, user){
