@@ -28,6 +28,7 @@ module.exports = function (passport, config) {
     region: "us",
     passReqToCallback : true
   }, function(req, accessToken, refreshToken, profile, done){
+    console.log("passport callback")
     var authData = {
       accessToken : accessToken,
       refreshToken: refreshToken,

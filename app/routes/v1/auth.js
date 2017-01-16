@@ -50,10 +50,12 @@ function handleBattlenetCallback(req, res) {
     [
       function(callback) {
         var passportHandler = passport.authenticate('battleNet', function (err, authData, info) {
+          console.log("err", err)
+          console.log("authData", authData)
           if (err) {
             return callback(err);
           }
-          if (!authData) {
+          if (utils._.isInvalidOrEmpty(authData)) {
             return callback(new helpers.errors.WError('Auth data received from server is null'));
           }
           callback(null, authData);
