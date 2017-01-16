@@ -382,6 +382,11 @@ function updateUserConsoles(user,callback){
   callback)
 }
 
+function createUserWithBattleTag(tag, callback){
+  var user = new User({battleTag: tag})
+  save(user, callback)
+}
+
 function getUserByBattleTag(tag, callback){
   User.find({battleTag: tag}, callback)
 }
@@ -411,5 +416,6 @@ module.exports = {
   findUserCount:findUserCount,
   updateUserConsoles:updateUserConsoles,
   getUserByConsole:getUserByConsole,
+  createUserWithBattleTag: createUserWithBattleTag,
   getUserByBattleTag: getUserByBattleTag
 }

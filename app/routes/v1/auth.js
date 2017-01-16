@@ -112,6 +112,7 @@ function handleBattlenetCallback(req, res) {
 function createNewUserWithBattleNet(accessToken, refreshToken, battletag, callback){
   //TODO: check if user's name, profile img need to be pulled from battle net??
   //TODO: check which other fields needs to be added
+  //TODO: save the tokens as well
   models.user.createUserWithBattleTag(battletag, callback)
 }
 
