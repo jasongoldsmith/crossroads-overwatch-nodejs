@@ -89,10 +89,13 @@ function prepareActivities(activities, mods, adcards, callback){
   })
   //utils.l.d("activitiesResp",activitiesResp)
   setAdCards(activitiesResp,adcards)
-  utils._.map(activitiesResp,function(activityData){
-    models.activity.createActivity(activityData,callback)
+  utils.async.mapSeries(activitiesResp,function(activityData,asyncCallback){
+    models.activity.createActivity(activityData,asyncCallback)
+  },function(errors,results){
+    utils.l.d("Completed activity create")
+    return callback(null,activitiesResp)
   })
-  return callback(null,activitiesResp)
+
 }
 
 function createActivities(activitiesResp,callback){
@@ -116,16 +119,16 @@ function createActivitiesWithConverter(activityPath,modsPath,adcards,callback){
       activities = activitiesJSON
       utils.l.d("converting modifiers"+modsPath)
       //converter.fromFile(modsPath,callback)
-      return callback(null, {})
-      //var converter = new Converter({});
-      //converter.fromFile(modsPath,function(err,modResult){
-      //  utils.l.d('convertedmods',modResult)
-      //  return callback(null,modResult)
-      //});
+      //return callback(null, {})
+      var converter = new Converter({});
+      converter.fromFile(modsPath,function(err,modResult){
+        utils.l.d('convertedmods',modResult)
+        return callback(null,modResult)
+      });
 
     },function(mods,callback){
       utils.l.d("creating activities with mods",mods)
-      prepareActivities(activities,mods,adcards,callback)
+      prepareActivities(activities,[],adcards,callback)
     }, /*function(activityModel, callback){
       setAdCards(activityModel,adcards,callback)
     }, function (activityModelWithAdCard,callback){
