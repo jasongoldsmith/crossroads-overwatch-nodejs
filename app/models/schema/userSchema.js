@@ -14,6 +14,10 @@ var reviewPromptCardStatusEnum = {
 }
 
 var UserSchema = new Schema({
+  battleTag: String,
+  battleNetAccessToken: String,
+  battleNetRefreshToken : String,
+  battleNetAccessTokenFetchDate : Date,
   name: String,
   profileUrl: String,
   userName: {type: String},
@@ -39,7 +43,6 @@ var UserSchema = new Schema({
   uDate: Date,
   signupDate: Date,
   flags: Mixed,
-  bungieMemberShipId: String,
   passwordResetToken: String,
   groups:[{type: Mixed}],
   lastActiveTime: {type:Date, default: new Date()},

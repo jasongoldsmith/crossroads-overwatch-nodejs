@@ -238,8 +238,8 @@ switch(command) {
         "aDifficulty" : "",
         "tag" : ""
       }]
-    activityService.createActivitiesWithConverter("/Users/dasasr/projects/traveler/admin/activities.csv",
-      "/Users/dasasr/projects/traveler/admin/modifiers.csv",adCards,
+    activityService.createActivitiesWithConverter("/Users/ahujapr/Desktop/Overwatch_Activities.csv",
+      "",adCards,
       function(err,data){
         utils.l.d("Done with activities")
     })

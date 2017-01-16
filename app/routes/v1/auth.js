@@ -9,62 +9,108 @@ var service = require('../../service/index')
 var passport = require('passport')
 var passwordHash = require('password-hash')
 
-function login (req, res) {
-  utils.l.d("Login request", req.body)
-/*  var outerUser = null
-    utils.async.waterfall(
+function login(req, res){
+  var resp =  null
+  utils.async.waterfall(
     [
-      helpers.req.handleVErrorWrapper(req),
       function(callback) {
-        if(req.body.consoles) {
-          req.body.consoles.consoleType = req.body.consoles.consoleType.toString().toUpperCase()
-          req.body.consoles.consoleId = req.body.consoles.consoleId.toString().trim()
-        }
-        if(!req.body.userName) {
-          req.body.userName = req.body.consoles.consoleId
-        }
-        utils.l.d('calling passport...')
-        var passportHandler = passport.authenticate('local', function(err, user) {
-          utils.l.d('passport.authenticate',user)
-          if (err) {
-            return callback(err, null)
-          } else if (!user) {
-            return callback({error: "Our signup has changed. Please update to the latest version to sign up."},null)
-            //handleNewUser(req, callback)
-          } else {
-            return callback(null, user)
-          }
-        })
-        passportHandler(req, res)
-      },
-      function (user, callback) {
-        handlePostLogin(req, user, callback)
-      },
-      function(user,callback) {
-        service.authService.addLegalAttributes(user, function(err, data) {
-          outerUser = data
-          return callback(null, user)
-        })
-      },
-      reqLoginWrapper(req, "auth.login")
-    ],
-      function (err) {
-        if (err) {
-          return routeUtils.handleAPIError(req, res, err, err)
-        } else {
-          routeUtils.handleAPISuccess(req, res,
-            {
-              value: outerUser,
-              message: getSignupMessage(outerUser)
-            })
-        }
-      }
-    )*/
+        var passportHandler = passport.authenticate('battleNet', function (err, response) {
+          resp = response
+          console.log("auth resp ==" , resp)
 
-  var errorResponse = {
-    error: "Our login system has changed. Please update to the latest version in the App Store to continue using Crossroads."
-  }
-  routeUtils.handleAPIError(req, res, errorResponse, errorResponse)
+          if (err) {
+            return callback(err);
+          }
+          if (!resp) {
+            return callback(new helpers.errors.WError('User null'));
+          }
+          callback(null, resp);
+        });
+        passportHandler(req, res);
+      }
+    ],
+    function(err) {
+      if (err) {
+        req.routeErr = err;
+        return routeUtils.handleAPIError(req, res, err);
+      }
+      return routeUtils.handleAPISuccess(req, res, resp);
+    }
+  );
+}
+
+function handleBattlenetCallback(req, res) {
+  //Handle callback and login user to our service
+  //TODO: handle the case where already logged in user logs in again.
+  utils.l.d("Handle battle net callback and login user to our service")
+  console.log("req.user", req.user)
+  var u = {};
+  var firstTimeFbLogin = null
+  utils.async.waterfall(
+    [
+      function(callback) {
+        var passportHandler = passport.authenticate('battleNet', function (err, authData, info) {
+          if (err) {
+            return callback(err);
+          }
+          if (!authData) {
+            return callback(new helpers.errors.WError('Auth data received from server is null'));
+          }
+          callback(null, authData);
+        });
+        passportHandler(req, res);
+      },
+      function(authData, callback) {
+        // check if battle tag is null
+        //if battle tag is not null, check if user exists with battletag
+        //if user exists return that
+        // if not create user
+
+        //create user here
+        //u = user;
+        if(utils._.isInvalidOrBlank(authData.accessToken)){
+          return callback(new helpers.errors.WError('Access Token is empty. Try loggin in again.'))
+        }
+        if(!utils._.isEmpty(authData.profile) && utils._.isValidNonEmpty(authData.profile.battletag)){
+          models.user.getUserByBattleTag(authData.profile.battletag, function(err, user){
+            if(err){
+              return callback(err)
+            } else {
+              return callback(null, authData, user)
+            }
+          })
+        } else {
+          return callback(null, authData, null)
+        }
+
+      }, function(authData, userWithBattleTag, callback){
+         if(utils._.isInvalidOrEmpty(userWithBattleTag)){
+           createNewUserWithBattleNet(authData.accessToken, authData.refreshToken, authData.profile.battletag, callback)
+         } else {
+           //TODO: update user here
+           return callback(null, userWithBattleTag)
+         }
+
+      }, function(user, callback){
+      u = user
+      req.logIn(user, callback);
+    }
+    ],
+    function(err) {
+      if (err) {
+        req.routeErr = err;
+        return routeUtils.handleAPIError(req, res, err);
+      }
+      return routeUtils.handleAPISuccess(req, res, u);
+
+    }
+  );
+}
+
+function createNewUserWithBattleNet(accessToken, refreshToken, battletag, callback){
+  //TODO: check if user's name, profile img need to be pulled from battle net??
+  //TODO: check which other fields needs to be added
+  models.user.createUserWithBattleTag(battletag, callback)
 }
 
 function validateUserLogin(req, res) {
@@ -815,7 +861,6 @@ function checkBungieAccount(req, res) {
 }
 
 /** Routes */
-routeUtils.rGetPost(router, '/login', 'Login', login, login)
 routeUtils.rGetPost(router, '/bo/login', 'BOLogin', boLogin, boLogin)
 routeUtils.rPost(router, '/register', 'Signup', signup)
 routeUtils.rPost(router, '/logout', 'Logout', logout)
@@ -828,5 +873,9 @@ routeUtils.rPost(router, '/request/resetPassword', 'requestResetPassword', reque
 routeUtils.rGet(router,'/','homePage',home,home)
 routeUtils.rPost(router, '/checkBungieAccount', 'checkBungieAccount', checkBungieAccount)
 routeUtils.rPost(router, '/validateUserLogin', 'validateUserLogin', validateUserLogin)
+
+routeUtils.rGetPost(router,'/login','Login', login, login)
+routeUtils.rGet(router,'/battlenet/callback','BattleNetCallback', handleBattlenetCallback, handleBattlenetCallback)
+
 module.exports = router
 

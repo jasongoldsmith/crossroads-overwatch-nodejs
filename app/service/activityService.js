@@ -96,7 +96,7 @@ function prepareActivities(activities, mods, adcards, callback){
 }
 
 function createActivities(activitiesResp,callback){
-  utils._.map(activitiesResp,function(activityData){
+  utils._.map(activitiesResp, function(activityData){
     models.activity.createActivity(activityData,callback)
   })
 }
@@ -105,20 +105,23 @@ function createActivitiesWithConverter(activityPath,modsPath,adcards,callback){
   var activities = null
   utils.async.waterfall([
     function(callback){
-      utils.l.d("converting activities")
+      utils.l.d("converting activities" + activityPath)
       var converter = new Converter({});
       converter.fromFile(activityPath,function(err,result){
         return callback(null,result)
       });
     },function(activitiesJSON,callback){
+      utils.l.d("converting activities json", activitiesJSON)
+
       activities = activitiesJSON
       utils.l.d("converting modifiers"+modsPath)
       //converter.fromFile(modsPath,callback)
-      var converter = new Converter({});
-      converter.fromFile(modsPath,function(err,modResult){
-        utils.l.d('convertedmods',modResult)
-        return callback(null,modResult)
-      });
+      return callback(null, {})
+      //var converter = new Converter({});
+      //converter.fromFile(modsPath,function(err,modResult){
+      //  utils.l.d('convertedmods',modResult)
+      //  return callback(null,modResult)
+      //});
 
     },function(mods,callback){
       utils.l.d("creating activities with mods",mods)

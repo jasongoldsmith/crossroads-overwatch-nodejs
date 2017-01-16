@@ -382,6 +382,10 @@ function updateUserConsoles(user,callback){
   callback)
 }
 
+function getUserByBattleTag(tag, callback){
+  User.find({battleTag: tag}, callback)
+}
+
 module.exports = {
   model: User,
   getUserById: getUserById,
@@ -406,5 +410,6 @@ module.exports = {
   findUsersPaginated:findUsersPaginated,
   findUserCount:findUserCount,
   updateUserConsoles:updateUserConsoles,
-  getUserByConsole:getUserByConsole
+  getUserByConsole:getUserByConsole,
+  getUserByBattleTag: getUserByBattleTag
 }
