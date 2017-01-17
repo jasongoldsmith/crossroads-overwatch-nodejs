@@ -158,7 +158,7 @@ function findUsersByGroup(groupId,callback){
 //***************************************Overwatch code begins********************************************************//
 
 function save(group, callback) {
-  user.save(function (err, obj, numAffected) {
+  group.save(function (err, obj, numAffected) {
     if (err) {
       utils.l.s("Got error on saving user group", {err: err, group: group})
     } else if (!obj) {
