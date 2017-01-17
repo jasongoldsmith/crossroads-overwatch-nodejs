@@ -13,7 +13,6 @@ var UserGroupSchema = new Schema({
   uDate: Date,
   refreshGroups:{type:Boolean,default:false},
   group:{ type: String, ref: 'Group', required: true },
-  consoles:[{type:String}],
   serviceEndpoints:[{
     serviceType:serviceTypeEnum,
     consoleType:String,

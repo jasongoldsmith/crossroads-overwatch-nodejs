@@ -1,6 +1,8 @@
 var mongoose = require('mongoose')
 var Schema = mongoose.Schema
 var Mixed = Schema.Types.Mixed
+var utils = require('../../utils')
+
 var acctVerifyEnum = {
   type: String,
   enum: ['VERIFIED','INITIATED','FAILED_INITIATION','NOT_INITIATED','INVALID_GAMERTAG','INVITED','INVITATION_MSG_FAILED'],
@@ -29,7 +31,7 @@ var UserSchema = new Schema({
   verifyStatus: acctVerifyEnum,
   verifyToken: String,
   consoles: [{
-    consoleType: {type: String, enum: consoleTypes, default: utils.constants.consoleTypes.pc},
+    consoleType: {type: String, enum: consoleTypes},
     consoleId: String,
     verifyStatus: acctVerifyEnum,
     verifyToken: String,

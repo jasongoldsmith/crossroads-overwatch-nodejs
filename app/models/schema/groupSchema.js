@@ -16,7 +16,7 @@ var GroupSchema = new Schema({
   date: { type: Date, required: true },
   uDate: Date,
   avatarPath:String,
-  bungieMemberCount:Number,
+  overwatchMemberCount:Number,
   clanEnabled:Boolean,
   appStats:[{
     consoleType:String,

@@ -7,19 +7,19 @@ var routeUtils = require('../../routeUtils')
 var models = require('../../../models')
 var service = require('../../../service/index')
 
-function listMyGroups(req, res) {
-  service.userService.listGroups(req.user, function(err, groups) {
-    if (err) {
-      routeUtils.handleAPIError(req, res, err, err)
-    } else {
-      groupsResponse = groups || [{}]
-      service.userService.subscribeUserNotifications(req.user,false,function(errors,results){
-        utils.l.d("Notification subscription completed for user",utils.l.userLog(req.user))
-      })
-      routeUtils.handleAPISuccess(req, res, groupsResponse)
-    }
-  })
-}
+//function listMyGroups(req, res) {
+//  service.userService.listGroups(req.user, function(err, groups) {
+//    if (err) {
+//      routeUtils.handleAPIError(req, res, err, err)
+//    } else {
+//      groupsResponse = groups || [{}]
+//      service.userService.subscribeUserNotifications(req.user,false,function(errors,results){
+//        utils.l.d("Notification subscription completed for user",utils.l.userLog(req.user))
+//      })
+//      routeUtils.handleAPISuccess(req, res, groupsResponse)
+//    }
+//  })
+//}
 
 function updateHelmet(req, res) {
   service.accountService.handlUpdateHelmet(req.user, function(err, updateResponse) {
@@ -170,6 +170,20 @@ function refreshHelmet(req, res) {
       routeUtils.handleAPIError(req, res, err, err)
     } else {
       routeUtils.handleAPISuccess(req, res, updateResponse)
+    }
+  })
+}
+
+function listMyGroups(req, res) {
+  service.userService.listGroups(req.user, function(err, groups) {
+    if (err) {
+      routeUtils.handleAPIError(req, res, err, err)
+    } else {
+      groupsResponse = groups || [{}]
+      service.userService.subscribeUserNotifications(req.user,false,function(errors,results){
+        utils.l.d("Notification subscription completed for user",utils.l.userLog(req.user))
+      })
+      routeUtils.handleAPISuccess(req, res, groupsResponse)
     }
   })
 }

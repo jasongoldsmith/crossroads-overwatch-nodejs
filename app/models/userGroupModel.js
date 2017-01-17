@@ -173,17 +173,21 @@ function addUserToGroup(userId, groupName, callback){
     function(callback){
       groupModel.getByName(groupName, callback)
     }, function(group, callback){
-      var userGroup = new UserGroup({user: userId, group: group._id, consoles: [group.consoleType]})
+      var userGroup = new UserGroup({user: userId, group: group._id, consoles: group.consoles})
       save(userGroup, callback)
     }
   ], callback)
 }
 
+function getUserGroups(userId, callback){
+  UserGroup.find({user: userId}).populate('group').exec(callback)
+}
+
+
 module.exports = {
   model: UserGroup,
   updateUserGroup:updateUserGroup,
   getUsersByGroup:getUsersByGroup,
-  getByUser:getByUser,
   refreshUserGroup:refreshUserGroup,
   getGroupCountByConsole:getGroupCountByConsole,
   addServiceEndpoints:addServiceEndpoints,
@@ -191,5 +195,7 @@ module.exports = {
   getUserCountByGroup:getUserCountByGroup,
   findUsersPaginated:findUsersPaginated,
   findUsersByGroup:findUsersByGroup,
-  addUserToGroup: addUserToGroup
+  addUserToGroup: addUserToGroup,
+  getByUser:getByUser,
+  getUserGroups: getUserGroups
 }

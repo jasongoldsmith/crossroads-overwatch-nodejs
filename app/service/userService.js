@@ -489,22 +489,22 @@ function updateUserGroup(data, callback) {
   models.user.updateUser({id: data.id, clanId: data.clanId, clanName:clanName, clanImageUrl:clanImageUrl}, true, callback)
 }
 
-function listGroups(user, callback) {
-  var groupList = null
-  utils.async.waterfall([
-    function(callback){
-      if(user)
-        models.userGroup.getByUser(user._id,null,callback)
-      else return callback({error: "User doesnot exist/logged in."})
-    },
-    function(userGroup,callback) {
-      listUserGroups(userGroup,user,callback)
-    },
-    function(userGroupList, callback) {
-      transformGroups(userGroupList,utils.primaryConsole(user).consoleType,callback)
-    }
-  ], callback)
-}
+//function listGroups(user, callback) {
+//  var groupList = null
+//  utils.async.waterfall([
+//    function(callback){
+//      if(user)
+//        models.userGroup.getByUser(user._id,null,callback)
+//      else return callback({error: "User doesnot exist/logged in."})
+//    },
+//    function(userGroup,callback) {
+//      listUserGroups(userGroup,user,callback)
+//    },
+//    function(userGroupList, callback) {
+//      transformGroups(userGroupList,utils.primaryConsole(user).consoleType,callback)
+//    }
+//  ], callback)
+//}
 
 function listUserGroups(userGroupLst,user,callback){
   utils.async.waterfall([
@@ -537,7 +537,7 @@ function refreshGroups(user,userGroupLst,groups,callback){
   ],callback)
 }
 
-function transformGroups(userGroupLst,consoleType,callback){
+function transformGroups(userGroupLst, consoleType, callback){
   utils.async.waterfall([
     function(callback){
       var groups = []
@@ -547,7 +547,7 @@ function transformGroups(userGroupLst,consoleType,callback){
           "groupName": userGroup.group.groupName,
           "avatarPath": userGroup.group.avatarPath,
           "clanEnabled": userGroup.group.clanEnabled,
-          "bungieMemberCount": userGroup.group.bungieMemberCount,
+          "overwatchMemberCount": userGroup.group.overwatchMemberCount,
           "memberCount": utils._.find(userGroup.group.appStats,{consoleType:consoleType}).memberCount,
           "muteNotification": userGroup.muteNotification
         })
@@ -871,6 +871,18 @@ function subscribeUserNotifications(user,forceUpdate,callback){
     else
       return callback(err,data)
   })
+}
+
+
+function listGroups(user, callback) {
+  utils.async.waterfall([
+    function(callback) {
+      models.userGroup.getUserGroups(user._id, callback)
+    },
+    function(userGroupList, callback) {
+      transformGroups(userGroupList, utils.primaryConsole(user).consoleType,callback)
+    }
+  ], callback)
 }
 
 module.exports = {

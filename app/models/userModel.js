@@ -382,12 +382,16 @@ function updateUserConsoles(user,callback){
   callback)
 }
 
-function createUserWithBattleNetTagAndTokens(tag, accessToken, refreshToken, callback){
-  var user = new User({battleTag: tag, battleNetAccessToken: accessToken, battleNetRefreshToken: refreshToken, battleNetAccessTokenFetchDate: new Date()})
+function createUserWithBattleNetTagAndTokensAndDefaultConsole(tag, accessToken, refreshToken, callback){
+  var defaultConsole = {
+    consoleType:  utils.constants.consoleTypes.pc,
+    isPrimary: true
+  }
+  var user = new User({battleTag: tag, battleNetAccessToken: accessToken, battleNetRefreshToken: refreshToken, battleNetAccessTokenFetchDate: new Date(), consoles: [defaultConsole]})
   save(user, callback)
 }
 
-function getUserByBattleTagAndConsole(tag, callback){
+function getUserByBattleTag(tag, callback){
   User.find({battleTag: tag}, callback)
 }
 
@@ -416,6 +420,6 @@ module.exports = {
   findUserCount:findUserCount,
   updateUserConsoles:updateUserConsoles,
   getUserByConsole:getUserByConsole,
-  createUserWithBattleNetTagAndTokens: createUserWithBattleNetTagAndTokens,
+  createUserWithBattleNetTagAndTokensAndDefaultConsole: createUserWithBattleNetTagAndTokensAndDefaultConsole,
   getUserByBattleTag: getUserByBattleTag
 }

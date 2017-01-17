@@ -876,7 +876,7 @@ function createNewUserWithBattleNet(accessToken, refreshToken, battletag, callba
   //TODO: check which other fields needs to be added - group, console type-id?
   utils.async.waterfall([
     function(callback){
-      models.user.createUserWithBattleNetTagAndTokens(battletag, accessToken, refreshToken, callback)
+      models.user.createUserWithBattleNetTagAndTokensAndDefaultConsole(battletag, accessToken, refreshToken, callback)
     }, function(user, callback){
       models.userGroup.addUserToGroup(user._id, utils.constants.regionBasedGroups.us, callback)
     }
