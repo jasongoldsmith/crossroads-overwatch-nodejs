@@ -878,7 +878,13 @@ function createNewUserWithBattleNet(accessToken, refreshToken, battletag, callba
     function(callback){
       models.user.createUserWithBattleNetTagAndTokensAndDefaultConsole(battletag, accessToken, refreshToken, callback)
     }, function(user, callback){
-      models.userGroup.addUserToGroup(user._id, utils.constants.regionBasedGroups.us, callback)
+      models.userGroup.addUserToGroup(user._id, utils.constants.regionBasedGroups.us, function(err, userGroup){
+        if(err){
+          return callback(err)
+        } else {
+          return callback(null, user)
+        }
+      })
     }
   ], callback)
 }
