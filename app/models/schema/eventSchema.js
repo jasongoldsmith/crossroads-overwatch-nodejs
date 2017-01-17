@@ -1,6 +1,9 @@
 var mongoose = require('mongoose')
 var Schema = mongoose.Schema
 var idValidator = require('mongoose-id-validator')
+var utils = require('../../utils')
+
+var consoleTypes =  utils._.values(utils.constants.consoleTypes)
 
 var eventSchema = new Schema({
 	eType: { type: Schema.Types.ObjectId, ref: 'Activity', required: true },
@@ -17,7 +20,7 @@ var eventSchema = new Schema({
 	clanId: {type: String},
 	clanName: {type: String},
 	clanImageUrl: {type: String},
-	consoleType: {type: String, enum: ['PS3', 'PS4', 'XBOX360', 'XBOXONE']},
+	consoleType: {type: String, enum: consoleTypes},
 	comments: [
 		{
 			user: {type: Schema.Types.ObjectId, ref: 'User', required: true },
