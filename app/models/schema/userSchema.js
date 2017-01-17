@@ -1,7 +1,6 @@
 var mongoose = require('mongoose')
 var Schema = mongoose.Schema
 var Mixed = Schema.Types.Mixed
-var consoleTypeEnum = {type: String, enum: ['PS4','XBOX360','XBOXONE','PS3']}
 var acctVerifyEnum = {
   type: String,
   enum: ['VERIFIED','INITIATED','FAILED_INITIATION','NOT_INITIATED','INVALID_GAMERTAG','INVITED','INVITATION_MSG_FAILED'],
@@ -13,11 +12,14 @@ var reviewPromptCardStatusEnum = {
   default: "NEVER_SHOWN"
 }
 
+var consoleTypes =  utils._.values(utils.constants.consoleTypes)
+
 var UserSchema = new Schema({
   battleTag: String,
   battleNetAccessToken: String,
   battleNetRefreshToken : String,
   battleNetAccessTokenFetchDate : Date,
+
   name: String,
   profileUrl: String,
   userName: {type: String},
@@ -27,7 +29,7 @@ var UserSchema = new Schema({
   verifyStatus: acctVerifyEnum,
   verifyToken: String,
   consoles: [{
-    consoleType: consoleTypeEnum,
+    consoleType: {type: String, enum: consoleTypes, default: utils.constants.consoleTypes.pc},
     consoleId: String,
     verifyStatus: acctVerifyEnum,
     verifyToken: String,
@@ -44,7 +46,6 @@ var UserSchema = new Schema({
   signupDate: Date,
   flags: Mixed,
   passwordResetToken: String,
-  groups:[{type: Mixed}],
   lastActiveTime: {type:Date, default: new Date()},
   isLoggedIn: {type: Boolean, default: true},
   notifStatus:[{type: String}],

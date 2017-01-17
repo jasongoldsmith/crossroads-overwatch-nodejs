@@ -639,6 +639,25 @@ var notificationQueueTypeEnum = {
 var serviceTypes = {PUSHNOTIFICATION:'PUSHNOTIFICATION',
   EMAIL:'EMAIL'}
 
+//***************************************Overwatch code begins********************************************************//
+
+var consoleTypes = {
+  ps4: "PS4",
+  xbox360: "XBOX360",
+  xboxOne: "XBOXONE",
+  ps3 : "PS3",
+  pc: "PC"
+}
+
+var regionBasedGroups = {
+  us: "US",
+  eu: "EU",
+  kr: "KR",
+  tw: "TW",
+  cn: "CN",
+  global: "GLOBAL"
+}
+
 module.exports = {
   l: lodash,
   baseUrl: baseUrl,
@@ -661,5 +680,7 @@ module.exports = {
   existingUserInstallData:existingUserInstallData,
   newGenConsoleType:newGenConsoleType,
   invitedUserInstallData:invitedUserInstallData,
-  serviceTypes:serviceTypes
+  serviceTypes:serviceTypes,
+  consoleTypes: consoleTypes,
+  regionBasedGroups: regionBasedGroups
 }

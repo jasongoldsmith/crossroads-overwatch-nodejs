@@ -7,9 +7,12 @@ var serviceTypeEnum = {
   default: utils.constants.serviceTypes.PUSHNOTIFICATION
 }
 
+var groupNames =  utils._.values(utils.constants.regionBasedGroups)
+var consoleTypes =  utils._.values(utils.constants.consoleTypes)
+
 var GroupSchema = new Schema({
-  _id:String,
-  groupName: String,
+  groupName: {type: String, enum: groupNames},
+  consoleType: {type: String, enum: consoleTypes},
   date: { type: Date, required: true },
   uDate: Date,
   avatarPath:String,

@@ -9,118 +9,6 @@ var service = require('../../service/index')
 var passport = require('passport')
 var passwordHash = require('password-hash')
 
-function login(req, res){
-  var resp =  null
-  utils.async.waterfall(
-    [
-      function(callback) {
-        var passportHandler = passport.authenticate('battleNet', function (err, response) {
-          resp = response
-          console.log("auth resp ==" , resp)
-
-          if (err) {
-            return callback(err);
-          }
-          if (!resp) {
-            return callback(new helpers.errors.WError('User null'));
-          }
-          callback(null, resp);
-        });
-        passportHandler(req, res);
-      }
-    ],
-    function(err) {
-      if (err) {
-        req.routeErr = err;
-        return routeUtils.handleAPIError(req, res, err);
-      }
-      return routeUtils.handleAPISuccess(req, res, resp);
-    }
-  );
-}
-
-function handleBattlenetCallback(req, res) {
-  //Handle callback and login user to our service
-  //TODO: handle the case where already logged in user logs in again.
-  utils.l.d("Handle battle net callback and login user to our service")
-  console.log("req.user", req.user)
-  var u = {};
-  var firstTimeFbLogin = null
-  utils.async.waterfall(
-    [
-      function(callback) {
-        var passportHandler = passport.authenticate('battleNet', function (err, authData, info) {
-          console.log("err", err)
-          console.log("authData", authData)
-          if (err) {
-            return callback(err);
-          }
-          if (utils._.isInvalidOrEmpty(authData)) {
-            return callback(new helpers.errors.WError('Auth data received from server is null'));
-          }
-          callback(null, authData);
-        });
-        passportHandler(req, res);
-      },
-      function(authData, callback) {
-        // check if battle tag is null
-        //if battle tag is not null, check if user exists with battletag
-        //if user exists return that
-        // if not create user
-
-        //create user here
-        //u = user;
-        if(utils._.isInvalidOrBlank(authData.accessToken)){
-          return callback(new helpers.errors.WError('Access Token is empty. Try logging in again.'))
-        }
-        if(req.user){
-          //if user is already logged in then return
-          //TODO: check and update for user battle tag ???
-          return callback(null, authData, req.user)
-        }
-        if(!utils._.isEmpty(authData.profile) && utils._.isValidNonEmpty(authData.profile.battletag)){
-          models.user.getUserByBattleTag(authData.profile.battletag, function(err, user){
-            if(err){
-              return callback(err)
-            } else {
-              return callback(null, authData, user)
-            }
-          })
-        } else {
-          return callback(null, authData, null)
-        }
-
-      }, function(authData, userWithBattleTag, callback){
-         if(utils._.isInvalidOrEmpty(userWithBattleTag)){
-           createNewUserWithBattleNet(authData.accessToken, authData.refreshToken, authData.profile.battletag, callback)
-         } else {
-           //TODO: update user here
-           return callback(null, userWithBattleTag)
-         }
-
-      }, function(user, callback){
-      u = user
-      req.logIn(user, callback);
-    }
-    ],
-    function(err) {
-      if (err) {
-        req.routeErr = err;
-        return routeUtils.handleAPIError(req, res, err);
-      }
-      return routeUtils.handleAPISuccess(req, res, u);
-
-    }
-  );
-}
-
-function createNewUserWithBattleNet(accessToken, refreshToken, battletag, callback){
-  //TODO: check if user's name, profile img need to be pulled from battle net??
-  //TODO: check which other fields needs to be added
-  //TODO: save the tokens as well
-  models.user.createUserWithBattleTag(battletag, callback)
-}
-
 function validateUserLogin(req, res) {
   utils.l.d("handleBungieResponse request", req.body)
   var data = req.body
@@ -881,6 +769,119 @@ routeUtils.rPost(router, '/request/resetPassword', 'requestResetPassword', reque
 routeUtils.rGet(router,'/','homePage',home,home)
 routeUtils.rPost(router, '/checkBungieAccount', 'checkBungieAccount', checkBungieAccount)
 routeUtils.rPost(router, '/validateUserLogin', 'validateUserLogin', validateUserLogin)
+
+
+//***************************************Overwatch code begins********************************************************//
+
+function login(req, res){
+  var resp =  null
+  utils.async.waterfall(
+    [
+      function(callback) {
+        var passportHandler = passport.authenticate('battleNet', function (err, response) {
+          resp = response
+          console.log("auth resp ==" , resp)
+
+          if (err) {
+            return callback(err);
+          }
+          if (!resp) {
+            return callback(new helpers.errors.WError('User null'));
+          }
+          callback(null, resp);
+        });
+        passportHandler(req, res);
+      }
+    ],
+    function(err) {
+      if (err) {
+        req.routeErr = err;
+        return routeUtils.handleAPIError(req, res, err);
+      }
+      return routeUtils.handleAPISuccess(req, res, resp);
+    }
+  );
+}
+
+function handleBattlenetCallback(req, res) {
+  //Handle callback and login user to our service
+  //TODO: handle the case where already logged in user logs in again.
+  utils.l.d("Handle battle net callback and login user to our service")
+  console.log("req.user", req.user)
+  var u = {};
+  var firstTimeFbLogin = null
+  utils.async.waterfall(
+    [
+      function(callback) {
+        var passportHandler = passport.authenticate('battleNet', function (err, authData, info) {
+          console.log("err", err)
+          console.log("authData", authData)
+          if (err) {
+            return callback(err);
+          }
+          if (utils._.isInvalidOrEmpty(authData)) {
+            return callback(new helpers.errors.WError('Auth data received from server is null'));
+          }
+          callback(null, authData);
+        });
+        passportHandler(req, res);
+      },
+      function(authData, callback) {
+        if(utils._.isInvalidOrBlank(authData.accessToken)){
+          return callback(new helpers.errors.WError('Access Token is empty. Try logging in again.'))
+        }
+        if(req.user){
+          //if user is already logged in then return
+          //TODO: check and update for user battle tag ???
+          return callback(null, authData, req.user)
+        }
+        if(!utils._.isEmpty(authData.profile) && utils._.isValidNonEmpty(authData.profile.battletag)){
+          models.user.getUserByBattleTag(authData.profile.battletag, function(err, user){
+            if(err){
+              return callback(err)
+            } else {
+              return callback(null, authData, user)
+            }
+          })
+        } else {
+          return callback(null, authData, null)
+        }
+
+      }, function(authData, userWithBattleTag, callback){
+      if(utils._.isInvalidOrEmpty(userWithBattleTag)){
+        createNewUserWithBattleNet(authData.accessToken, authData.refreshToken, authData.profile.battletag, callback)
+      } else {
+        //TODO: update user here
+        return callback(null, userWithBattleTag)
+      }
+
+    }, function(user, callback){
+      u = user
+      req.logIn(user, callback);
+    }
+    ],
+    function(err) {
+      if (err) {
+        req.routeErr = err;
+        return routeUtils.handleAPIError(req, res, err);
+      }
+      return routeUtils.handleAPISuccess(req, res, u);
+
+    }
+  );
+}
+
+function createNewUserWithBattleNet(accessToken, refreshToken, battletag, callback){
+  //TODO: check if user's name, profile img need to be pulled from battle net??
+  //TODO: check which other fields needs to be added - group, console type-id?
+  utils.async.waterfall([
+    function(callback){
+      models.user.createUserWithBattleNetTagAndTokens(battletag, accessToken, refreshToken, callback)
+    }, function(user, callback){
+      models.userGroup.addUserToGroup(user._id, utils.constants.regionBasedGroups.us, callback)
+    }
+  ], callback)
+}
 
 routeUtils.rGetPost(router,'/login','Login', login, login)
 routeUtils.rGet(router,'/battlenet/callback','BattleNetCallback', handleBattlenetCallback, handleBattlenetCallback)

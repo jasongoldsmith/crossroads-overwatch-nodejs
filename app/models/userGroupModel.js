@@ -7,6 +7,7 @@ var UserGroupSchema = require('./schema/userGroupSchema')
 
 // Model initialization
 var UserGroup = mongoose.model('UsersGroup', UserGroupSchema.schema)
+var groupModel = require('./groupModel')
 
 // Public functions
 function updateUserGroup(userId,groupId, data, callback) {
@@ -154,6 +155,30 @@ function findUsersByGroup(groupId,callback){
   return callback(null,cursor)
 }
 
+//***************************************Overwatch code begins********************************************************//
+
+function save(group, callback) {
+  user.save(function (err, obj, numAffected) {
+    if (err) {
+      utils.l.s("Got error on saving user group", {err: err, group: group})
+    } else if (!obj) {
+      utils.l.s("Got null user on saving user group", {group: group})
+    }
+    return callback(err, obj);
+  });
+}
+
+function addUserToGroup(userId, groupName, callback){
+  utils.async.waterfall([
+    function(callback){
+      groupModel.getByName(groupName, callback)
+    }, function(group, callback){
+      var userGroup = new UserGroup({user: userId, group: group._id, consoles: [group.consoleType]})
+      save(userGroup, callback)
+    }
+  ], callback)
+}
+
 module.exports = {
   model: UserGroup,
   updateUserGroup:updateUserGroup,
@@ -165,5 +190,6 @@ module.exports = {
   getByUserLean:getByUserLean,
   getUserCountByGroup:getUserCountByGroup,
   findUsersPaginated:findUsersPaginated,
-  findUsersByGroup:findUsersByGroup
+  findUsersByGroup:findUsersByGroup,
+  addUserToGroup: addUserToGroup
 }

@@ -71,11 +71,18 @@ function findGroupsPaginated(query, pageNumber, limit, callback){
   Group.find(query).skip(pageNumber > 0 ? ((pageNumber) * limit) : 0).limit(limit).exec(callback)
 }
 
+//***************************************Overwatch code begins********************************************************//
+
+function getByName(name, callabck){
+  Group.findOne({groupName: name}, callabck)
+}
+
 module.exports = {
   model: Group,
   updateGroupStats:updateGroupStats,
   addGroups:addGroups,
   findGroupsPaginated:findGroupsPaginated,
   addServiceEndpoints:addServiceEndpoints,
-  findGroupById:findGroupById
+  findGroupById:findGroupById,
+  getByName: getByName
 }
