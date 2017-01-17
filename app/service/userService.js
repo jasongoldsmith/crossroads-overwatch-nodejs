@@ -548,7 +548,7 @@ function transformGroups(userGroupLst, consoleType, callback){
           "avatarPath": userGroup.group.avatarPath,
           "clanEnabled": userGroup.group.clanEnabled,
           "overwatchMemberCount": userGroup.group.overwatchMemberCount,
-          "memberCount": utils._.find(userGroup.group.appStats,{consoleType:consoleType}).memberCount,
+          "memberCount": utils._.isInvalidOrEmpty(userGroup.group.appStats) ? 0 : utils._.find(userGroup.group.appStats,{consoleType:consoleType}).memberCount,
           "muteNotification": userGroup.muteNotification
         })
       })
