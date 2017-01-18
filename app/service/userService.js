@@ -881,12 +881,13 @@ function listGroups(user, callback) {
       models.userGroup.getUserGroups(user._id, callback)
     }, function(userGroupList, callback){
       //filter groups based on user's primary console
-      var primaryConsole = utils._.some(user.consoles, ['isPrimary', true])
+      var primaryConsole = utils._.find(user.consoles, ['isPrimary', true])
       var filteredList = []
+      console.log("primary console", primaryConsole)
       utils.async.map(userGroupList, function(userGroup, callback){
         console.log("group list", userGroupList)
         if(utils.underscore.contains(userGroup.consoleTypes, primaryConsole.consoleType)){
-          filteredList.add(userGroup)
+          filteredList.push(userGroup)
         }
         return callback(null, userGroup)
       }, function(err, result){
