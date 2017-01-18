@@ -170,4 +170,12 @@ module.exports = function (app, passport) {
     })
   );
 
+  app.get('/login/success', function(req, res){
+    res.render('success', {title: 'Login', message: 'Login Successful'})
+  })
+
+  app.get('/login/failure', function(req, res){
+    res.render('failure', {title: 'Login', message: 'Login Failed. Please try again'})
+  })
+
 };
