@@ -395,6 +395,16 @@ function getUserByBattleTag(tag, callback){
   User.find({battleTag: tag}, callback)
 }
 
+function getUsersPrimaryConsoleType(userId, callback){
+  User.findById(userId, function(err, user){
+    if(err){
+      return callback(err)
+    }
+    var primaryConsole = utils._.some(user.consoles, ['isPrimary', true])
+    return callback(null, primaryConsole.consoleType)
+  })
+}
+
 module.exports = {
   model: User,
   getUserById: getUserById,

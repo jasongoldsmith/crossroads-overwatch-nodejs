@@ -65,7 +65,7 @@ function createNewUserWithBattleNet(accessToken, refreshToken, battletag, callba
     function(callback){
       models.user.createUserWithBattleNetTagAndTokensAndDefaultConsole(battletag, accessToken, refreshToken, callback)
     }, function(user, callback){
-      models.userGroup.addUserToGroup(user._id, utils.constants.regionBasedGroups.us, function(err, userGroup){
+      models.userGroup.addUserToGroup(user._id, user.consoles, utils.constants.regionBasedGroups.us, function(err, userGroup){
         if(err){
           return callback(err)
         } else {
@@ -109,7 +109,6 @@ module.exports = function (passport, config) {
       profile: profile
     }
     handleBattleNetUserLogin(req, authData, done)
-    //return done(null, req.user, authData)
   })
 
   passport.use("battleNet", bnet)

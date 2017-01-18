@@ -168,12 +168,17 @@ function save(group, callback) {
   });
 }
 
-function addUserToGroup(userId, groupName, callback){
+function addUserToGroup(userId, userConsoleObj, groupName, callback){
   utils.async.waterfall([
     function(callback){
       groupModel.getByName(groupName, callback)
     }, function(group, callback){
-      var userGroup = new UserGroup({user: userId, group: group._id, consoles: group.consoles})
+      var userConsoles = utils.underscore.pluck(userConsoleObj, 'consoleType')
+      utils.l.d("addUserToGroup: userConsoles", userConsoles)
+      utils.l.d("addUserToGroup: groupConsoles", group.consoleTypes)
+      var userGroupConsoles = utils.underscore.intersection(userConsoles, group.consoleTypes)
+      utils.l.d("addUserToGroup userGroupConsoles", userGroupConsoles)
+      var userGroup = new UserGroup({user: userId, group: group._id, consoleTypes: userGroupConsoles})
       save(userGroup, callback)
     }
   ], callback)

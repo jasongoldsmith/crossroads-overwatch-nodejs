@@ -166,5 +166,6 @@ module.exports = {
   getNotificationPlayerListForEventExceptUser: getNotificationPlayerListForEventExceptUser,
   convertMongooseArrayToPlainArray: convertMongooseArrayToPlainArray,
   getUniquePlayerListOfTwoEvents: getUniquePlayerListOfTwoEvents,
-  moment:require('moment')
+  moment:require('moment'),
+  underscore: require('underscore')
 };

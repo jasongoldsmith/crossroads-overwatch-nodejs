@@ -879,6 +879,23 @@ function listGroups(user, callback) {
   utils.async.waterfall([
     function(callback) {
       models.userGroup.getUserGroups(user._id, callback)
+    }, function(userGroupList, callback){
+      //filter groups based on user's primary console
+      var primaryConsole = utils._.some(user.consoles, ['isPrimary', true])
+      var filteredList = []
+      utils.async.map(userGroupList, function(userGroup, callback){
+        console.log("group list", userGroupList)
+        if(utils.underscore.contains(userGroup.consoleTypes, primaryConsole.consoleType)){
+          filteredList.add(userGroup)
+        }
+        return callback(null, userGroup)
+      }, function(err, result){
+        if(err){
+          return callback(err)
+        } else {
+          return callback(null,filteredList)
+        }
+      })
     },
     function(userGroupList, callback) {
       transformGroups(userGroupList, utils.primaryConsole(user).consoleType,callback)
