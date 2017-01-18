@@ -163,4 +163,11 @@ module.exports = function (app, passport) {
     //}
 
   });
+  app.get('/api/v1/auth/battlenet/callback',
+    passport.authenticate('battleNet', {
+      successRedirect : '/login/success',
+      failureRedirect : '/login/failure'
+    })
+  );
+
 };

@@ -813,7 +813,7 @@ function handleBattlenetCallback(req, res) {
   utils.async.waterfall(
     [
       function(callback) {
-        var passportHandler = passport.authenticate('battleNet', function (err, authData, info) {
+        var passportHandler = passport.authenticate('battleNet', function (err, user, authData) {
           console.log("err", err)
           console.log("authData", authData)
           if (err) {
@@ -863,9 +863,11 @@ function handleBattlenetCallback(req, res) {
     function(err) {
       if (err) {
         req.routeErr = err;
-        return routeUtils.handleAPIError(req, res, err);
+        return res.redirect(400, 'api/v1/auth/login')
+        // return routeUtils.handleAPIError(req, res, err);
       }
-      return routeUtils.handleAPISuccess(req, res, u);
+      //return routeUtils.handleAPISuccess(req, res, u);
+      return res.redirect(200, '/success')
 
     }
   );
@@ -890,7 +892,7 @@ function createNewUserWithBattleNet(accessToken, refreshToken, battletag, callba
 }
 
 routeUtils.rGetPost(router,'/login','Login', login, login)
-routeUtils.rGet(router,'/battlenet/callback','BattleNetCallback', handleBattlenetCallback, handleBattlenetCallback)
+//routeUtils.rGet(router,'/battlenet/callback','BattleNetCallback', handleBattlenetCallback, handleBattlenetCallback)
 
 module.exports = router
 

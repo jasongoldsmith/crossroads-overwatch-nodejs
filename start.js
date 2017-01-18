@@ -6,7 +6,7 @@ process.on('uncaughtException', function(err) {
   console.log(err.stack)
 })
 
-var debug = require('debug')('travelerbackend')
+var debug = require('debug')('overwatch')
 var app = require('./app/app')
 var fs = require('fs')
 
