@@ -22,17 +22,9 @@ function listConfigs(req, res) {
         utils.l.s("The config token key did not match or is not present in the db", configToken)
         return callback({error: "Something went wrong. Please try again later"}, null)
       }
-
-      getBungieUrls(callback)
-    },
-    function(bungieUrls, callback) {
       var configs = {
         mixpanelToken: utils.config.mixpanelKey,
-        playerDetailsURL: bungieUrls.value.playerDetailsURL,
-        xboxLoginURL: bungieUrls.value.xboxLoginURL,
-        psnLoginURL: bungieUrls.value.psnLoginURL
       }
-
       return callback(null, configs)
     }
   ],
