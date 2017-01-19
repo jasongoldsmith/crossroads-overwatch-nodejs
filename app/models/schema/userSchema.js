@@ -21,18 +21,17 @@ var UserSchema = new Schema({
   battleNetAccessToken: String,
   battleNetRefreshToken : String,
   battleNetAccessTokenFetchDate : Date,
-
   name: String,
   profileUrl: String,
-  userName: {type: String},
+  email: {type: String, unique: true}, //add required constraint after login refactor
   date: {type: Date, required: true},
-  passWord: {type: String},
+  password: {type: String},
   uniqueID: String,
   verifyStatus: acctVerifyEnum,
   verifyToken: String,
   consoles: [{
     consoleType: {type: String, enum: consoleTypes},
-    consoleId: String,
+    consoleId: String, //tags for each console, battletag for PC, gamertag for xbox and psn
     verifyStatus: acctVerifyEnum,
     verifyToken: String,
     clanTag: String,

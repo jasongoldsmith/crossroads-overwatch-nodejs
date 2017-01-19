@@ -18,7 +18,7 @@ var GroupSchema = new Schema({
   uDate: Date,
   avatarPath:String,
   overwatchMemberCount:Number,
-  clanEnabled:Boolean,
+  clanEnabled: {type: Boolean, default: false},
   appStats:[{
     consoleType:String,
     memberCount:Number

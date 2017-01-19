@@ -66,35 +66,45 @@ function getByIds(ids, callback) {
 }
 
 
-function save(user, callback) {
-  utils.async.waterfall([
-    function(callback) {
-      // We need this as groups is mixed type
-      user.markModified('groups')
-      user.save(function(err, c, numAffected) {
-        if (err) {
-          utils.l.s("Got error on saving user", {err: err, user: user})
-        } else if (!c) {
-          utils.l.s("Got null on saving user", {user: user})
-        }
-        return callback(err, c)
-      })
-    }/*,
-    function(c, callback) {
-      getById(c._id, callback)
-    }*/
-  ],
-  function(err, user) {
-    if(err) {
-      if(utils.format.isDuplicateMongoKeyError(err)) {
-        var field = utils.format.getDuplicateMongoErrorKey(err)
-        var errmsgTemplate = "An account already exists for #FIELD#." +
-          "Check your Bungie messages for instructions on how to finish signing up."
-        return callback({error: errmsgTemplate.replace("#FIELD#", field)}, user)
-      }
-      return callback(err, user)
+//function save(user, callback) {
+//  utils.async.waterfall([
+//    function(callback) {
+//      // We need this as groups is mixed type
+//      user.markModified('groups')
+//      user.save(function(err, c, numAffected) {
+//        if (err) {
+//          utils.l.s("Got error on saving user", {err: err, user: user})
+//        } else if (!c) {
+//          utils.l.s("Got null on saving user", {user: user})
+//        }
+//        return callback(err, c)
+//      })
+//    }/*,
+//    function(c, callback) {
+//      getById(c._id, callback)
+//    }*/
+//  ],
+//  function(err, user) {
+//    if(err) {
+//      if(utils.format.isDuplicateMongoKeyError(err)) {
+//        var field = utils.format.getDuplicateMongoErrorKey(err)
+//        var errmsgTemplate = "An account already exists for #FIELD#." +
+//          "Check your Bungie messages for instructions on how to finish signing up."
+//        return callback({error: errmsgTemplate.replace("#FIELD#", field)}, user)
+//      }
+//      return callback(err, user)
+//    } else {
+//      return callback(err, user)
+//    }
+//  })
+//}
+
+function save(user, callback){
+  user.save(function(err, newUser){
+    if(err){
+      return callback(err)
     } else {
-      return callback(err, user)
+      return callback(null, newUser)
     }
   })
 }
@@ -405,6 +415,15 @@ function getUsersPrimaryConsoleType(userId, callback){
   })
 }
 
+function findUserByEmail(email, callback){
+  User.findOne({email: email}, callback)
+}
+
+function createUserWithEmailAndPassword(email, password, callback){
+  var obj = new User({email: email, password: passwordHash.generate(password)})
+  save(obj, callback)
+}
+
 module.exports = {
   model: User,
   getUserById: getUserById,
@@ -431,5 +450,7 @@ module.exports = {
   updateUserConsoles:updateUserConsoles,
   getUserByConsole:getUserByConsole,
   createUserWithBattleNetTagAndTokensAndDefaultConsole: createUserWithBattleNetTagAndTokensAndDefaultConsole,
-  getUserByBattleTag: getUserByBattleTag
+  getUserByBattleTag: getUserByBattleTag,
+  findUserByEmail: findUserByEmail,
+  createUserWithEmailAndPassword: createUserWithEmailAndPassword
 }

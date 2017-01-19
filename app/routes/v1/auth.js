@@ -891,7 +891,45 @@ function createNewUserWithBattleNet(accessToken, refreshToken, battletag, callba
   ], callback)
 }
 
+function signIn(req, res){
+  var u = null
+  utils.async.waterfall(
+    [
+      function(callback) {
+        if(utils._.isInvalidOrEmpty(req.body.email)) {
+          return callback({message: "Invalid email"})
+        }
+        if(utils._.isInvalidOrEmpty(req.body.password)) {
+          return callback({message: "Invalid password"})
+        }
+        var passportHandler = passport.authenticate('local', function (err, user, info) {
+          if (err) {
+            return callback(err);
+          }
+          if (!user) {
+            return callback(new helpers.errors.WError('User null'));
+          }
+          callback(null, user);
+        });
+        passportHandler(req, res);
+      }, function (user, callback){
+         u = user
+         req.logIn(user, callback)
+    }
+    ],
+    function(err) {
+      if (err) {
+        req.routeErr = err;
+        return routeUtils.handleAPIError(req, res, err);
+      }
+      return routeUtils.handleAPISuccess(req, res, u);
+    }
+  );
+}
+
 routeUtils.rGetPost(router,'/login','Login', login, login)
+routeUtils.rPost(router,'/signIn','SignIn', signIn, signIn)
+
 //routeUtils.rGet(router,'/battlenet/callback','BattleNetCallback', handleBattlenetCallback, handleBattlenetCallback)
 
 module.exports = router

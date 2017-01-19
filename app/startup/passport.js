@@ -1,9 +1,10 @@
 var models = require('../models')
 var utils = require('../utils')
 var helpers = require('../helpers')
-
+var passwordHash = require('password-hash')
 
 var BnetStrategy = require('passport-bnet').Strategy
+var LocalStrategy   = require('passport-local').Strategy;
 
 var battleNetAuth = {
   clientID : utils.config.battleNetClientId,
@@ -95,6 +96,39 @@ module.exports = function (passport, config) {
     })
   })
 
+  function handleUserSingIn(req, email, password, done) {
+    utils.async.waterfall([
+      function(callback) {
+        models.user.findUserByEmail(email, callback)
+      }, function(user, callback){
+        if(!user) {
+          //create user
+          models.user.createUserWithEmailAndPassword(email, password, callback)
+        } else {
+          if(!passwordHash.verify(password, user.password)) {
+            return callback({message: "Invalid password"})
+          } else {
+            return callback(null, user)
+          }
+        }
+      }
+    ], function(err, user){
+      if(err){
+        return done(err, null)
+      } else {
+        return done(null, user)
+      }
+    })
+  }
+
+  var local = new LocalStrategy({
+    usernameField: 'email',
+    passwordField: 'password',
+    passReqToCallback: true
+  }, function(req, email, password, done){
+    handleUserSingIn(req, email, password, done)
+  })
+
   var bnet = new BnetStrategy({
     clientID: battleNetAuth.clientID,
     clientSecret: battleNetAuth.clientSecret,
@@ -111,5 +145,6 @@ module.exports = function (passport, config) {
     handleBattleNetUserLogin(req, authData, done)
   })
 
+  passport.use('local', local)
   passport.use("battleNet", bnet)
 }
