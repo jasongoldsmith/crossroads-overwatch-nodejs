@@ -103,7 +103,7 @@ module.exports = function (passport, config) {
       }, function(user, callback){
         if(!user) {
           //create user
-          models.user.createUserWithEmailAndPassword(email, password, callback)
+          return callback({message: "No user found."})
         } else {
           if(!passwordHash.verify(password, user.password)) {
             return callback({message: "Invalid password"})
@@ -121,12 +121,41 @@ module.exports = function (passport, config) {
     })
   }
 
-  var local = new LocalStrategy({
+  function handleUserSingUp(req, email, password, done) {
+    utils.async.waterfall([
+      function(callback) {
+        models.user.findUserByEmail(email, callback)
+      }, function(user, callback){
+        if(!user) {
+          //create user
+          models.user.createUserWithEmailAndPassword(email, password, callback)
+        } else {
+          return callback({message: "That email is already taken."})
+        }
+      }
+    ], function(err, user){
+      if(err){
+        return done(err, null)
+      } else {
+        return done(null, user)
+      }
+    })
+  }
+
+  var local_signIn = new LocalStrategy({
     usernameField: 'email',
     passwordField: 'password',
     passReqToCallback: true
   }, function(req, email, password, done){
     handleUserSingIn(req, email, password, done)
+  })
+
+  var local_signUp = new LocalStrategy({
+    usernameField: 'email',
+    passwordField: 'password',
+    passReqToCallback: true
+  }, function(req, email, password, done){
+    handleUserSingUp(req, email, password, done)
   })
 
   var bnet = new BnetStrategy({
@@ -145,6 +174,7 @@ module.exports = function (passport, config) {
     handleBattleNetUserLogin(req, authData, done)
   })
 
-  passport.use('local', local)
+  passport.use('local_signIn', local_signIn)
+  passport.use('local_signUp', local_signUp)
   passport.use("battleNet", bnet)
 }
