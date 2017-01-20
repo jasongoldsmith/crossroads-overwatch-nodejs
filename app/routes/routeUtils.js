@@ -80,7 +80,7 @@ function handleAPIErrorMessageToUser(req, data) {
       }
       data.responseType = responseTypesMap.VALIDATION_ERROR;
     } else {
-      data.message = {type: 'error', message: routeErr.message};
+      data.message = {type: utils._.isInvalidOrEmpty(routeErr.type)? "error" : routeErr.type, message: routeErr.message, code: routeErr.code};
       data.responseType = responseTypesMap.ERROR;
     }
     commonErrorHandling(req, data);

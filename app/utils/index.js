@@ -167,5 +167,6 @@ module.exports = {
   convertMongooseArrayToPlainArray: convertMongooseArrayToPlainArray,
   getUniquePlayerListOfTwoEvents: getUniquePlayerListOfTwoEvents,
   moment:require('moment'),
-  underscore: require('underscore')
+  underscore: require('underscore'),
+  errors: require('./errors')
 };

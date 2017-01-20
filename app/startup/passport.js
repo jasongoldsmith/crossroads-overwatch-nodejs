@@ -103,10 +103,10 @@ module.exports = function (passport, config) {
       }, function(user, callback){
         if(!user) {
           //create user
-          return callback({message: "No user found."})
+          return callback(utils.errors.formErrorObject(utils.errors.errorTypes.signIn, utils.errors.errorCodes.noUserFoundWithTheEmailProvided))
         } else {
           if(!passwordHash.verify(password, user.password)) {
-            return callback({message: "Invalid password"})
+            return callback(utils.errors.formErrorObject(utils.errors.errorTypes.signIn, utils.errors.errorCodes.invalidPassword))
           } else {
             return callback(null, user)
           }
@@ -130,7 +130,7 @@ module.exports = function (passport, config) {
           //create user
           models.user.createUserWithEmailAndPassword(email, password, callback)
         } else {
-          return callback({message: "That email is already taken."})
+          return callback(utils.errors.formErrorObject(utils.errors.errorTypes.signUp, utils.errors.errorCodes.emailIsAlreadyTaken))
         }
       }
     ], function(err, user){

@@ -897,17 +897,17 @@ function signUp(req, res){
     [
       function(callback) {
         if(utils._.isInvalidOrEmpty(req.body.email)) {
-          return callback({message: "Invalid email"})
+          return callback(utils.errors.formErrorObject(utils.errors.errorTypes.signUp, utils.errors.errorCodes.invalidEmail))
         }
         if(utils._.isInvalidOrEmpty(req.body.password)) {
-          return callback({message: "Invalid password"})
+          return callback(utils.errors.formErrorObject(utils.errors.errorTypes.signUp, utils.errors.errorCodes.invalidPassword))
         }
         var passportHandler = passport.authenticate('local_signUp', function (err, user, info) {
           if (err) {
             return callback(err);
           }
           if (!user) {
-            return callback(new helpers.errors.WError('User null'));
+            return callback(utils.errors.formErrorObject(utils.errors.errorTypes.signIn, utils.errors.errorCodes.internalServerError, "User is null"));
           }
           callback(null, user);
         });
@@ -933,17 +933,17 @@ function signIn(req, res){
     [
       function(callback) {
         if(utils._.isInvalidOrEmpty(req.body.email)) {
-          return callback({message: "Invalid email"})
+          return callback(utils.errors.formErrorObject(utils.errors.errorTypes.signIn, utils.errors.errorCodes.invalidEmail))
         }
         if(utils._.isInvalidOrEmpty(req.body.password)) {
-          return callback({message: "Invalid password"})
+          return callback(utils.errors.formErrorObject(utils.errors.errorTypes.signIn, utils.errors.errorCodes.invalidPassword))
         }
         var passportHandler = passport.authenticate('local_signIn', function (err, user, info) {
           if (err) {
             return callback(err);
           }
           if (!user) {
-            return callback(new helpers.errors.WError('User null'));
+            return callback(utils.errors.formErrorObject(utils.errors.errorTypes.signIn, utils.errors.errorCodes.internalServerError, "User is null"));
           }
           callback(null, user);
         });
