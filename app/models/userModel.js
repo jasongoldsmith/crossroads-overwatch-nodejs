@@ -316,7 +316,6 @@ function filterIfUserExistsForUid(uid, callback) {
 }
 
 function getOrCreateUIDFromRequest(req, enforceNonExisting, callback) {
-  utils.l.d("getOrCreateUIDFromRequest::is session", uid)
   utils.l.d("getOrCreateUIDFromRequest req user", req.user)
   if (req.isAuthenticated() && !enforceNonExisting) {
     utils.l.d("getOrCreateUIDFromRequest::is authenticated")
