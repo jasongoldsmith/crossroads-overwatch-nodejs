@@ -7,6 +7,7 @@ var UserGroupSchema = require('./schema/userGroupSchema')
 
 // Model initialization
 var UserGroup = mongoose.model('UsersGroup', UserGroupSchema.schema)
+var groupModel = require('./groupModel')
 
 // Public functions
 function updateUserGroup(userId,groupId, data, callback) {
