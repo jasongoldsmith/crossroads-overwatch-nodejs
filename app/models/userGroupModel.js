@@ -167,21 +167,21 @@ function save(group, callback) {
   });
 }
 
-//function addUserToGroup(userId, userConsoleObj, groupName, callback){
-//  utils.async.waterfall([
-//    function(callback){
-//      groupModel.getByName(groupName, callback)
-//    }, function(group, callback){
-//      var userConsoles = utils.underscore.pluck(userConsoleObj, 'consoleType')
-//      utils.l.d("addUserToGroup: userConsoles", userConsoles)
-//      utils.l.d("addUserToGroup: groupConsoles", group.consoleTypes)
-//      var userGroupConsoles = utils.underscore.intersection(userConsoles, group.consoleTypes)
-//      utils.l.d("addUserToGroup userGroupConsoles", userGroupConsoles)
-//      var userGroup = new UserGroup({user: userId, group: group._id, consoleTypes: userGroupConsoles})
-//      save(userGroup, callback)
-//    }
-//  ], callback)
-//}
+function addUserToGroup(userId, userConsoleObj, groupName, callback){
+  utils.async.waterfall([
+    function(callback){
+      groupModel.getByName(groupName, callback)
+    }, function(group, callback){
+      var userConsoles = utils.underscore.pluck(userConsoleObj, 'consoleType')
+      utils.l.d("addUserToGroup: userConsoles", userConsoles)
+      utils.l.d("addUserToGroup: groupConsoles", group.consoleTypes)
+      var userGroupConsoles = utils.underscore.intersection(userConsoles, group.consoleTypes)
+      utils.l.d("addUserToGroup userGroupConsoles", userGroupConsoles)
+      var userGroup = new UserGroup({user: userId, group: group._id, consoleTypes: userGroupConsoles})
+      save(userGroup, callback)
+    }
+  ], callback)
+}
 
 function getUserGroups(userId, callback){
   UserGroup.find({user: userId}).populate('group').exec(callback)
@@ -225,5 +225,6 @@ module.exports = {
   findUsersByGroup:findUsersByGroup,
   getByUser:getByUser,
   getUserGroups: getUserGroups,
+  addUserToGroup: addUserToGroup,
   updateUserGroupAndConsole: updateUserGroupAndConsole
 }
