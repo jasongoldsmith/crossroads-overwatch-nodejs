@@ -920,7 +920,7 @@ function signUp(req, res){
     function(err) {
       if (err) {
         req.routeErr = err;
-        return routeUtils.handleAPIError(req, res, err);
+        return routeUtils.handleAPIError(req, res, err, err);
       }
       return routeUtils.handleAPISuccess(req, res, u);
     }
@@ -956,7 +956,7 @@ function signIn(req, res){
     function(err) {
       if (err) {
         req.routeErr = err;
-        return routeUtils.handleAPIError(req, res, err);
+        return routeUtils.handleAPIError(req, res, err, err);
       }
       return routeUtils.handleAPISuccess(req, res, u);
     }

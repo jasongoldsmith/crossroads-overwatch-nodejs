@@ -7,7 +7,6 @@ var UserGroupSchema = require('./schema/userGroupSchema')
 
 // Model initialization
 var UserGroup = mongoose.model('UsersGroup', UserGroupSchema.schema)
-var groupModel = require('./groupModel')
 
 // Public functions
 function updateUserGroup(userId,groupId, data, callback) {
@@ -168,26 +167,50 @@ function save(group, callback) {
   });
 }
 
-function addUserToGroup(userId, userConsoleObj, groupName, callback){
-  utils.async.waterfall([
-    function(callback){
-      groupModel.getByName(groupName, callback)
-    }, function(group, callback){
-      var userConsoles = utils.underscore.pluck(userConsoleObj, 'consoleType')
-      utils.l.d("addUserToGroup: userConsoles", userConsoles)
-      utils.l.d("addUserToGroup: groupConsoles", group.consoleTypes)
-      var userGroupConsoles = utils.underscore.intersection(userConsoles, group.consoleTypes)
-      utils.l.d("addUserToGroup userGroupConsoles", userGroupConsoles)
-      var userGroup = new UserGroup({user: userId, group: group._id, consoleTypes: userGroupConsoles})
-      save(userGroup, callback)
-    }
-  ], callback)
-}
+//function addUserToGroup(userId, userConsoleObj, groupName, callback){
+//  utils.async.waterfall([
+//    function(callback){
+//      groupModel.getByName(groupName, callback)
+//    }, function(group, callback){
+//      var userConsoles = utils.underscore.pluck(userConsoleObj, 'consoleType')
+//      utils.l.d("addUserToGroup: userConsoles", userConsoles)
+//      utils.l.d("addUserToGroup: groupConsoles", group.consoleTypes)
+//      var userGroupConsoles = utils.underscore.intersection(userConsoles, group.consoleTypes)
+//      utils.l.d("addUserToGroup userGroupConsoles", userGroupConsoles)
+//      var userGroup = new UserGroup({user: userId, group: group._id, consoleTypes: userGroupConsoles})
+//      save(userGroup, callback)
+//    }
+//  ], callback)
+//}
 
 function getUserGroups(userId, callback){
   UserGroup.find({user: userId}).populate('group').exec(callback)
 }
 
+function updateUserGroupAndConsole(userid, groupId, userConsoleType, callback){
+  utils.async.waterfall([
+    function(callback){
+      //check if user is already a part of the group
+      UserGroup.findOne({user: userid, group: groupId}, callback)
+    }, function(existingUserGroup, callback){
+      if(utils._.isInvalidOrEmpty(existingUserGroup)){
+        //create new user group
+        var obj = new UserGroup({group: groupId, consoleTypes: [userConsoleType]})
+        save(obj, callback)
+      } else {
+        //check if user group already has the console
+        var isConsoleAlreadyPresent =  utils.underscore.contains(existingUserGroup.consoleTypes, userConsoleType)
+        if(isConsoleAlreadyPresent){
+          return callback(null, existingUserGroup)
+        } else {
+          var userGroupConsoles = existingUserGroup.consoleTypes
+          userGroupConsoles.push(userConsoleType)
+          UserGroup.update({_id: existingUserGroup._id}, {consoleTypes: userGroupConsoles}, callback)
+        }
+      }
+    }
+  ], callback)
+}
 
 module.exports = {
   model: UserGroup,
@@ -200,7 +223,7 @@ module.exports = {
   getUserCountByGroup:getUserCountByGroup,
   findUsersPaginated:findUsersPaginated,
   findUsersByGroup:findUsersByGroup,
-  addUserToGroup: addUserToGroup,
   getByUser:getByUser,
-  getUserGroups: getUserGroups
+  getUserGroups: getUserGroups,
+  updateUserGroupAndConsole: updateUserGroupAndConsole
 }

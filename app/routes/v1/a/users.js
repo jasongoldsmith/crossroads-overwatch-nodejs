@@ -126,16 +126,20 @@ function getUserMetrics(req, res) {
 
 function addConsole(req, res) {
   var newConsoleType = req.body.consoleType ? req.body.consoleType.toString().toUpperCase() : null
+  var newConsoleId = req.body.consoleId
 
   if(!newConsoleType) {
-    var err = {error: "new console type is needed"}
+    var err = utils.errors.formErrorObject(utils.errors.errorTypes.addConsole, utils.errors.errorCodes.consoleTypeNotProvided, null)
+    routeUtils.handleAPIError(req, res, err, err)
+  } else if(!utils.constants.isValidConsoleType(newConsoleType)){
+    var err = utils.errors.formErrorObject(utils.errors.errorTypes.addConsole, utils.errors.errorCodes.invalidConsoleType, null)
     routeUtils.handleAPIError(req, res, err, err)
   } else if(utils._.isValidNonBlank(utils.getUserConsoleObject(req.user, newConsoleType))) {
-    var err = {error: "You already own this console"}
+    var err = utils.errors.formErrorObject(utils.errors.errorTypes.addConsole, utils.errors.errorCodes.userAlreadyOwnsThisConsole, null)
     routeUtils.handleAPIError(req, res, err, err)
   } else if((newConsoleType == 'PS3' && utils._.isValidNonBlank(utils.getUserConsoleObject(req.user, "PS4")))
   || (newConsoleType == 'XBOX360' && utils._.isValidNonBlank(utils.getUserConsoleObject(req.user, "XBOXONE")))) {
-    var err = {error: "You cannot downgrade your console"}
+    var err = utils.errors.formErrorObject(utils.errors.errorTypes.addConsole, utils.errors.errorCodes.userCannotDowngradeTheConsole, null)
     routeUtils.handleAPIError(req, res, err, err)
   } else if(newConsoleType == 'PS4' && utils._.isValidNonBlank(utils.getUserConsoleObject(req.user, "PS3"))) {
     service.userService.upgradeConsole(req.user, "PS3", newConsoleType, function (err, user) {
@@ -154,11 +158,11 @@ function addConsole(req, res) {
       }
     })
   } else {
-    if(utils._.isInvalidOrBlank(req.body.consoleId)) {
-      var err = {error: "Please enter a gamertag to add a new console."}
+    if(utils._.isInvalidOrBlank(newConsoleId)) {
+      var err = utils.errors.formErrorObject(utils.errors.errorTypes.addConsole, utils.errors.errorCodes.consoleIdNotProvided, null)
       routeUtils.handleAPIError(req, res, err, err)
     } else {
-      service.userService.addConsole(req.user, req.body, function (err, user) {
+      service.userService.addConsole(req.user, newConsoleType, newConsoleId, function (err, user) {
         if (err) {
           routeUtils.handleAPIError(req, res, err, err)
         } else {

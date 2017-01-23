@@ -643,10 +643,17 @@ var serviceTypes = {PUSHNOTIFICATION:'PUSHNOTIFICATION',
 
 var consoleTypes = {
   ps4: "PS4",
-  xbox360: "XBOX360",
   xboxOne: "XBOXONE",
-  ps3 : "PS3",
   pc: "PC"
+}
+
+function isValidConsoleType(consoleType){
+  var lowercaseType = consoleType.toString().toLowerCase()
+  if(consoleTypes[lowercaseType]){
+    return true
+  } else {
+    return false
+  }
 }
 
 var regionBasedGroups = {
@@ -656,6 +663,16 @@ var regionBasedGroups = {
   tw: "TW",
   cn: "CN",
   global: "GLOBAL"
+}
+
+var accountVerifyStatusMap = {
+  verified: "VERIFIED",
+  initiated: "INITIATED",
+  failedInvitation: "FAILED_INITIATION",
+  notInitiated: "NOT_INITIATED",
+  invalidGamertag : "INVALID_GAMERTAG",
+  invited: "INVITED",
+  invitationMsgFailed: "INVITATION_MSG_FAILED"
 }
 
 module.exports = {
@@ -682,5 +699,7 @@ module.exports = {
   invitedUserInstallData:invitedUserInstallData,
   serviceTypes:serviceTypes,
   consoleTypes: consoleTypes,
-  regionBasedGroups: regionBasedGroups
+  regionBasedGroups: regionBasedGroups,
+  accountVerifyStatusMap: accountVerifyStatusMap,
+  isValidConsoleType: isValidConsoleType
 }

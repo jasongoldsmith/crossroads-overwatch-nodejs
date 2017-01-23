@@ -77,6 +77,14 @@ function getByName(name, callabck){
   Group.findOne({groupName: name}, callabck)
 }
 
+function getByConsoleType(consoleType, callback){
+  Group.find({consoleTypes: {$in: [consoleType]}}, callback)
+}
+
+function getDefaultGroupForConsole(consoleType, callback){
+  Group.find({isDefault: true, consoleTypes: {$in: [consoleType]}}, callback)
+}
+
 module.exports = {
   model: Group,
   updateGroupStats:updateGroupStats,
@@ -84,5 +92,7 @@ module.exports = {
   findGroupsPaginated:findGroupsPaginated,
   addServiceEndpoints:addServiceEndpoints,
   findGroupById:findGroupById,
-  getByName: getByName
+  getByName: getByName,
+  getByConsoleType: getByConsoleType,
+  getDefaultGroupForConsole: getDefaultGroupForConsole
 }

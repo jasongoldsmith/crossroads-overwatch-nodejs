@@ -2,6 +2,7 @@ var utils = require('../utils')
 var mongoose = require('mongoose')
 var helpers = require('../helpers')
 var passwordHash = require('password-hash')
+var uuid = require('node-uuid');
 
 // User Schema
 var UserSchema = require('./schema/userSchema')
@@ -9,6 +10,9 @@ var UserSchema = require('./schema/userSchema')
 // Model initialization
 var User = mongoose.model('User', UserSchema.schema)
 var roundRobinCounterModel = require('./roundRobinCounterModel')
+var groupModel = require('./groupModel')
+var userGroupModel = require('./userGroupModel')
+
 
 //static variables
 var roundRobinCount = null
@@ -398,6 +402,11 @@ function createUserWithBattleNetTagAndTokensAndDefaultConsole(tag, accessToken, 
     consoleType:  utils.constants.consoleTypes.pc,
     isPrimary: true
   }
+  //TODO: remove this after new login flow with email and password has been added.
+  if(utils._.isInvalidOrEmpty(tag)){
+    tag = uuid.v4()
+    tag = tag.substring(0,6)
+  }
   var user = new User({battleTag: tag, battleNetAccessToken: accessToken, battleNetRefreshToken: refreshToken, battleNetAccessTokenFetchDate: new Date(), consoles: [defaultConsole]})
   save(user, callback)
 }
@@ -423,6 +432,23 @@ function findUserByEmail(email, callback){
 function createUserWithEmailAndPassword(email, password, callback){
   var obj = new User({email: email, password: passwordHash.generate(password)})
   save(obj, callback)
+}
+
+function addUserToGroupsBasedOnConsole(userId, consoleType, callback){
+  utils.async.waterfall([
+    function(callback){
+      groupModel.getByConsoleType(consoleType, callback)
+    }, function(groups, callback){
+      utils.async.map(groups, function(group, callback){
+        userGroupModel.updateUserGroupAndConsole(userId, group._id, consoleType, callback)
+      }, function(err, result){
+        if(err) {
+          return callback(err)
+        }
+        return callback(null, result)
+      })
+    }
+  ], callback)
 }
 
 module.exports = {
@@ -453,5 +479,6 @@ module.exports = {
   createUserWithBattleNetTagAndTokensAndDefaultConsole: createUserWithBattleNetTagAndTokensAndDefaultConsole,
   getUserByBattleTag: getUserByBattleTag,
   findUserByEmail: findUserByEmail,
-  createUserWithEmailAndPassword: createUserWithEmailAndPassword
+  createUserWithEmailAndPassword: createUserWithEmailAndPassword,
+  addUserToGroupsBasedOnConsole: addUserToGroupsBasedOnConsole
 }

@@ -4,6 +4,7 @@ var config =  require('config')
 var errorTypes = {
   signUp: "Sign Up Error",
   signIn: "Sign In Error",
+  addConsole : "Add Console"
 }
 
 var errorCodes = {
@@ -31,6 +32,26 @@ var errorCodes = {
     code: 5,
     description: "No User found with the email provided"
   },
+  consoleTypeNotProvided: {
+    code: 6,
+    description: "Console Type not provided"
+  },
+  consoleIdNotProvided: {
+    code: 7,
+    description: "BattleTag/GamerTag not provided"
+  },
+  userAlreadyOwnsThisConsole: {
+    code: 8,
+    description: "You already own this console"
+  },
+  userCannotDowngradeTheConsole: {
+    code: 9,
+    description: "You cannot downgrade your console"
+  },
+  invalidConsoleType: {
+    code: 10,
+    description: "Invalid console type"
+  }
 }
 
 function formErrorObject(type, errorCodeObj, data) {
@@ -43,7 +64,7 @@ function formErrorObject(type, errorCodeObj, data) {
   return {
     type: lodash._.isInvalidOrBlank(type) ? "error" : type,
     code: lodash._.isInvalidOrEmpty(errorCodeObj) ? errorCodes.unknownError.code : errorCodeObj.code,
-    message: m,
+    description: m,
   }
 }
 

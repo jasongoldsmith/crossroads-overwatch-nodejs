@@ -13,6 +13,7 @@ var consoleTypes =  utils._.values(utils.constants.consoleTypes)
 var GroupSchema = new Schema({
   _id:String,
   groupName: {type: String, enum: groupNames},
+  isDefault: Boolean,
   consoleTypes: [{type: String, enum: consoleTypes}],
   date: { type: Date, required: true },
   uDate: Date,

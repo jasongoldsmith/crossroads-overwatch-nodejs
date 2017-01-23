@@ -15,7 +15,7 @@ function clearEventsForPlayer(user, launchStatus, consoleType, callback){
       models.event.getByQuery(getEventsByPlayerQuery(user._id.toString(), consoleType, launchStatus), null, callback)
     },
     function(eventList, callback) {
-      //mapSeries used to avoid the consurrency situation in the same session.
+      //mapSeries used to avoid the concurrency situation in the same session.
       utils.async.mapSeries(eventList, function(event, callback) {
         handleLeaveEvent(user, {eId : event._id.toString()}, true, true, callback)
       }, callback)

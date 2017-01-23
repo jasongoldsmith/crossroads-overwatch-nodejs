@@ -175,40 +175,47 @@ function updateReviewPromptCardStatus(user, data, callback) {
   updateUser(user, callback)
 }
 
-function addConsole(user, console, callback) {
-  var consoleType = console.consoleType.toString().toUpperCase()
-  if(consoleType == "XBOX360" || consoleType == "PS3") {
-    return callback({error: "We do not support old generation consoles anymore. " +
-    "Please try again once you have upgraded to a new generation console"}, null)
-  }
+function addConsole(user, consoleType, consoleId, callback) {
+  consoleType = consoleType.toString().toUpperCase()
+  //TODO: check if the console id is already taken
+  //if(consoleType == "XBOX360" || consoleType == "PS3") {
+  //  return callback({error: "We do not support old generation consoles anymore. " +
+  //  "Please try again once you have upgraded to a new generation console"}, null)
+  //}
+  var userConsoleData = {}
   utils.async.waterfall([
     function (callback) {
-      destinyInterface.getBungieMemberShip(console.consoleId, consoleType, null, true,callback)
-    },
-    function (bungieMember, callback) {
-      if(bungieMember.bungieMemberShipId.toString() != user.bungieMemberShipId.toString()) {
-        var errMsgTemplate = utils.constants.bungieMessages.addConsoleErrorMsg
-        var errMsg = errMsgTemplate
-          .replace("#CONSOLE_TYPE#", consoleType)
-          .replace("#CONSOLE_ID#", console.consoleId)
-        return callback({error: errMsg}, null)
-      } else {
-        console.verifyStatus = user.consoles[0].verifyStatus
-        console.clanTag = bungieMember.clanTag
-        console.destinyMembershipId = bungieMember.destinyProfile.memberShipId
-        user.consoles.push(console)
-        updateUser(user, function (err, updatedUser) {
-          if(err) {
-            utils.l.s("Unable to update the user", err)
-            return callback({error: "Something went wrong. Please try again"}, null)
-          } else {
-            return callback(null, updatedUser)
-          }
-        })
+      switch(consoleType) {
+        case utils.constants.consoleTypes.pc:
+        case utils.constants.consoleTypes.xboxOne:
+          //intentional fall through
+        case utils.constants.consoleTypes.ps4:
+          userConsoleData.verifyStatus = utils.constants.accountVerifyStatusMap.notInitiated
+          userConsoleData.consoleId = consoleId
+          userConsoleData.consoleType = consoleType
+          //TODO: set primary console
+          user.consoles.push(userConsoleData)
+          break;
       }
+      models.user.addUserToGroupsBasedOnConsole(user._id, consoleType, callback)
+    }, function(userGroups, callback){
+      //TODO: how to set user's primary group??
+      models.groups.getDefaultGroupForConsole(consoleType, callback)
+    }, function(defaultGroup, callback){
+      user.clanId = defaultGroup._id,
+      user.clanName = defaultGroup.groupName
+      //TODO: is clan tag needed??
+      utils.l.d("user before save", user)
+      updateUser(user, function (err, updatedUser) {
+        if(err) {
+          utils.l.s("Unable to update the user", err)
+          return callback({error: "Something went wrong. Please try again"}, null)
+        } else {
+          return callback(null, updatedUser)
+        }
+      })
     }
   ], callback)
-
 }
 
 function refreshConsoles(user, bungieResponse, consoleReq, callback){
