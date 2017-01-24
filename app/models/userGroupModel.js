@@ -196,7 +196,7 @@ function updateUserGroupAndConsole(userid, groupId, userConsoleType, callback){
     }, function(existingUserGroup, callback){
       if(utils._.isInvalidOrEmpty(existingUserGroup)){
         //create new user group
-        var obj = new UserGroup({group: groupId, consoleTypes: [userConsoleType]})
+        var obj = new UserGroup({user: userid, group: groupId, consoleTypes: [userConsoleType]})
         save(obj, callback)
       } else {
         //check if user group already has the console

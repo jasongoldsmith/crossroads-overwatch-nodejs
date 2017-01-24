@@ -643,7 +643,7 @@ var serviceTypes = {PUSHNOTIFICATION:'PUSHNOTIFICATION',
 
 var consoleTypes = {
   ps4: "PS4",
-  xboxOne: "XBOXONE",
+  xboxone: "XBOXONE",
   pc: "PC"
 }
 

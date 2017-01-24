@@ -412,7 +412,7 @@ function createUserWithBattleNetTagAndTokensAndDefaultConsole(tag, accessToken, 
 }
 
 function getUserByBattleTag(tag, callback){
-  User.find({battleTag: tag}, callback)
+  User.findOne({battleTag: tag}, callback)
 }
 
 function getUsersPrimaryConsoleType(userId, callback){
@@ -451,6 +451,23 @@ function addUserToGroupsBasedOnConsole(userId, consoleType, callback){
   ], callback)
 }
 
+function isConsoleIdAvailable(userId, consoleType, consoleId, callback){
+  User.find({
+    "consoles": {
+      "$elemMatch" : {
+        consoleType: consoleType, consoleId: consoleId
+      }
+    }
+  }, function(err, user){
+    utils.l.d("isConsoleIdAvailable user", user)
+    if(utils._.isInvalidOrEmpty(user)){
+      return callback(null,true)
+    } else {
+      return callback(null, false)
+    }
+  })
+}
+
 module.exports = {
   model: User,
   getUserById: getUserById,
@@ -480,5 +497,6 @@ module.exports = {
   getUserByBattleTag: getUserByBattleTag,
   findUserByEmail: findUserByEmail,
   createUserWithEmailAndPassword: createUserWithEmailAndPassword,
-  addUserToGroupsBasedOnConsole: addUserToGroupsBasedOnConsole
+  addUserToGroupsBasedOnConsole: addUserToGroupsBasedOnConsole,
+  isConsoleIdAvailable: isConsoleIdAvailable
 }

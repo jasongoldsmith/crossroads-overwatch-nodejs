@@ -137,27 +137,31 @@ function addConsole(req, res) {
   } else if(utils._.isValidNonBlank(utils.getUserConsoleObject(req.user, newConsoleType))) {
     var err = utils.errors.formErrorObject(utils.errors.errorTypes.addConsole, utils.errors.errorCodes.userAlreadyOwnsThisConsole, null)
     routeUtils.handleAPIError(req, res, err, err)
-  } else if((newConsoleType == 'PS3' && utils._.isValidNonBlank(utils.getUserConsoleObject(req.user, "PS4")))
-  || (newConsoleType == 'XBOX360' && utils._.isValidNonBlank(utils.getUserConsoleObject(req.user, "XBOXONE")))) {
-    var err = utils.errors.formErrorObject(utils.errors.errorTypes.addConsole, utils.errors.errorCodes.userCannotDowngradeTheConsole, null)
-    routeUtils.handleAPIError(req, res, err, err)
-  } else if(newConsoleType == 'PS4' && utils._.isValidNonBlank(utils.getUserConsoleObject(req.user, "PS3"))) {
-    service.userService.upgradeConsole(req.user, "PS3", newConsoleType, function (err, user) {
-      if (err) {
-        routeUtils.handleAPIError(req, res, err, err)
-      } else {
-        routeUtils.handleAPISuccess(req, res, {value:user})
-      }
-    })
-  } else if(newConsoleType == 'XBOXONE' && utils._.isValidNonBlank(utils.getUserConsoleObject(req.user, "XBOX360"))) {
-    service.userService.upgradeConsole(req.user, "XBOX360", newConsoleType, function (err, user) {
-      if (err) {
-        routeUtils.handleAPIError(req, res, err, err)
-      } else {
-        routeUtils.handleAPISuccess(req, res, {value:user})
-      }
-    })
-  } else {
+  }
+  //PS3 and Xbox360 are not available for overwatch so disabling these checks
+  //else if((newConsoleType == 'PS3' && utils._.isValidNonBlank(utils.getUserConsoleObject(req.user, "PS4")))
+  //|| (newConsoleType == 'XBOX360' && utils._.isValidNonBlank(utils.getUserConsoleObject(req.user, "XBOXONE")))) {
+  //  var err = utils.errors.formErrorObject(utils.errors.errorTypes.addConsole, utils.errors.errorCodes.userCannotDowngradeTheConsole, null)
+  //  routeUtils.handleAPIError(req, res, err, err)
+  //} else if(newConsoleType == 'PS4' && utils._.isValidNonBlank(utils.getUserConsoleObject(req.user, "PS3"))) {
+  //  service.userService.upgradeConsole(req.user, "PS3", newConsoleType, function (err, user) {
+  //    if (err) {
+  //      routeUtils.handleAPIError(req, res, err, err)
+  //    } else {
+  //      routeUtils.handleAPISuccess(req, res, {value:user})
+  //    }
+  //  })
+  //} else if(newConsoleType == 'XBOXONE' && utils._.isValidNonBlank(utils.getUserConsoleObject(req.user, "XBOX360"))) {
+  //  service.userService.upgradeConsole(req.user, "XBOX360", newConsoleType, function (err, user) {
+  //    if (err) {
+  //      routeUtils.handleAPIError(req, res, err, err)
+  //    } else {
+  //      routeUtils.handleAPISuccess(req, res, {value:user})
+  //    }
+  //  })
+  //}
+
+  else {
     if(utils._.isInvalidOrBlank(newConsoleId)) {
       var err = utils.errors.formErrorObject(utils.errors.errorTypes.addConsole, utils.errors.errorCodes.consoleIdNotProvided, null)
       routeUtils.handleAPIError(req, res, err, err)

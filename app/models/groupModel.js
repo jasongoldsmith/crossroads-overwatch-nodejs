@@ -82,7 +82,7 @@ function getByConsoleType(consoleType, callback){
 }
 
 function getDefaultGroupForConsole(consoleType, callback){
-  Group.find({isDefault: true, consoleTypes: {$in: [consoleType]}}, callback)
+  Group.findOne({isDefault: true, consoleTypes: {$in: [consoleType]}}, callback)
 }
 
 module.exports = {

@@ -64,7 +64,11 @@ var errorCodes = {
     types: [errorTypes.addConsole],
     description: "You cannot downgrade your console"
   },
-
+  tagAlreadyTaken: {
+    code: 11,
+    types: [errorTypes.addConsole],
+    description: "Battletag/Gamertag is already taken"
+  }
 }
 
 function formErrorObject(type, errorCodeObj, data) {

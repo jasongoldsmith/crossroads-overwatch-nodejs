@@ -177,35 +177,44 @@ function updateReviewPromptCardStatus(user, data, callback) {
 
 function addConsole(user, consoleType, consoleId, callback) {
   consoleType = consoleType.toString().toUpperCase()
-  //TODO: check if the console id is already taken
   //if(consoleType == "XBOX360" || consoleType == "PS3") {
   //  return callback({error: "We do not support old generation consoles anymore. " +
   //  "Please try again once you have upgraded to a new generation console"}, null)
   //}
   var userConsoleData = {}
   utils.async.waterfall([
-    function (callback) {
+    function(callback){
+      models.user.isConsoleIdAvailable(user._id, consoleType, consoleId, callback)
+    },
+    function (isConsoleIdAvailable, callback) {
+      if(!isConsoleIdAvailable){
+        var err = utils.errors.formErrorObject(utils.errors.errorTypes.addConsole, utils.errors.errorCodes.tagAlreadyTaken, null)
+        return callback(err)
+      }
       switch(consoleType) {
         case utils.constants.consoleTypes.pc:
-        case utils.constants.consoleTypes.xboxOne:
+        case utils.constants.consoleTypes.xboxone:
           //intentional fall through
         case utils.constants.consoleTypes.ps4:
           userConsoleData.verifyStatus = utils.constants.accountVerifyStatusMap.notInitiated
           userConsoleData.consoleId = consoleId
           userConsoleData.consoleType = consoleType
-          //TODO: set primary console
+          userConsoleData.isPrimary = true
+          //set other consoles to isPrimary=false
+          utils._.forEach(user.consoles, function (console) {
+            console.isPrimary = false
+          })
           user.consoles.push(userConsoleData)
           break;
       }
       models.user.addUserToGroupsBasedOnConsole(user._id, consoleType, callback)
     }, function(userGroups, callback){
-      //TODO: how to set user's primary group??
       models.groups.getDefaultGroupForConsole(consoleType, callback)
     }, function(defaultGroup, callback){
+      utils.l.d("default group", defaultGroup)
       user.clanId = defaultGroup._id,
       user.clanName = defaultGroup.groupName
       //TODO: is clan tag needed??
-      utils.l.d("user before save", user)
       updateUser(user, function (err, updatedUser) {
         if(err) {
           utils.l.s("Unable to update the user", err)
@@ -307,7 +316,7 @@ function changePrimaryConsole(user, consoleType, callback) {
     return callback ({error: errMsg.replace("#CONSOLE_TYPE#", consoleType)}, null)
   }
 
-  var oldPrimaryConsoles = utils._.filter(user.consoles, 'isPrimary')
+  var oldPrimaryConsoles = utils._.filter(user.consoles, ['isPrimary', true])
   utils._.forEach(oldPrimaryConsoles, function (console) {
     console.isPrimary = false
   })
