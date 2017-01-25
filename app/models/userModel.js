@@ -400,13 +400,14 @@ function updateUserConsoles(user,callback){
 function createUserWithBattleNetTagAndTokensAndDefaultConsole(tag, accessToken, refreshToken, callback){
   var defaultConsole = {
     consoleType:  utils.constants.consoleTypes.pc,
-    isPrimary: true
+    isPrimary: true,
   }
   //TODO: remove this after new login flow with email and password has been added.
   if(utils._.isInvalidOrEmpty(tag)){
     tag = uuid.v4()
     tag = tag.substring(0,6)
   }
+  defaultConsole.consoleId = tag
   var user = new User({battleTag: tag, battleNetAccessToken: accessToken, battleNetRefreshToken: refreshToken, battleNetAccessTokenFetchDate: new Date(), consoles: [defaultConsole]})
   save(user, callback)
 }
