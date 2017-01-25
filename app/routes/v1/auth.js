@@ -922,7 +922,7 @@ function signUp(req, res){
         req.routeErr = err;
         return routeUtils.handleAPIError(req, res, err, err);
       }
-      return routeUtils.handleAPISuccess(req, res, u);
+      return routeUtils.handleAPISuccess(req, res, {value: u});
     }
   );
 }
@@ -958,7 +958,7 @@ function signIn(req, res){
         req.routeErr = err;
         return routeUtils.handleAPIError(req, res, err, err);
       }
-      return routeUtils.handleAPISuccess(req, res, u);
+      return routeUtils.handleAPISuccess(req, res, {value: u});
     }
   );
 }
