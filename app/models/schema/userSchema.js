@@ -22,7 +22,7 @@ var UserSchema = new Schema({
   battleNetRefreshToken : String,
   battleNetAccessTokenFetchDate : Date,
   name: String,
-  profileUrl: String,
+  profileUrl: {type: String, default: "https://s3-us-west-1.amazonaws.com/w3.crossroadsapp.co/overwatch/default_profile.png"},
   email: {type: String, unique: true}, //add required constraint after login refactor
   date: {type: Date, required: true},
   password: {type: String},
