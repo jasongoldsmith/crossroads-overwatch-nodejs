@@ -657,11 +657,11 @@ function isValidConsoleType(consoleType){
 }
 
 var regionBasedGroups = {
-  us: "US",
-  eu: "EU",
-  kr: "KR",
-  tw: "TW",
-  cn: "CN",
+  us: "North America",
+  eu: "Europe",
+  kr: "Korea",
+  tw: "Taiwan",
+  cn: "North America",
   global: "GLOBAL"
 }
 
