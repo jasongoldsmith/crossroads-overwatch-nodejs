@@ -1,6 +1,9 @@
 var lodash = require('./lodash')
 var config =  require('config')
 var baseUrl = "https://s3-us-west-1.amazonaws.com/w3.crossroadsapp.co/overwatch/"
+var emailValidator = require("email-validator");
+
+var baseUrl = "http://www.bungie.net/common/destiny_content/icons/"
 var imageFiles = [
   "profile1.png",
   "profile2.png",
@@ -212,6 +215,10 @@ var accountVerifyStatusMap = {
   invitationMsgFailed: "INVITATION_MSG_FAILED"
 }
 
+function isEmailValid(email){
+  return emailValidator.validate(email)
+}
+
 module.exports = {
   l: lodash,
   baseUrl: baseUrl,
@@ -238,5 +245,6 @@ module.exports = {
   consoleTypes: consoleTypes,
   regionBasedGroups: regionBasedGroups,
   accountVerifyStatusMap: accountVerifyStatusMap,
-  isValidConsoleType: isValidConsoleType
+  isValidConsoleType: isValidConsoleType,
+  isEmailValid: isEmailValid
 }

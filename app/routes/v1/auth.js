@@ -896,7 +896,7 @@ function signUp(req, res){
   utils.async.waterfall(
     [
       function(callback) {
-        if(utils._.isInvalidOrEmpty(req.body.email)) {
+        if(!utils.constants.isEmailValid(req.body.email)) {
           return callback(utils.errors.formErrorObject(utils.errors.errorTypes.signUp, utils.errors.errorCodes.invalidEmail))
         }
         if(utils._.isInvalidOrEmpty(req.body.password)) {
@@ -932,7 +932,7 @@ function signIn(req, res){
   utils.async.waterfall(
     [
       function(callback) {
-        if(utils._.isInvalidOrEmpty(req.body.email)) {
+        if(!utils.constants.isEmailValid(req.body.email)) {
           return callback(utils.errors.formErrorObject(utils.errors.errorTypes.signIn, utils.errors.errorCodes.invalidEmail))
         }
         if(utils._.isInvalidOrEmpty(req.body.password)) {

@@ -24,6 +24,7 @@
     "csv-parse": "1.0.2",
     "csvtojson":"1.0.0",
     "debug": "2.2.0",
+    "email-validator": "1.0.7",
     "ejs": "2.3.1",
     "express": "4.13.4",
     "express-session": "1.14.0",
