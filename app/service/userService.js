@@ -8,7 +8,6 @@ var destinyInterface = require('./destinyInterface')
 var passwordHash = require('password-hash')
 var helpers = require('../helpers')
 var temporal = require('temporal')
-var passport = require('passport')
 
 function preUserTimeout(notifTrigger,sysConfig){
   utils.l.d("Starting preUserTimeout")
@@ -176,38 +175,12 @@ function updateReviewPromptCardStatus(user, data, callback) {
   updateUser(user, callback)
 }
 
-function addConsolePC(req, res, user, consoleType, callback){
-  var resp =  null
-  utils.async.waterfall(
-    [
-      function(callback) {
-        var passportHandler = passport.authenticate('battlenet', function (err, response) {
-          resp = response
-          console.log("auth resp ==" , resp)
-
-          if (err) {
-            return callback(err);
-          }
-          if (!resp) {
-            return callback(new helpers.errors.WError('User null'));
-          }
-          callback(null, resp);
-        });
-        passportHandler(req, res);
-      }
-    ],
-    function(err) {
-      if (err) {
-        return callback(err);
-      }
-      return callback(resp);
-    }
-  );
-}
-
-//This add console method should be used for xbox and ps. Please refer to addConsolePC() for adding PC as the console.
 function addConsole(user, consoleType, consoleId, callback) {
   consoleType = consoleType.toString().toUpperCase()
+  //if(consoleType == "XBOX360" || consoleType == "PS3") {
+  //  return callback({error: "We do not support old generation consoles anymore. " +
+  //  "Please try again once you have upgraded to a new generation console"}, null)
+  //}
   var userConsoleData = {}
   utils.async.waterfall([
     function(callback){
@@ -219,13 +192,10 @@ function addConsole(user, consoleType, consoleId, callback) {
         return callback(err)
       }
       switch(consoleType) {
+        case utils.constants.consoleTypes.pc:
         case utils.constants.consoleTypes.xboxone:
           //intentional fall through
         case utils.constants.consoleTypes.ps4:
-          if(utils._.isInvalidOrBlank(consoleId)) {
-            var err = utils.errors.formErrorObject(utils.errors.errorTypes.addConsole, utils.errors.errorCodes.consoleIdNotProvided, null)
-            return callback(err)
-          }
           userConsoleData.verifyStatus = utils.constants.accountVerifyStatusMap.notInitiated
           userConsoleData.consoleId = consoleId
           userConsoleData.consoleType = consoleType
@@ -956,7 +926,6 @@ module.exports = {
   upgradeConsole: upgradeConsole,
   updateReviewPromptCardStatus: updateReviewPromptCardStatus,
   addConsole: addConsole,
-  addConsolePC: addConsolePC,
   changePrimaryConsole: changePrimaryConsole,
   checkBungieAccount: checkBungieAccount,
   setLegalAttributes: setLegalAttributes,

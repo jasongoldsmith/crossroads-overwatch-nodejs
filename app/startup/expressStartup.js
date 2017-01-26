@@ -162,16 +162,8 @@ module.exports = function (app, passport) {
     //}
 
   });
-
-  //TODO: remove this once the login is updated by front end
   app.get('/api/v1/auth/battlenet/callback',
-    passport.authenticate('battlenet', {
-      successRedirect : '/login/success',
-      failureRedirect : '/login/failure'
-    })
-  );
-  app.get('/api/v1/a/battlenet/callback',
-    passport.authenticate('battlenet', {
+    passport.authenticate('battleNet', {
       successRedirect : '/login/success',
       failureRedirect : '/login/failure'
     })

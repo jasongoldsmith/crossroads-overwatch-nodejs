@@ -2,7 +2,6 @@ var models = require('../models')
 var utils = require('../utils')
 var helpers = require('../helpers')
 var passwordHash = require('password-hash')
-var service = require('../service')
 
 var BnetStrategy = require('passport-bnet').Strategy
 var LocalStrategy   = require('passport-local').Strategy;
@@ -12,43 +11,6 @@ var battleNetAuth = {
   clientSecret : utils.config.battleNetClientSecret,
   callbackUrl :  utils.config.battleNetCallbackUrl
 };
-
-function handleAddConsolePCWithBattleNetLogin(req, authData, done){
-  utils.l.d("handleAddConsolePCWithBattleNetLogin req.user", req.user)
-  utils.l.d("handleAddConsolePCWithBattleNetLogin authData", authData)
-
-  utils.async.waterfall([
-    function(callback){
-      if(!req.user){
-        utils.l.e("handleAddConsolePCWithBattleNetLogin err: user data not present in the request.Something went wrong ", req.user)
-        return done(null, null)
-      }
-      if(utils._.isInvalidOrBlank(authData.accessToken) || utils._.isInvalidOrEmpty(authData.profile)){
-        utils.l.e("handleAddConsolePCWithBattleNetLogin access token or profile null")
-
-        var err = utils.errors.formErrorObject(utils.errors.errorTypes.addConsole, utils.errors.errorTypes.accessTokenProfileNotReceivedFromBattleNet, null)
-        return callback(err)
-
-      }
-      if(utils._.isInvalidOrBlank(authData.profile.battletag)){
-        utils.l.e("handleAddConsolePCWithBattleNetLogin battle tag is null.")
-        var err = utils.errors.formErrorObject(utils.errors.errorTypes.addConsole, utils.errors.errorTypes.battleTagEmptyReceivedFromBattleNet, null)
-        return callback(err)
-      }
-      //TODO: check if the battle tag is already taken, if taken update the account
-      updateUserWithBattleNetInfo(req.user, authData.accessToken, authData.refreshToken, authData.profile.battletag, callback)
-    }
-  ], function(err, user){
-    if(err){
-      utils.l.e("handleAddConsolePCWithBattleNetLogin err ", err)
-      return done(null, null)
-    } else {
-      utils.l.d("handleAddConsolePCWithBattleNetLogin: user updated" , user)
-      return done(null, {value: user})
-    }
-  })
-
-}
 
 function handleBattleNetUserLogin(req, authData, done){
   var u = null
@@ -97,46 +59,6 @@ function handleBattleNetUserLogin(req, authData, done){
   })
 }
 
-function updateUserWithBattleNetInfo(user, accessToken, refreshToken, battletag, callback){
-  utils.async.waterfall([
-    function(callback){
-      utils.l.d("updateUserWithBattleNetInfo")
-      var userConsoleData = {}
-      userConsoleData.verifyStatus = utils.constants.accountVerifyStatusMap.verified
-      userConsoleData.consoleId = battletag
-      userConsoleData.consoleType = utils.constants.consoleTypes.pc
-      userConsoleData.isPrimary = true
-      //set other consoles to isPrimary=false
-      utils._.forEach(user.consoles, function (console) {
-        console.isPrimary = false
-      })
-      user.consoles.push(userConsoleData)
-      user.battleNetAccessToken = accessToken
-      user.battleNetRefreshToken = refreshToken
-      user.battleTag = battletag
-      models.user.addUserToGroupsBasedOnConsole(user._id, userConsoleData.consoleType, callback)
-    }, function(userGroups, callback){
-      utils.l.d("updateUserWithBattleNetInfo user groups", userGroups)
-
-      models.groups.getDefaultGroupForConsole(utils.constants.consoleTypes.pc, callback)
-    }, function(defaultGroup, callback){
-      utils.l.d("default group", defaultGroup)
-      user.clanId = defaultGroup._id,
-        user.clanName = defaultGroup.groupName
-      //TODO: is clan tag needed??
-      service.userService.updateUser(user, function (err, updatedUser) {
-        if(err) {
-          utils.l.s("Unable to update the user", err)
-          return callback({error: "Something went wrong. Please try again"}, null)
-        } else {
-          utils.l.d("updateUserWithBattleNetInfo user", updatedUser)
-
-          return callback(null, updatedUser)
-        }
-      })
-    }
-  ], callback)
-}
 function createNewUserWithBattleNet(accessToken, refreshToken, battletag, callback){
   //TODO: check if user's name, profile img need to be pulled from battle net??
   //TODO: check which other fields needs to be added - group, console type-id?
@@ -236,7 +158,6 @@ module.exports = function (passport, config) {
     handleUserSingUp(req, email, password, done)
   })
 
-  //TODO: remove this after login is changed by front end
   var bnet = new BnetStrategy({
     clientID: battleNetAuth.clientID,
     clientSecret: battleNetAuth.clientSecret,
@@ -253,25 +174,7 @@ module.exports = function (passport, config) {
     handleBattleNetUserLogin(req, authData, done)
   })
 
-  var battlenet = new BnetStrategy({
-    clientID: battleNetAuth.clientID,
-    clientSecret: battleNetAuth.clientSecret,
-    callbackURL: battleNetAuth.callbackUrl,
-    region: "us",
-    passReqToCallback : true
-  }, function(req, accessToken, refreshToken, profile, done){
-    console.log("passport callback")
-    var authData = {
-      accessToken : accessToken,
-      refreshToken: refreshToken,
-      profile: profile
-    }
-    handleAddConsolePCWithBattleNetLogin(req, authData, done)
-  })
-
   passport.use('local_signIn', local_signIn)
   passport.use('local_signUp', local_signUp)
   passport.use("battleNet", bnet)
-  passport.use("battlenet", battlenet)
-
 }
