@@ -22,7 +22,7 @@ var UserSchema = new Schema({
   battleNetRefreshToken : String,
   battleNetAccessTokenFetchDate : Date,
   name: String,
-  profileUrl: {type: String, default: "https://s3-us-west-1.amazonaws.com/w3.crossroadsapp.co/overwatch/default_profile.png"},
+  profileUrl: String,
   email: {type: String, unique: true}, //add required constraint after login refactor
   date: {type: Date, required: true},
   password: {type: String},
@@ -42,7 +42,7 @@ var UserSchema = new Schema({
   clanId: {type: String, default: "clan_id_not_set"},
   clanName: String,
   clanImageUrl: String,
-  imageUrl: String,
+  imageUrl: {type: String, default: "https://s3-us-west-1.amazonaws.com/w3.crossroadsapp.co/overwatch/default_profile.png" },
   uDate: Date,
   signupDate: Date,
   flags: Mixed,
