@@ -68,6 +68,16 @@ var errorCodes = {
     code: 11,
     types: [errorTypes.addConsole],
     description: "Battletag/Gamertag is already taken"
+  },
+  battleTagEmptyReceivedFromBattleNet: {
+    code: 12,
+    types: [errorTypes.addConsole],
+    description: "Battletag is not available in battle.net"
+  },
+  accessTokenProfileNotReceivedFromBattleNet: {
+    code: 13,
+    types: [errorTypes.addConsole],
+    description: "Access Token Or Profile is empty. Try logging in again"
   }
 }
 
