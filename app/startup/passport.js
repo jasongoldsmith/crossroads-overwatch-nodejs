@@ -44,7 +44,7 @@ function handleAddConsolePCWithBattleNetLogin(req, authData, done){
       return done(null, null)
     } else {
       utils.l.d("handleAddConsolePCWithBattleNetLogin: user updated" , user)
-      return done(null, {value: user})
+      return done(null, user)
     }
   })
 
