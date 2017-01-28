@@ -125,7 +125,13 @@ function getUserMetrics(req, res) {
 }
 
 function addConsole(req, res) {
-  var newConsoleType = req.body.consoleType ? req.body.consoleType.toString().toUpperCase() : null
+  var newConsoleType = null
+  console.log("console types" , req.param("consoleType"))
+  if(utils._.isInvalidOrBlank(req.param("consoleType"))) {
+    newConsoleType = req.body.consoleType ? req.body.consoleType.toString().toUpperCase() : null
+  } else {
+    newConsoleType = req.param("consoleType").toString().toUpperCase()
+  }
   var newConsoleId = req.body.consoleId
 
   if(!newConsoleType) {
@@ -263,7 +269,7 @@ routeUtils.rPost(router, '/updateGroup', 'updateGroup', updateGroup)
 routeUtils.rPost(router, '/acceptLegal', 'acceptLegal', acceptLegal)
 routeUtils.rPost(router, '/updatePassword', 'updatePassword', updatePassword)
 routeUtils.rPost(router, '/updateReviewPromptCardStatus', 'updateReviewPromptCardStatus', updateReviewPromptCardStatus)
-routeUtils.rPost(router, '/addConsole', 'addUserConsole', addConsole)
+routeUtils.rGetPost(router, '/addConsole', 'addUserConsole', addConsole, addConsole)
 routeUtils.rPost(router, '/changePrimaryConsole', 'changePrimaryConsole', changePrimaryConsole)
 routeUtils.rGet(router, '/getMetrics', 'getUserMetrics', getUserMetrics)
 routeUtils.rGet(router, '/getPendingEventInvites', 'getPendingEventInvites', getPendingEventInvites)
