@@ -10,10 +10,10 @@ var fs = require('fs')
 
 PushNotification.init({
   apn: {
-    cert: (process.env.NODE_ENV == 'production' ? fs.readFileSync('./keys/prod/cert.pem'): fs.readFileSync('./keys/cert.pem')),
-    key:  (process.env.NODE_ENV == 'production' ? fs.readFileSync('./keys/prod/key.pem'): fs.readFileSync('./keys/key.pem')),
-    production: (process.env.NODE_ENV === 'production'),
-    gateway: (process.env.NODE_ENV == 'production' ? "gateway.push.apple.com": "gateway.sandbox.push.apple.com")
+    cert: ((process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging') ? fs.readFileSync('./keys/prod/cert.pem'): fs.readFileSync('./keys/cert.pem')),
+    key:  ((process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging') ? fs.readFileSync('./keys/prod/key.pem'): fs.readFileSync('./keys/key.pem')),
+    production: (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging'),
+    gateway: ((process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging') ? "gateway.push.apple.com": "gateway.sandbox.push.apple.com")
 
     //cert: path.resolve('./keys/prod/cert.pem'),
     //key:  path.resolve('./keys/prod/key.pem'),
