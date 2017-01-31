@@ -5,7 +5,8 @@ var errorTypes = {
   all: "All",
   signUp: "Sign Up Error",
   signIn: "Sign In Error",
-  addConsole : "Add Console"
+  addConsole : "Add Console",
+  updatePassword: "Update Password"
 }
 
 var errorCodes = {
@@ -78,6 +79,16 @@ var errorCodes = {
     code: 13,
     types: [errorTypes.addConsole],
     description: "Access Token Or Profile is empty. Try logging in again"
+  },
+  oldPasswordDoesNotMatchTheCurrentPassword: {
+    code: 14,
+    types: [errorTypes.updatePassword],
+    description: "Old password does not match the current password"
+  },
+  newPasswordIsSameAsOldPassword: {
+    code: 15,
+    types: [errorTypes.updatePassword],
+    description: "New password has to be different from the old password"
   }
 }
 

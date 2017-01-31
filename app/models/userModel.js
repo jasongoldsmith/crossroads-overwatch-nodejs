@@ -475,6 +475,29 @@ function isConsoleIdAvailable(userId, consoleType, consoleId, callback){
   })
 }
 
+function findById(id, callback){
+  User.findById(id, callback)
+}
+
+function updateUserPassword(userId, newPassword, callback) {
+  utils.async.waterfall([
+      function(callback){
+        findById(userId, callback)
+      },
+      function(user, callback) {
+        if (!user) {
+          utils.l.d("updateUserPassword: no user found")
+          return callback(utils.errors.formErrorObject(utils.errors.errorTypes.updatePassword, utils.errors.errorCodes.internalServerError))
+        } else {
+            utils.l.d("found user: " + utils.l.userLog(user))
+            user.password = passwordHash.generate(newPassword)
+            user.save(callback)
+        }
+      }
+    ],
+    callback)
+}
+
 module.exports = {
   model: User,
   getUserById: getUserById,
@@ -505,5 +528,7 @@ module.exports = {
   findUserByEmail: findUserByEmail,
   createUserWithEmailAndPassword: createUserWithEmailAndPassword,
   addUserToGroupsBasedOnConsole: addUserToGroupsBasedOnConsole,
-  isConsoleIdAvailable: isConsoleIdAvailable
+  isConsoleIdAvailable: isConsoleIdAvailable,
+  findById: findById,
+  updateUserPassword: updateUserPassword
 }

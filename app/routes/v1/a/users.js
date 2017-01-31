@@ -69,23 +69,24 @@ function updateGroup(req, res) {
 function updatePassword(req, res) {
   utils.l.i("Update user password request" + JSON.stringify(req.body))
 
-  if(!req.body.id || !req.body.oldPassWord || !req.body.newPassWord) {
+  if(!req.body.oldPassword || !req.body.newPassword) {
     var err = {
       error: "id, old password and new password are required fields"
     }
     routeUtils.handleAPIError(req, res, err, err)
   } else {
 
-    try {
-      req.assert('newPassWord').notEmpty().isAlphaNumeric()
-    } catch(ex) {
-      var err = {
-        error: "password must be between 1 and 9 characters and must be alphanumeric"
-      }
-      return routeUtils.handleAPIError(req, res, err, err)
-    }
+    //TODO: check what password rules are needed??
+    //try {
+    //  req.assert('newPassWord').notEmpty().isAlphaNumeric()
+    //} catch(ex) {
+    //  var err = {
+    //    error: "password must be between 1 and 9 characters and must be alphanumeric"
+    //  }
+    //  return routeUtils.handleAPIError(req, res, err, err)
+    //}
 
-    updateUserPassword(req.body, function (err, user) {
+    updateUserPassword(req.user, req.body.oldPassword, req.body.newPassword, function (err, user) {
       if (err) {
         routeUtils.handleAPIError(req, res, err, err)
       } else {
@@ -186,11 +187,12 @@ function changePrimaryConsole(req, res) {
   }
 }
 
-function getUserById(data, callback) {
+function getUserById(userId, callback) {
   utils.async.waterfall([
     function(callback){
-      models.user.getUserById(data, callback)
+      models.user.findById(userId, callback)
     },function(user, callback){
+      //TODO: check if this is needed
       service.authService.addLegalAttributes(user,callback)
     }
   ],callback)
@@ -204,23 +206,18 @@ function updateUser(data, callback) {
   models.user.updateUser(data, false, callback)
 }
 
-function updateUserPassword(data, callback) {
+function updateUserPassword(user, oldPassword, newPassword, callback) {
   utils.async.waterfall([
     function(callback) {
-      getUserById(data, callback)
-    },
-    function(user, callback) {
-
-      if (!passwordHash.verify(data.oldPassWord, user.passWord)) {
-        return callback({error: "old password entered does not match the password in our records"}, null)
+      //TODO: check if this is needed
+      //service.authService.addLegalAttributes(user,callback)
+      if (!passwordHash.verify(oldPassword, user.password)) {
+        return callback(utils.errors.formErrorObject(utils.errors.errorTypes.updatePassword, utils.errors.errorCodes.oldPasswordDoesNotMatchTheCurrentPassword))
       }
-
-      if (data.oldPassWord == data.newPassWord) {
-        return callback({error: "new password has to be different from the old password"}, null)
+      if (oldPassword == newPassword) {
+        return callback(utils.errors.formErrorObject(utils.errors.errorTypes.updatePassword, utils.errors.errorCodes.newPasswordIsSameAsOldPassword), null)
       }
-
-      data.passWord = data.newPassWord
-      updateUser(data, callback)
+      models.user.updateUserPassword(user._id, newPassword, callback)
     }
   ], callback)
 }
