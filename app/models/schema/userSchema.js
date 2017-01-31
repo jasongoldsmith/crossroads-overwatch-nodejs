@@ -42,7 +42,7 @@ var UserSchema = new Schema({
   clanId: {type: String, default: "clan_id_not_set"},
   clanName: String,
   clanImageUrl: String,
-  imageUrl: {type: String, default: "https://s3-us-west-1.amazonaws.com/w3.crossroadsapp.co/overwatch/default_profile.png" },
+  imageUrl: String,
   uDate: Date,
   signupDate: Date,
   flags: Mixed,
