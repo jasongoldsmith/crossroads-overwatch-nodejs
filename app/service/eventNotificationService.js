@@ -130,12 +130,14 @@ function getRecipients(recipientType, event, clanId, consoleType, callback) {
 			return callback(null, recipients)
 			break
 		case "clanNotEventMembers":
+			utils.l.d("getRecipients: clanNotEventMembers")
+
 			getClanMembers(event, clanId, consoleType, function(err, users) {
 				if(err) {
 					return callback(err, null)
 				}
 				recipients = removeEventPlayersFromClan(users, event.players)
-				//utils.l.i("recipients with callback", recipients)
+				utils.l.d("recipients with callback", recipients)
 				return callback(null, recipients)
 			})
 			break
