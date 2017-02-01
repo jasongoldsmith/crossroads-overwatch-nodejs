@@ -112,7 +112,7 @@ function getByUserLean(userId, callback) {
 function getUsersByGroup(groupId,muteNotification, consoleType,callback){
   var query = {
     group: groupId,
-    consoles: consoleType
+    consoleTypes: consoleType
   }
   if(utils._.isValidNonBlank(muteNotification))
     query.muteNotification = muteNotification
@@ -129,7 +129,7 @@ function getUsersByGroup(groupId,muteNotification, consoleType,callback){
 }
 
 function getGroupCountByConsole(groupId,consoleType,callback){
-  UserGroup.count({group:groupId,consoles:consoleType}).exec(callback)
+  UserGroup.count({group:groupId, consoleTypes:consoleType}).exec(callback)
 }
 
 function getUserCountByGroup(groupId,callback){
