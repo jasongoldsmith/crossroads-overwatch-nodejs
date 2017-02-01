@@ -54,6 +54,15 @@ function deleteOldFullEvents() {
   })
 }
 
+function archieEvent(event){
+  models.archiveEvent.createArchiveEvent(event, function(err, data){
+    if(err){
+      utils.l.e("deleteOldFullEventsHandler: archieEvent err", err)
+    } else {
+      utils.l.d("deleteOldFullEventsHandler: archieEvent data", data)
+    }
+  })
+}
 
 function deleteOldFullEventsHandler() {
   utils.async.waterfall([
@@ -76,7 +85,7 @@ function deleteOldFullEventsHandler() {
     function (events, callback) {
       utils._.forEach(events, function(event) {
         utils.l.d("job archiving event: ", event)
-        models.archiveEvent.createArchiveEvent(event, callback)
+        archieEvent(event)
         utils.l.d("job removing event: ", event)
         event.remove(function (err, deletedEvent) {
           if(err) {

@@ -20,7 +20,7 @@ var UserGroupSchema = new Schema({
     topicSubscriptionEndpoint:String,
     topicName:String
   }],
-  muteNotification:Boolean
+  muteNotification: {type: Boolean, default: false}
 })
 
 UserGroupSchema.index({'user':1})
