@@ -627,7 +627,16 @@ function handleMuteGroupNotifications(user, data, callback) {
       else
         subscribeUserGroupNotification(userGroup,user,data.groupId,muteNotification,callback)
     }
-  ],callback)
+  ],function (err, userGroup) {
+    if(err) {
+      return callback(err, userGroup)
+    } else {
+      return callback(null, {
+        groupId: userGroup.group,
+        muteNotification: userGroup.muteNotification
+      })
+    }
+  })
 }
 
 function unSubscribeUserGroupNotification(userGroup,user,groupId, muteNotification, callback){

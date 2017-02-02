@@ -16,7 +16,14 @@ function updateUserGroup(userId,groupId, data, callback) {
     query.user=userId
   if(utils._.isValidNonBlank(groupId))
     query.group=groupId
-  UserGroup.update(query,{"$set":data},{multi:true},callback)
+  UserGroup.findOneAndUpdate(query, {"$set": data}, {new: true, multi: true}, function (err, userGroup) {
+    if(err) {
+      utils.l.s("There was an error in updating user group", err)
+      return callback({error: "Something wnet wrong. Please try again later"}, null)
+    } else {
+      return callback(err, userGroup)
+    }
+  })
 }
 
 function getByGroup(groupId,callback){
