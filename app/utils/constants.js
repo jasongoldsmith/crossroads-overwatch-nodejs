@@ -3,7 +3,8 @@ var config =  require('config')
 var baseUrl = "https://s3-us-west-1.amazonaws.com/w3.crossroadsapp.co/overwatch/"
 var emailValidator = require("email-validator");
 
-var baseUrl = "http://www.bungie.net/common/destiny_content/icons/"
+var baseUrl = "https://s3-us-west-1.amazonaws.com/w3.crossroadsapp.co/overwatch/"
+
 var imageFiles = [
   "profile1.png",
   "profile2.png",
