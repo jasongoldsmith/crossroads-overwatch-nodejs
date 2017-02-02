@@ -68,7 +68,9 @@ var errorCodes = {
   tagAlreadyTaken: {
     code: 11,
     types: [errorTypes.addConsole],
-    title: "Battletag/Gamertag is already taken"
+    title: "ALREADY TAKEN",
+    message: "An account already exists for that Gamertag. Please check for any typos. " + "\n" + "If the issue persists," +
+    " use the contact form below and we'll get back to you!"
   },
   battleTagEmptyReceivedFromBattleNet: {
     code: 12,
