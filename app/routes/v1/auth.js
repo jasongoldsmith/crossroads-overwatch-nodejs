@@ -949,8 +949,11 @@ function signIn(req, res){
         });
         passportHandler(req, res);
       }, function (user, callback){
-         u = user
-         req.logIn(user, callback)
+      user.isLoggedIn = true
+      u = user
+      service.userService.updateUser(user, callback)
+    }, function(user, callback){
+      req.logIn(u, callback)
     }
     ],
     function(err) {
