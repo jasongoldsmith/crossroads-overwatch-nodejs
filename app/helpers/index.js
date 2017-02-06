@@ -14,5 +14,6 @@ module.exports = {
   pushNotification: require("./push-notification"),
   uuid: require("./uuidHelper"),
   sns:require('./SNS'),
-  freshdesk:require('./freshdesk')
+  freshdesk:require('./freshdesk'),
+  ses: require('./SES')
 };

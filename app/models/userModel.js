@@ -69,7 +69,6 @@ function getByIds(ids, callback) {
   getByQuery({ '_id': { '$in': ids }}, callback)
 }
 
-
 //function save(user, callback) {
 //  utils.async.waterfall([
 //    function(callback) {
@@ -167,8 +166,15 @@ function createUserFromData(data, callback) {
 
 function getUserByData(data, callback) {
   utils.l.d('getUserByData::data',data)
-  User.find(data)
-    .exec(utils.firstInArrayCallback(callback))
+  User.findOne(data)
+    .exec(function(err, user) {
+      if(err) {
+        utils.l.s("Error in getUserByData", err)
+        return callback({error: "Something went wrong. Please try again later"}, null)
+      } else {
+        return callback(err, user)
+      }
+    })
 }
 
 function getUserByConsole(consoleId, consoleType, bungieMemberShipId, callback) {

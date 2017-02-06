@@ -9,9 +9,10 @@ module.exports = {
     momentsBucket: "feighty-moments",
   },
   awsProfileImageUrl: "http://feighty-images.s3.amazonaws.com/",
-  enableBungieIntegration:process.env.enableBungieIntegration|| false,
+  enableBungieIntegration: process.env.enableBungieIntegration || false,
   logLevel: 'info',
   enableNewRelic:false,
   disableEnvetUpdateForComments: process.env.DISABLE_EVENT_UPDATE_COMMENTS || false,
-  minUsersForGroupNotification:100
+  minUsersForGroupNotification: 0,
+  enableSESIntegration: process.env.enableSESIntegration || false
 };

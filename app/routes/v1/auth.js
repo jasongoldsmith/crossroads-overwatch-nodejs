@@ -594,53 +594,24 @@ function getSignupMessage(user){
 }
 
 function requestResetPassword(req,res){
-/*  var useGamerTag = false
-  var userName = req.body.userName
-  var consoleType = req.body.consoleType ? req.body.consoleType.toString().toUpperCase() : null
-  var consoleId = req.body.consoleId ? req.body.consoleId.toString().trim() : null
-  utils.async.waterfall([
-      function (callback) {
-        utils.l.d("requestResetPassword::userName="+userName+",consoleType="+consoleType+",consoleId="+consoleId)
-        if(utils._.isValidNonBlank(consoleType)) {
-          useGamerTag = true
-/!*          models.user.getUserByData({
-            consoles: {
-              $elemMatch: {
-                consoleType: consoleType,
-                consoleId:{$regex : new RegExp(["^", consoleId, "$"].join("")), $options:"i"}
-              }
-            }
-          }, callback)*!/
-          models.user.getUserByConsole(consoleId,consoleType,null,callback)
-        }
-        else
-          models.user.getUserByData({userName: userName.toLowerCase().trim()}, callback)
-      },
-      function(user,callback){
-        if(user) {
-          service.authService.requestResetPassword(user, callback)
-        }else {
-         if(useGamerTag) callback({error: "Please provide a valid "+ utils._.get(utils.constants.consoleGenericsId, consoleType)})
-          else callback({error: "Please provide a valid Crossroads Username."})
-        }
-      }
-    ],
-    function (err, updatedUser) {
-      if (err) {
-        return routeUtils.handleAPIError(req, res, err,err)
-      }else  if(updatedUser && utils._.isEmpty(updatedUser.passwordResetToken)){
-        var error =  {error:"Unable to process password reset request. Please try again later."}
-        return routeUtils.handleAPIError(req, res,error,error)
-      }else{
-        return routeUtils.handleAPISuccess(req, res, updatedUser)
-      }
-    }
-  )*/
+  var body = req.body
+  utils.l.d("Reset password request", body)
 
-  var errorResponse = {
-    error: "Our login system has changed. Please update to the latest version in the App Store to continue using Crossroads."
+  if(!body.email){
+    utils.l.s("Bad reset password request")
+    //TODO: add right err
+    var err = {}
+    routeUtils.handleAPIError(req, res, err, err)
+    return
   }
-  routeUtils.handleAPIError(req, res, errorResponse, errorResponse)
+
+  service.authService.requestResetPassword(body.userName, function (err, response) {
+    if(err) {
+      routeUtils.handleAPIError(req, res, err, err)
+    } else {
+      routeUtils.handleAPISuccess(req, res, {success: true})
+    }
+  })
 }
 
 /*function resetPasswordLaunch(req,res){
@@ -697,11 +668,6 @@ function resetPassword(req,res){
   )
 }*/
 
-function home(req,res){
-  //res.render('home/index')
-  res.writeHead(302, {'Location': 'http://w3.crossroadsapp.co/'})
-  res.end()
-}
 
 function checkBungieAccount(req, res) {
 /*
@@ -755,7 +721,7 @@ routeUtils.rGet(router, '/verify/:token', 'AccountVerification', verifyAccount)
 //routeUtils.rGet(router, '/resetPassword/:token', 'resetPasswordLaunch', resetPasswordLaunch, resetPasswordLaunch)
 routeUtils.rPost(router, '/request/resetPassword', 'requestResetPassword', requestResetPassword, requestResetPassword)
 //routeUtils.rPost(router, '/resetPassword/:token', 'resetPassword', resetPassword, resetPassword)
-routeUtils.rGet(router,'/','homePage',home,home)
+//routeUtils.rGet(router,'/','homePage',home,home)
 routeUtils.rPost(router, '/checkBungieAccount', 'checkBungieAccount', checkBungieAccount)
 routeUtils.rPost(router, '/validateUserLogin', 'validateUserLogin', validateUserLogin)
 
@@ -1032,19 +998,67 @@ function signIn(req, res){
   );
 }
 
-function resetPassword(req, res){
-  return routeUtils.handleAPISuccess(req, res, {value: {}});
-
+function resetPasswordLaunch(req, res) {
+  var token = req.param("token")
+  models.user.getUserByData({passwordResetToken:token},function(err, user){
+    if(user) {
+      res.render("account/resetPassword", {
+        token: token,
+        consoleId: utils.primaryConsole(user).consoleId,
+        userName: user.userName,
+        appName: utils.config.appName
+      })
+    } else {
+      res.render("account/error")
+    }
+  })
 }
 
+
+function resetPassword(req, res) {
+  var userName = req.body.userName
+  var token = req.param("token")
+  try {
+    req.assert('passWord').notEmpty().isAlphaNumeric()
+  } catch(ex) {
+    res.render("password must be between 1 and 9 characters and must be alphanumeric")
+  }
+
+  var newPassword = passwordHash.generate(req.body.passWord)
+  utils.l.d("resetPassword::userName" + userName + ", token::" + token)
+  utils.async.waterfall([
+      function getUser(callback) {
+        models.user.getUserByData({passwordResetToken: token},callback)
+      },
+      function resetPassword(user, callback) {
+        if(utils._.isValidNonBlank(user)) {
+          user.passWord = newPassword
+          models.user.save(user, callback)
+        } else {
+          return callback({error:"Invalid username. Please provide a valid username"})
+        }
+      }
+    ],
+    function (err, updatedUser) {
+      if (err) {
+        req.routeErr = err
+        utils.l.d("Error in reset password", err)
+        return res.render("Unable to reset password at this time. Please try again later..")
+      }
+      return res.render("account/resetPasswordConfirm",{appName: utils.config.appName})
+    }
+  )
+}
+
+/** Routes */
+
+//routeUtils.rGet(router,'/battlenet/callback','BattleNetCallback', handleBattlenetCallback, handleBattlenetCallback)
 routeUtils.rGetPost(router,'/login','Login', login, login)
 routeUtils.rPost(router,'/signIn','SignIn', signIn, signIn)
 routeUtils.rPost(router,'/signUp','SignUp', signUp, signUp)
-routeUtils.rPost(router,'/resetPassword','ResetPassword', resetPassword, resetPassword)
-
-
-
-//routeUtils.rGet(router,'/battlenet/callback','BattleNetCallback', handleBattlenetCallback, handleBattlenetCallback)
+routeUtils.rPost(router, '/request/resetPassword', 'requestResetPassword', requestResetPassword, requestResetPassword)
+routeUtils.rGet(router, '/resetPasswordLaunch/:token', 'resetPasswordLaunch', resetPasswordLaunch, resetPasswordLaunch)
+routeUtils.rPost(router, '/resetPassword/:token', 'resetPassword', resetPassword, resetPassword)
 
 module.exports = router
 
