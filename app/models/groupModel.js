@@ -9,7 +9,7 @@ var GroupSchema = require('./schema/groupSchema')
 var Group = mongoose.model('Group', GroupSchema.schema)
 
 // Public functions
-function updateGroupStats(groupId,consoleType,memberCount, callback) {
+function updateGroupStats(groupId, consoleType, memberCount, callback) {
   Group.update({_id:groupId,"appStats.consoleType":consoleType},{"$set":{"appStats.$.memberCount":memberCount}},{multi:true},callback)
 }
 

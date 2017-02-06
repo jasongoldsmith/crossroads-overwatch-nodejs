@@ -735,6 +735,9 @@ function updateGroupStats(group, callback){
           },
           xboxStats: function (callback) {
             models.userGroup.getGroupCountByConsole(group._id,"XBOXONE", callback)
+          },
+          pcStats: function (callback) {
+            models.userGroup.getGroupCountByConsole(group._id,"PC", callback)
           }
         },
         function (err, results) {
@@ -750,7 +753,9 @@ function updateGroupStats(group, callback){
       if(utils._.isValidNonBlank(results)) {
         var ps4Stats = results.ps4Stats
         var xboxStats = results.xboxStats
-        subscribeGroups(ps4Stats,xboxStats,group,callback)
+        var pcStats = results.pcStats
+
+        subscribeGroups(ps4Stats, xboxStats, pcStats, group,callback)
       }else{
         callback(null,null)
       }
@@ -758,7 +763,7 @@ function updateGroupStats(group, callback){
   ],callback)
 }
 
-function subscribeGroups(ps4Stats,xboxStats,group, callback){
+function subscribeGroups(ps4Stats, xboxStats, pcStats, group, callback){
   var needUserGroupSubscription = false;
   utils.async.waterfall([
     function(callback){
@@ -775,8 +780,16 @@ function subscribeGroups(ps4Stats,xboxStats,group, callback){
         helpers.sns.subscribeGroup(group, "XBOXONE", callback)
       }else
         callback(null,null)
-    },function(result,callback){
-      if((ps4Stats >= utils.config.minUsersForGroupNotification || xboxStats >= utils.config.minUsersForGroupNotification) && needUserGroupSubscription) {
+    }, function(result, callback){
+      var serviceEndPoint = utils._.find(group.serviceEndpoints,{consoleType:"PC",serviceType:utils.constants.serviceTypes.PUSHNOTIFICATION})
+      if(pcStats >= utils.config.minUsersForGroupNotification && (utils._.isInvalidOrBlank(serviceEndPoint) || utils._.isInvalidOrBlank(serviceEndPoint.topicEndpoint))) {
+        needUserGroupSubscription=true
+        helpers.sns.subscribeGroup(group, "PC", callback)
+      }else
+        callback(null,null)
+    },
+    function(result,callback){
+      if((ps4Stats >= utils.config.minUsersForGroupNotification || xboxStats >= utils.config.minUsersForGroupNotification || pcStats >= utils.config.minUsersForGroupNotification) && needUserGroupSubscription) {
         subscribeUsersForGroup(group, callback)
       }else
         callback(null,null)
@@ -787,6 +800,9 @@ function subscribeGroups(ps4Stats,xboxStats,group, callback){
           },
           xboxStatsUpdate: function (parallelCallback) {
             models.groups.updateGroupStats(group._id, "XBOXONE", xboxStats, parallelCallback)
+          },
+          pcStatsUpdate: function (parallelCallback) {
+            models.groups.updateGroupStats(group._id, "PC", pcStats, parallelCallback)
           }
         },
         function (err, results) {
