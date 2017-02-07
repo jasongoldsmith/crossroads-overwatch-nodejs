@@ -966,9 +966,16 @@ function signIn(req, res){
   );
 }
 
+function resetPassword(req, res){
+  return routeUtils.handleAPISuccess(req, res, {value: {}});
+
+}
+
 routeUtils.rGetPost(router,'/login','Login', login, login)
 routeUtils.rPost(router,'/signIn','SignIn', signIn, signIn)
 routeUtils.rPost(router,'/signUp','SignUp', signUp, signUp)
+routeUtils.rPost(router,'/resetPassword','ResetPassword', resetPassword, resetPassword)
+
 
 
 //routeUtils.rGet(router,'/battlenet/callback','BattleNetCallback', handleBattlenetCallback, handleBattlenetCallback)
