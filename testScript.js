@@ -7,6 +7,7 @@ var utils = require('./app/utils')
 var helpers = require('./app/helpers')
 var models = require('./app/models')
 var schedule = require('node-schedule');
+var passwordHash = require('password-hash')
 
 var hashPassword = "hashPassword"
 var deleteOldFullEvents = "deleteOldFullEvents"
@@ -373,6 +374,11 @@ switch(command) {
       }
     ],function(err,userGroupList){
       utils.l.d("got userGroups",userGroupList)
+    })
+    break;
+  case hashPassword:
+    models.user.createUserWithEmailAndPassword("h@h.com","password",function(err,data){
+      utils.l.d("data",data)
     })
     break;
   default:

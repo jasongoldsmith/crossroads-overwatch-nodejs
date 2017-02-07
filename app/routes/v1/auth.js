@@ -382,11 +382,13 @@ function boLogin (req, res) {
   //req.assert('passWord', "Name must be between 1 and 50 alphanumeric, alpha if one character, no special characters/space").notEmpty().isAlphaNumeric()
   utils.l.d("In boLogin")
   var outerUser = null
+  req.body.email=req.body.userName
+  req.body.password=req.body.passWord
   utils.async.waterfall(
     [
       helpers.req.handleVErrorWrapper(req),
       function(callback) {
-        var passportHandler = passport.authenticate('local', function(err, user, info) {
+        var passportHandler = passport.authenticate('local_signIn', function(err, user, info) {
           if (err) {
             return callback(err)
           }

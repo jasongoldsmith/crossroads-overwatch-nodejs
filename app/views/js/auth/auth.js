@@ -36,7 +36,7 @@ angular.module('auth', []).factory(
 					}
 					$http.post('/api/v1/auth/bo/login', credData).success(function(data) {
 						console.log('login success = '+data.authId);
-						if (data.value.userName) {
+						if (data.value.email) {
 							auth.authenticated = true;
 						} else {
 							auth.authenticated = false;
