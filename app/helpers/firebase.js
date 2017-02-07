@@ -2,10 +2,28 @@ var utils = require('../utils')
 var Firebase = require("firebase")
 var path = require('path')
 
+function getServiceAccountCreds(){
+  var env = process.env.NODE_ENV
+  var acc = ""
+  switch (env) {
+    case 'production': {
+      acc = path.resolve('./firebase_credentials/prod/serviceAccountCredentials.json')
+      break;
+    }
+    case 'staging': {
+      acc = path.resolve('./firebase_credentials/staging/serviceAccountCredentials.json')
+      break;
+    }
+    default:{
+      acc = path.resolve('./firebase_credentials/dev/serviceAccountCredentials.json')
+      break;
+    }
+  }
+  return acc
+}
+
 Firebase.initializeApp({
-      serviceAccount: (process.env.NODE_ENV == 'production' || process.env.NODE_ENV == 'staging' ?
-        path.resolve('./firebase_credentials/prod/serviceAccountCredentials.json')
-        : path.resolve('./firebase_credentials/dev/serviceAccountCredentials.json')),
+      serviceAccount: getServiceAccountCreds(),
       databaseURL: utils.config.firebaseURL
 })
 
