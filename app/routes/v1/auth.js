@@ -926,7 +926,8 @@ function signUp(req, res){
         termsVersion:termsVersionObj.value.toString(),
           privacyVersion:privacyObj.value.toString()
         }
-        return callback(null, user)
+        user.isLoggedIn = true
+        service.userService.updateUser(user, callback)
       })
     }, function(user, callback){
       u = user
