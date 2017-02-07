@@ -174,8 +174,8 @@ function addConsole(req, res) {
 
 function changePrimaryConsole(req, res) {
   if(!req.body.consoleType) {
-    var err = {error: "console type is needed"}
-    routeUtils.handleAPIError(req, res, err, err)
+    var error = utils.errors.formErrorObject(utils.errors.errorTypes.changePrimaryConsole, utils.errors.errorCodes.consoleTypeNotProvided)
+    routeUtils.handleAPIError(req, res, error, error)
   } else {
     service.userService.changePrimaryConsole(req.user, req.body.consoleType.toString().toUpperCase(), function (err, user) {
       if (err) {

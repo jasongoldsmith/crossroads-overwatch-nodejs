@@ -6,7 +6,8 @@ var errorTypes = {
   signUp: "Sign Up Error",
   signIn: "Sign In Error",
   addConsole : "Add Console",
-  updatePassword: "Update Password"
+  updatePassword: "Update Password",
+  changePrimaryConsole: "Change Primary Console"
 }
 
 var errorCodes = {
@@ -48,7 +49,7 @@ var errorCodes = {
   },
   consoleTypeNotProvided: {
     code: 6,
-    types: [errorTypes.addConsole],
+    types: [errorTypes.addConsole, errorTypes.changePrimaryConsole],
     title: "Console Type not provided",
     message: "Please select a platform."
   },
@@ -106,6 +107,12 @@ var errorCodes = {
     types: [errorTypes.updatePassword],
     title: "New password has to be different from the old password",
     message: "Your new password must be different than your old password."
+  },
+  consoleDoesNotExistForUser: {
+    code: 16,
+    types: [errorTypes.changePrimaryConsole],
+    title: "Console not found.",
+    message: "Console not found for user"
   }
 }
 

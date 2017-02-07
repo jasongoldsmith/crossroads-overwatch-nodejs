@@ -342,8 +342,8 @@ function updateConsole(user, oldConsole, newConsoleType,newConsoleId,callback){
 function changePrimaryConsole(user, consoleType, callback) {
   var consoleObject = utils.getUserConsoleObject(user, consoleType)
   if(utils._.isInvalidOrBlank(consoleObject)) {
-    var errMsg = "#CONSOLE_TYPE# not found for user"
-    return callback ({error: errMsg.replace("#CONSOLE_TYPE#", consoleType)}, null)
+    var err = utils.errors.formErrorObject(utils.errors.errorTypes.changePrimaryConsole, utils.errors.errorCodes.consoleDoesNotExistForUser)
+    return callback (err, null)
   }
 
   var oldPrimaryConsoles = utils._.filter(user.consoles, ['isPrimary', true])
