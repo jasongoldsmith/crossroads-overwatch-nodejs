@@ -2,7 +2,6 @@
 module.exports = {
   hostName: 'https://overwatch.herokuapp.com',
   tinyUrlHost:'http://crsrd.co/',
-  enableNewRelic: true,
   portNum: -1,
   s3: {
     imageBucket: "feighty-images",
