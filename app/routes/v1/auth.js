@@ -915,6 +915,20 @@ function signUp(req, res){
         });
         passportHandler(req, res);
       }, function (user, callback){
+      models.sysConfig.getSysConfigList([utils.constants.sysConfigKeys.termsVersion,utils.constants.sysConfigKeys.privacyPolicyVersion],function(err, sysConfigs){
+        if(err) {
+          utils.l.e("Error in retriving the sys config terms version and privacy policy version")
+          return callback(utils.errors.formErrorObject(utils.errors.errorTypes.signUp, utils.errors.errorCodes.internalServerError))
+        }
+        var termsVersionObj =  utils._.find(sysConfigs, {"key": utils.constants.sysConfigKeys.termsVersion})
+        var privacyObj = utils._.find(sysConfigs, {"key": utils.constants.sysConfigKeys.privacyPolicyVersion})
+        user.legal = {
+        termsVersion:termsVersionObj.value.toString(),
+          privacyVersion:privacyObj.value.toString()
+        }
+        return callback(null, user)
+      })
+    }, function(user, callback){
       u = user
       req.logIn(user, callback)
     }
