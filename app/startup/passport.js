@@ -174,7 +174,8 @@ module.exports = function (passport, config) {
     })
   })
 
-  function handleUserSingIn(req, email, password, done) {
+  function handleUserSingIn(req, emailFromReq, password, done) {
+    var email = emailFromReq.toLowerCase()
     utils.async.waterfall([
       function(callback) {
         models.user.findUserByEmail(email, callback)
@@ -199,7 +200,8 @@ module.exports = function (passport, config) {
     })
   }
 
-  function handleUserSingUp(req, email, password, done) {
+  function handleUserSingUp(req, emailFromReq, password, done) {
+    var email = emailFromReq.toLowerCase()
     utils.async.waterfall([
       function(callback) {
         models.user.findUserByEmail(email, callback)
