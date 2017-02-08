@@ -177,9 +177,9 @@ function removeEventPlayersFromClan(clanPlayers, eventPlayers) {
 }
 
 function getEventName(activity) {
-	var eventName = (utils._.compact([activity.aSubType, activity.aDifficulty])).join(" - ")
-	if (utils._.isValidNonBlank(activity.aCheckpoint)) {
-		eventName += ", " + activity.aCheckpoint
+	var eventName = (utils._.compact([activity.aType, activity.aDifficulty])).join(" - ")
+	if (utils._.isValidNonBlank(activity.aSubType)) {
+		eventName += ", " + activity.aSubType
 	}
 	return eventName
 }

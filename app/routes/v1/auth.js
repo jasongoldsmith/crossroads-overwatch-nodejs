@@ -931,8 +931,6 @@ function signUp(req, res){
         service.userService.updateUser(user, callback)
       })
     }, function(user, callback){
-      console.log("user", user)
-      console.log("u", u)
       req.logIn(user, callback)
     }
     ],
