@@ -10,8 +10,9 @@ function getFeed(user, consoleType, isPublicFeed, createMyEventsList, callback) 
 	utils.async.waterfall([
 		function getEventsForUser(callback) {
 			var query = {}
-			if(utils._.isInvalidOrBlank(user))
-				query.clanId = utils.constants.freelanceBungieGroup.groupId
+			if(utils._.isInvalidOrBlank(user)){
+				utils.l.d("No clan id for public feed")
+			}
 			else
 				query.clanId = user.clanId
 
