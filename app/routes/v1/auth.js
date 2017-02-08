@@ -915,6 +915,7 @@ function signUp(req, res){
         });
         passportHandler(req, res);
       }, function (user, callback){
+      u = user
       models.sysConfig.getSysConfigList([utils.constants.sysConfigKeys.termsVersion,utils.constants.sysConfigKeys.privacyPolicyVersion],function(err, sysConfigs){
         if(err) {
           utils.l.e("Error in retriving the sys config terms version and privacy policy version")
@@ -930,7 +931,8 @@ function signUp(req, res){
         service.userService.updateUser(user, callback)
       })
     }, function(user, callback){
-      u = user
+      console.log("user", user)
+      console.log("u", u)
       req.logIn(user, callback)
     }
     ],
