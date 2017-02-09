@@ -498,6 +498,23 @@ function updateUserPassword(userId, newPassword, callback) {
     callback)
 }
 
+function updateUserEmail(userId, email, callback){
+  User.findOneAndUpdate({_id: userId}, {$set: {email: email}}, {new: true}, callback)
+}
+
+function isEmailAvailableForUser(userId, email, callback){
+  User.findOne({_id: {$ne: userId}, email: email}, function(err, user){
+    if(err){
+      return callback(err)
+    }
+    if(user){
+      return callback(null, false)
+    } else {
+      return callback(null, true)
+    }
+  })
+}
+
 module.exports = {
   model: User,
   getUserById: getUserById,
@@ -530,5 +547,7 @@ module.exports = {
   addUserToGroupsBasedOnConsole: addUserToGroupsBasedOnConsole,
   isConsoleIdAvailable: isConsoleIdAvailable,
   findById: findById,
-  updateUserPassword: updateUserPassword
+  updateUserPassword: updateUserPassword,
+  updateUserEmail: updateUserEmail,
+  isEmailAvailableForUser: isEmailAvailableForUser
 }

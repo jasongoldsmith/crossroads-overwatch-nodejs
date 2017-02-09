@@ -7,7 +7,8 @@ var errorTypes = {
   signIn: "Sign In Error",
   addConsole : "Add Console",
   updatePassword: "Update Password",
-  changePrimaryConsole: "Change Primary Console"
+  changePrimaryConsole: "Change Primary Console",
+  updateEmail: "Update Email"
 }
 
 var errorCodes = {
@@ -25,19 +26,19 @@ var errorCodes = {
   },
   invalidEmail : {
     code: 2,
-    types: [errorTypes.signUp, errorTypes.signIn],
+    types: [errorTypes.signUp, errorTypes.signIn, errorTypes.updateEmail],
     title: "Invalid Email Provided",
     message: "Please enter a valid email address."
   },
   invalidPassword: {
     code: 3,
-    types: [errorTypes.signUp, errorTypes.signIn],
+    types: [errorTypes.signUp, errorTypes.signIn, errorTypes.updatePassword, errorTypes.updateEmail],
     title: "Invalid Password Provided",
     message: "Please enter a password with more than 4 characters."
   },
   emailIsAlreadyTaken : {
     code: 4,
-    types: [errorTypes.signUp],
+    types: [errorTypes.signUp, errorTypes.updateEmail],
     title: "Email is already taken",
     message: "An account already exists with that email address."
   },
@@ -113,7 +114,19 @@ var errorCodes = {
     types: [errorTypes.changePrimaryConsole],
     title: "Console not found.",
     message: "Console not found for user"
-  }
+  },
+  newEmailSameAsCurrentEmail: {
+    code: 17,
+    types: [errorTypes.updateEmail],
+    title: "New email is same as old email",
+    message: "The new email must be different than the existing email"
+  },
+  incorrectPassword: {
+    code: 18,
+    types: [errorTypes.signIn, errorTypes.updatePassword, errorTypes.updateEmail],
+    title: "Incorrect Password",
+    message: "Please check the password provided."
+  },
 }
 
 function formErrorObject(type, errorCodeObj, data) {

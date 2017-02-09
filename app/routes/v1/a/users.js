@@ -70,9 +70,7 @@ function updatePassword(req, res) {
   utils.l.i("Update user password request" + JSON.stringify(req.body))
 
   if(!req.body.oldPassword || !req.body.newPassword) {
-    var err = {
-      error: "id, old password and new password are required fields"
-    }
+    var err = utils.errors.formErrorObject(utils.errors.errorTypes.updatePassword, utils.errors.errorCodes.invalidPassword)
     routeUtils.handleAPIError(req, res, err, err)
   } else {
 
@@ -90,7 +88,7 @@ function updatePassword(req, res) {
       if (err) {
         routeUtils.handleAPIError(req, res, err, err)
       } else {
-        routeUtils.handleAPISuccess(req, res, user)
+        routeUtils.handleAPISuccess(req, res, {value: user})
       }
     })
   }
@@ -258,6 +256,46 @@ function getPendingEventInvites(req, res) {
   })
 }
 
+function updateEmail(req, res){
+  utils.l.i("Update user email request" + JSON.stringify(req.body))
+  var email = ""
+  utils.async.waterfall([
+    function(callback){
+      if(!req.body.password) {
+        utils.l.e("updateEmail: password not provided ")
+        var err = utils.errors.formErrorObject(utils.errors.errorTypes.updateEmail, utils.errors.errorCodes.invalidPassword)
+        return callback(err)
+      }
+      if(!utils.constants.isEmailValid(req.body.newEmail)){
+        utils.l.e("updateEmail: invalid email" ,  req.body.newEmail)
+        var err = utils.errors.formErrorObject(utils.errors.errorTypes.updateEmail, utils.errors.errorCodes.invalidEmail)
+        return callback(err)
+      }
+      if (!passwordHash.verify(req.body.password, req.user.password)) {
+        utils.l.e("updateEmail: input password does not match the exisitng password")
+        return callback(utils.errors.formErrorObject(utils.errors.errorTypes.updateEmail, utils.errors.errorCodes.incorrectPassword))
+      }
+      email = req.body.newEmail.toLowerCase()
+      if(utils._.isEqual(req.user.email, email)){
+        return callback(utils.errors.formErrorObject(utils.errors.errorTypes.updateEmail, utils.errors.errorCodes.newEmailSameAsCurrentEmail))
+      }
+      models.user.isEmailAvailableForUser(req.user._id, email, callback)
+    }, function(isEmailAvailable, callback){
+      if(isEmailAvailable){
+        models.user.updateUserEmail(req.user._id, email, callback)
+      } else {
+        return callback(utils.errors.formErrorObject(utils.errors.errorTypes.updateEmail, utils.errors.errorCodes.emailIsAlreadyTaken))
+      }
+    }
+  ], function(err, user){
+    if (err) {
+      routeUtils.handleAPIError(req, res, err, err)
+    } else {
+      routeUtils.handleAPISuccess(req, res, {value: user})
+    }
+  })
+}
+
 routeUtils.rGet(router, '/self', 'GetSelfUser', getSelfUser)
 routeUtils.rGet(router, '/list', 'list', list)
 routeUtils.rPost(router, '/listById', 'listById', listById)
@@ -270,4 +308,6 @@ routeUtils.rGetPost(router, '/addConsole', 'addUserConsole', addConsole, addCons
 routeUtils.rPost(router, '/changePrimaryConsole', 'changePrimaryConsole', changePrimaryConsole)
 routeUtils.rGet(router, '/getMetrics', 'getUserMetrics', getUserMetrics)
 routeUtils.rGet(router, '/getPendingEventInvites', 'getPendingEventInvites', getPendingEventInvites)
+routeUtils.rPost(router, '/updateEmail', 'updateEmail', updateEmail)
+
 module.exports = router

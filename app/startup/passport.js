@@ -185,7 +185,7 @@ module.exports = function (passport, config) {
           return callback(utils.errors.formErrorObject(utils.errors.errorTypes.signIn, utils.errors.errorCodes.noUserFoundWithTheEmailProvided))
         } else {
           if(!passwordHash.verify(password, user.password)) {
-            return callback(utils.errors.formErrorObject(utils.errors.errorTypes.signIn, utils.errors.errorCodes.invalidPassword))
+            return callback(utils.errors.formErrorObject(utils.errors.errorTypes.signIn, utils.errors.errorCodes.incorrectPassword))
           } else {
             return callback(null, user)
           }
