@@ -104,6 +104,7 @@ var defaults = {
   battleNetClientId : process.env.BATTLE_NET_CLIENT_ID,
   battleNetClientSecret : process.env.BATTLE_NET_CLIENT_SECRET,
   battleNetCallbackUrl : process.env.BATTLE_NET_CALLBACK_URL,
+  freshdeskApiKey : process.env.FRESHDESK_API_KEY || 'qL1aKYCDGHkE4IHaZjy'
 };
 
 /**

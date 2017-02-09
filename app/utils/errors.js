@@ -8,7 +8,8 @@ var errorTypes = {
   addConsole : "Add Console",
   updatePassword: "Update Password",
   changePrimaryConsole: "Change Primary Console",
-  updateEmail: "Update Email"
+  updateEmail: "Update Email",
+  report: "report"
 }
 
 var errorCodes = {
@@ -127,6 +128,11 @@ var errorCodes = {
     title: "Incorrect Password",
     message: "Please check the password provided."
   },
+  missingFields: {
+    code: 19,
+    types: [errorTypes.report],
+    title: "Required field cannot be empty"
+  }
 }
 
 function formErrorObject(type, errorCodeObj, data) {

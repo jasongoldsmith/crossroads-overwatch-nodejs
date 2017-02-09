@@ -3,17 +3,21 @@ var router = express.Router()
 var routeUtils = require('./../../routeUtils')
 var service = require('../../../service/index')
 var utils = require('../../../utils/index')
+var helpers = require('../../../helpers')
+
 
 function createReport(req, res) {
     utils.l.i("Report create request: " + JSON.stringify(req.body))
-    req.assert('reportDetails', "Report details cannot be empty").notEmpty()
-    req.assert('reporter', "Reporter - User of the person reporting cannot be empty").notEmpty()
-
-    service.reportService.createReport(req.body, function(err, report) {
+    if(utils._.isInvalidOrEmpty(req.body.description)){
+        var err = utils.errors.formErrorObject(utils.errors.errorTypes.report, utils.errors.errorCodes.missingFields)
+        routeUtils.handleAPIError(req, res, err, err)
+    }
+    var subject = "Overwatch Contact Us"
+    helpers.freshdesk.postTicket(req.user.email, subject, req.body.description, function(err, resp){
         if (err) {
             routeUtils.handleAPIError(req, res, err, err)
         } else {
-            routeUtils.handleAPISuccess(req, res, report)
+            routeUtils.handleAPISuccess(req, res, resp)
         }
     })
 }
