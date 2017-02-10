@@ -22,11 +22,11 @@ var service = require('../../../service/index')
 //}
 
 function updateHelmet(req, res) {
-  service.accountService.handlUpdateHelmet(req.user, function(err, updateResponse) {
+  service.accountService.handlUpdateHelmet(req.user, function(err, updatedUser) {
     if (err) {
       routeUtils.handleAPIError(req, res, err, err)
     } else {
-      routeUtils.handleAPISuccess(req, res, updateResponse)
+      routeUtils.handleAPISuccess(req, res, {value: updatedUser})
     }
   })
 }

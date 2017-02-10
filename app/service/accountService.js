@@ -6,32 +6,7 @@ var userService =  require('./userService')
 var Converter = require("csvtojson").Converter;
 
 function handlUpdateHelmet(user, callback) {
-  var newHelmetURL = null
-  utils.async.waterfall([
-    function(callback){
-      var primaryConsole = utils.primaryConsole(user)
-      destinyInerface.getBungieHelmet(primaryConsole.consoleId,primaryConsole.consoleType,primaryConsole.destinyMembershipId,callback)
-    },function(helmet, callback){
-      var primaryConsoleIndex = utils.primaryConsoleIndex(user)
-      newHelmetURL = helmet.helmetURL
-      user.consoles[primaryConsoleIndex].clanTag = helmet.clanTag
-      user.consoles[primaryConsoleIndex].imageUrl = utils.config.bungieBaseURL + newHelmetURL
-      user.consoles[primaryConsoleIndex].destinyMembershipId = helmet.destinyProfile.memberShipId
-      models.user.updateUser({id:user._id,imageUrl:utils.config.bungieBaseURL+newHelmetURL,consoles:user.consoles},false,callback)
-    }
-  ],function(err, userUpdated){
-    if(!err && newHelmetURL)
-      return callback(null,
-        {
-          status:"Success",
-          helmetUrl: utils.config.bungieBaseURL + newHelmetURL,
-          message: "Successfully updated helmet"
-        })
-    else {
-      models.helmetTracker.createUser(user,err,callback)
-      return callback({error: "We were unable to update your helmet. Please try again later."}, null)
-    }
-  })
+  return callback(null, user)
 }
 
 function refreshHelmentAndConsoles(user,callback){
