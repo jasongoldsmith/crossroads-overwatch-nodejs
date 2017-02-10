@@ -351,7 +351,19 @@ function changePrimaryConsole(user, consoleType, callback) {
     console.isPrimary = false
   })
   consoleObject.isPrimary = true
-  updateUser(user, callback)
+  models.groups.getDefaultGroupForConsole(consoleType, function(err, defaultGroup){
+    if(err){
+      return callback(err)
+    }
+    if(utils._.isInvalidOrEmpty(defaultGroup)){
+      utils.l.e("changePrimaryConsole: No default group found for console: " + consoleType)
+      //ignore and do not change user's clan details.
+    } else {
+      user.clanId = defaultGroup._id,
+      user.clanName = defaultGroup.groupName
+    }
+    updateUser(user, callback)
+  })
 }
 
 function updateUser(user, callback) {

@@ -135,7 +135,7 @@ function trackExistingUser(req, data, callback) {
   helpers.m.setOrUpdateUserVerifiedStatus(req.user)
 }
 
-function needMPIdfresh(req,user){
+function needMPIdfresh(req, user){
   var mpDistincId = helpers.req.getHeader(req,'x-mixpanelid')
   var mpRefreshed = utils._.isValidNonBlank(user.mpDistinctIdRefreshed)? user.mpDistinctIdRefreshed: false
   utils.l.d('needMPIdfresh::1111:::::mpRefreshNeeded::::::::'+mpRefreshed)

@@ -7,14 +7,16 @@ var freshdesk = new freshdeskAPI(
   'https://crossroadsapp.freshdesk.com',
   API_KEY);
 
-function postTicket(email, subject, description, callback){
+function postTicket(email, subject, description, platform, osVersion, callback){
   var ticket = {
     'helpdesk_ticket': {
       'description':description,
       'subject': subject,
       'email': email,
       "custom_field": {
-        "game_389511": "Overwatch"
+        "game_389511": "Overwatch",
+        "platform_389511": platform,
+        "operating_system_version_389511": osVersion
       },
     }
   };
