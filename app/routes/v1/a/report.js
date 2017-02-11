@@ -11,16 +11,16 @@ function createReport(req, res) {
     if(utils._.isInvalidOrEmpty(req.body.description)){
         var err = utils.errors.formErrorObject(utils.errors.errorTypes.report, utils.errors.errorCodes.missingFields)
         routeUtils.handleAPIError(req, res, err, err)
+    } else {
+        var subject = "Overwatch Contact Us"
+        helpers.freshdesk.postTicket(req.user.email, subject, req.body.description, req.adata['$os'], req.adata['$os_version'], function(err, resp){
+            if (err) {
+                routeUtils.handleAPIError(req, res, err, err)
+            } else {
+                routeUtils.handleAPISuccess(req, res, resp)
+            }
+        })
     }
-    var subject = "Overwatch Contact Us"
-    console.log("req.adata", req.adata)
-    helpers.freshdesk.postTicket(req.user.email, subject, req.body.description, req.adata['$os'], req.adata['$os_version'], function(err, resp){
-        if (err) {
-            routeUtils.handleAPIError(req, res, err, err)
-        } else {
-            routeUtils.handleAPISuccess(req, res, resp)
-        }
-    })
 }
 
 function resolveReport(req,res){
