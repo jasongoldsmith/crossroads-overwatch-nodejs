@@ -181,10 +181,10 @@ function createInvitedUsers(bungieMembership,consoleType,messageDetails,callback
 // -------------------------------------------------------------------------------------------------
 // New Code
 
-function requestResetPassword(userName, callback) {
+function requestResetPassword(email, callback) {
 	utils.async.waterfall([
 		function getUserByUserName(callback) {
-			models.user.getUserByData({userName: userName.toLowerCase().trim()}, callback)
+			models.user.getUserByData({email: email.toLowerCase().trim()}, callback)
 		},
 		function setPasswordTokenOnUser(user, callback) {
 			if(utils._.isInvalidOrBlank(user)) {
@@ -196,14 +196,14 @@ function requestResetPassword(userName, callback) {
 		},
 		function createEmailMsg(updatedUser, callback) {
 			var emailMsg = {
-				subject: "Reset Password request for Crossroads for League of Legends"
+				subject: "Reset Password request for Crossroads for Overwatch"
 			}
 			var longUrl = utils.config.hostUrl() + "/api/v1/auth/resetPasswordLaunch/" + updatedUser.passwordResetToken
 			var msg = utils.constants.bungieMessages.passwordReset
 				.replace(/%URL%/g, longUrl)
 				.replace(/%APPNAME%/g, utils.config.appName)
 				//TODO: hack till we get out of sandbox for SES, remove replace emaol
-				.replace(/%EMAIL%/g, userName)
+				.replace(/%EMAIL%/g, email)
 			utils.l.d("resetPassword msg to send::" + msg)
 			utils.l.d("resetPassword msg to send::" + msg)
 			emailMsg.body = msg

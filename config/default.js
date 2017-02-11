@@ -51,7 +51,7 @@ var defaults = {
   awsKey:{
     accessKeyId: 'AKIAI5ODU5YNUXEMCG4Q',
     secretAccessKey: '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',
-    region: 'us-west-1'
+    region: 'us-east-1'
   },
   onCueClipUrlHostName: "https://oncue.blob.core.windows.net",
   onCueClipCutterUrl: "http://oncuetest.prototyper.co/api/Videos",

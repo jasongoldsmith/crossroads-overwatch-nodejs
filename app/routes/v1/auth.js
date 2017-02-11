@@ -605,7 +605,7 @@ function requestResetPassword(req,res){
     return
   }
 
-  service.authService.requestResetPassword(body.userName, function (err, response) {
+  service.authService.requestResetPassword(body.email, function (err, response) {
     if(err) {
       routeUtils.handleAPIError(req, res, err, err)
     } else {
@@ -1005,7 +1005,7 @@ function resetPasswordLaunch(req, res) {
       res.render("account/resetPassword", {
         token: token,
         consoleId: utils.primaryConsole(user).consoleId,
-        userName: user.userName,
+        email: user.email,
         appName: utils.config.appName
       })
     } else {
@@ -1016,7 +1016,7 @@ function resetPasswordLaunch(req, res) {
 
 
 function resetPassword(req, res) {
-  var userName = req.body.userName
+  var email = req.body.email
   var token = req.param("token")
   try {
     req.assert('passWord').notEmpty().isAlphaNumeric()
@@ -1025,7 +1025,7 @@ function resetPassword(req, res) {
   }
 
   var newPassword = passwordHash.generate(req.body.passWord)
-  utils.l.d("resetPassword::userName" + userName + ", token::" + token)
+  utils.l.d("resetPassword::userName" + email + ", token::" + token)
   utils.async.waterfall([
       function getUser(callback) {
         models.user.getUserByData({passwordResetToken: token},callback)
