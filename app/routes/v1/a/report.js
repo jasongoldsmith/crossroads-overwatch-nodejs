@@ -13,7 +13,13 @@ function createReport(req, res) {
         routeUtils.handleAPIError(req, res, err, err)
     } else {
         var subject = "Overwatch Contact Us"
-        helpers.freshdesk.postTicket(req.user.email, subject, req.body.description, req.adata['$os'], req.adata['$os_version'], function(err, resp){
+        var email = req.isAuthenticated() ? req.user.email : req.body.email
+        if(utils._.isInvalidOrBlank(email)){
+            var err = utils.errors.formErrorObject(utils.errors.errorTypes.report, utils.errors.errorCodes.missingFields)
+            routeUtils.handleAPIError(req, res, err, err)
+            return
+        }
+        helpers.freshdesk.postTicket(email, subject, req.body.description, req.adata['$os'], req.adata['$os_version'], function(err, resp){
             if (err) {
                 routeUtils.handleAPIError(req, res, err, err)
             } else {
