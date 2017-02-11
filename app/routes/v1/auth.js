@@ -971,9 +971,11 @@ function signUp(req, res){
         user.isLoggedIn = true
         service.userService.updateUser(user, callback)
       })
-    }, function(user, callback){
-      handleLoginForMixpanel(req, user, callback)
-    }, function(user, callback){
+    },
+    //  function(user, callback){
+    //  handleLoginForMixpanel(req, user, callback)
+    //},
+      function(user, callback){
       req.logIn(u, callback)
     }
     ],
@@ -1012,9 +1014,11 @@ function signIn(req, res){
       user.isLoggedIn = true
       u = user
       service.userService.updateUser(user, callback)
-    }, function(user, callback){
-      handleLoginForMixpanel(req, user, callback)
-    }, function(user, callback){
+    },
+    //  function(user, callback){
+    //  handleLoginForMixpanel(req, user, callback)
+    //},
+      function(user, callback){
       req.logIn(u, callback)
     }
     ],

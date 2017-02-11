@@ -14,7 +14,7 @@ function createReport(req, res) {
     }
     var subject = "Overwatch Contact Us"
     console.log("req.adata", req.adata)
-    helpers.freshdesk.postTicket(req.user.email, subject, req.body.description, function(err, resp){
+    helpers.freshdesk.postTicket(req.user.email, subject, req.body.description, req.adata['$os'], req.adata['$os_version'], function(err, resp){
         if (err) {
             routeUtils.handleAPIError(req, res, err, err)
         } else {
