@@ -1,6 +1,6 @@
 
 module.exports = {
-  hostName: 'https://overwatch.herokuapp.com',
+  hostName: 'https://owlive.crossroadsapp.co',
   tinyUrlHost:'http://crsrd.co/',
   portNum: -1,
   s3: {
