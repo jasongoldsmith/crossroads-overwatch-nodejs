@@ -599,8 +599,7 @@ function requestResetPassword(req,res){
 
   if(!body.email){
     utils.l.s("Bad reset password request")
-    //TODO: add right err
-    var err = {}
+    var err = utils.errors.formErrorObject(utils.errors.errorTypes.resetPassword, utils.errors.errorCodes.invalidEmail)
     routeUtils.handleAPIError(req, res, err, err)
     return
   }
@@ -1032,7 +1031,7 @@ function resetPassword(req, res) {
       },
       function resetPassword(user, callback) {
         if(utils._.isValidNonBlank(user)) {
-          user.passWord = newPassword
+          user.password = newPassword
           models.user.save(user, callback)
         } else {
           return callback({error:"Invalid username. Please provide a valid username"})

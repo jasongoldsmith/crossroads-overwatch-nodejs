@@ -9,7 +9,8 @@ var errorTypes = {
   updatePassword: "Update Password",
   changePrimaryConsole: "Change Primary Console",
   updateEmail: "Update Email",
-  report: "report"
+  report: "report",
+  resetPassword: 'resetPassword'
 }
 
 var errorCodes = {
@@ -27,7 +28,7 @@ var errorCodes = {
   },
   invalidEmail : {
     code: 2,
-    types: [errorTypes.signUp, errorTypes.signIn, errorTypes.updateEmail],
+    types: [errorTypes.signUp, errorTypes.signIn, errorTypes.updateEmail, errorTypes.resetPassword],
     title: "Invalid Email Provided",
     message: "Please enter a valid email address."
   },
