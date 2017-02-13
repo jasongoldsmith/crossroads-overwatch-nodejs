@@ -1,13 +1,13 @@
 .panel-heading {
-  background-color: #18303a;
+  background-color: #35415B;
 }
 
 .panel-footer {
-  background-color: #18303a;
+  background-color: #35415B;
 }
 
 .panel {
-  background-color: #18303a;
+  background-color: #35415B;
 
 }
 
@@ -60,7 +60,7 @@ th {
 }
 
 body{
-  background-color: #18303a;
+  background-color: #35415B;
 }
 
 .appTitle{
@@ -99,8 +99,8 @@ body{
 
 .txtSm{
   font-family: ArialMT;
-  font-size: 20px;
-  line-height: 14px;
+  font-size: 18px;
+  line-height: 20px;
   letter-spacing: 1px;
   border-radius: 2px;
   border-left: 0px;
@@ -140,7 +140,7 @@ body{
 .blueContact{
   font-family: ArialMT;
   font-size: 20px;
-  color: #0086D0;
+  color: #16abf2;
 }
 .containerTerms{
   height:47px;
@@ -187,15 +187,15 @@ body{
   float:left;
 }
 
-.btnBlue{
+.btnTangerine{
   font-family: HelveticaNeue-Bold;
-  font-size: 14px;
+  font-size: 16px;
   color: white;
   border-left: 0px;
   border-right: 0px;
   border-top: 0px;
   border-bottom: 0px;
-  background-color: #0086D0;
+  background-color: #FA9400;
   height: 50px;
   width: 280px;
 }
@@ -257,5 +257,5 @@ a:hover, a:active {
 }
 
 .jumbotron {
-  background-color:#18303a;
+  background-color:#35415B;
 }

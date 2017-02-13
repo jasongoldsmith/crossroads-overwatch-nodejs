@@ -1,4 +1,4 @@
-var VError = require('verror');
+ var VError = require('verror');
 var utils = require('../utils');
 
 var mod_util = require('util');
