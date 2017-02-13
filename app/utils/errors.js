@@ -47,7 +47,7 @@ var errorCodes = {
   noUserFoundWithTheEmailProvided: {
     code: 5,
     types: [errorTypes.signIn],
-    title: "No User found with the email provided",
+    title: "Email Address Error",
     message: "An account with that email address does not exist."
   },
   consoleTypeNotProvided: {
@@ -83,7 +83,7 @@ var errorCodes = {
   tagAlreadyTaken: {
     code: 11,
     types: [errorTypes.addConsole],
-    title: "ALREADY TAKEN",
+    title: "Name Already Taken",
     message: "An account already exists for that BattleTag. " +
     "Please check for any typos. If you believe someone is using your account name, let us know at support@crossroadsapp.co!"
   },
@@ -91,7 +91,7 @@ var errorCodes = {
     code: 12,
     types: [errorTypes.addConsole],
     title: "Battletag is not available in battle.net",
-    message: "We can't find that BattleTag on Battle.net. Check for typos!"
+    message: "We can't find a BattleTag associated with your Battle.net account. Please sign in on Battle.net and create a BattleTag."
   },
   accessTokenProfileNotReceivedFromBattleNet: {
     code: 13,
@@ -103,13 +103,13 @@ var errorCodes = {
     code: 14,
     types: [errorTypes.updatePassword],
     title: "Old password does not match the current password",
-    message: "Your passwords do not match."
+    message: "The current password you entered does not match our records."
   },
   newPasswordIsSameAsOldPassword: {
     code: 15,
     types: [errorTypes.updatePassword],
     title: "New password has to be different from the old password",
-    message: "Your new password must be different than your old password."
+    message: "Your new password must be different than your current password."
   },
   consoleDoesNotExistForUser: {
     code: 16,
@@ -121,7 +121,7 @@ var errorCodes = {
     code: 17,
     types: [errorTypes.updateEmail],
     title: "New email is same as old email",
-    message: "The new email must be different than the existing email"
+    message: "The new email must be different than your current one."
   },
   incorrectPassword: {
     code: 18,
