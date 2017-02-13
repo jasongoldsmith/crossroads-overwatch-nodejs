@@ -221,7 +221,7 @@ function isEmailValid(email){
 }
 
 var SNS_EMAIL_SENDER = "support@crossroadsapp.co"
-var SNS_EMAIL_RECEIVERS = ["contact@crossroadsapp.co", "suraj@forcecatalyst.com"]
+var SNS_EMAIL_RECEIVERS = ["contact@crossroadsapp.co", "preeti@forcecatalyst.com"]
 
 module.exports = {
   l: lodash,
