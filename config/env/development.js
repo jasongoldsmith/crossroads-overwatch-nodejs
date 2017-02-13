@@ -1,5 +1,5 @@
 module.exports = {
-  hostName: 'http://localhost:3000',
+  hostName: 'https://overwatch-test-server.herokuapp.com',
   devMode: true,
   portNum: -1,
   enforceSSL: false,
