@@ -147,10 +147,9 @@ function needMPIdfresh(req, user){
   return updateMpDistinctId
 }
 
-function trackUserLogin(req, user, updateMpDistinctId, existingMPUserId, isInvitedUserInstall, callback) {
-  if(updateMpDistinctId) {
+function trackUserLogin(req, user, existingMPUserId, isInvitedUserInstall, callback) {
     if(user._id.toString() != existingMPUserId.toString()) {
-      helpers.m.removeUser(existingMPUserId, callback)
+      helpers.m.removeUser(existingMPUserId)
       utils.l.d('removing existingMPUserId', existingMPUserId)
     }
     var mpDistincId = helpers.req.getHeader(req,'x-mixpanelid')
@@ -166,13 +165,10 @@ function trackUserLogin(req, user, updateMpDistinctId, existingMPUserId, isInvit
       utils._.extend(data.trackingData, utils.constants.existingUserInstallData)
 
     parseAdsData(data)
-    //helpers.m.setUserAliasAndSource(req, data.trackingData, callback)
     helpers.m.incrementAppInit(req)
     helpers.m.updateUserSource(req, data.trackingData)
     helpers.m.setOrUpdateUserVerifiedStatus(user)
-  }else{
-    return callback(null,null)
-  }
+    callback(null, null)
 }
 
 function trackUserSignup(req, user, callback) {
