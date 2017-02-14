@@ -166,7 +166,7 @@ function trackUserLogin(req, user, updateMpDistinctId, existingMPUserId, isInvit
       utils._.extend(data.trackingData, utils.constants.existingUserInstallData)
 
     parseAdsData(data)
-    helpers.m.setUserAliasAndSource(req, data.trackingData, callback)
+    //helpers.m.setUserAliasAndSource(req, data.trackingData, callback)
     helpers.m.incrementAppInit(req)
     helpers.m.updateUserSource(req, data.trackingData)
     helpers.m.setOrUpdateUserVerifiedStatus(user)
