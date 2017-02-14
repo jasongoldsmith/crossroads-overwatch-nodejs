@@ -436,8 +436,8 @@ function findUserByEmail(email, callback){
   User.findOne({email: email}, callback)
 }
 
-function createUserWithEmailAndPassword(email, password, callback){
-  var obj = new User({email: email, password: passwordHash.generate(password)})
+function createUserWithEmailAndPassword(uid, email, password, callback){
+  var obj = new User({_id: uid, email: email, password: passwordHash.generate(password)})
   utils.async.waterfall([
     function(callback){
       handleMissingImageUrl(obj, callback)

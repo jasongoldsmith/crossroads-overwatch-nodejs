@@ -208,7 +208,13 @@ module.exports = function (passport, config) {
       }, function(user, callback){
         if(!user) {
           //create user
-          models.user.createUserWithEmailAndPassword(email, password, callback)
+          models.user.getOrCreateUIDFromRequest(req, true, function(err, uid){
+            if(err){
+              return callback(err)
+            } else {
+              models.user.createUserWithEmailAndPassword(uid, email, password, callback)
+            }
+          })
         } else {
           return callback(utils.errors.formErrorObject(utils.errors.errorTypes.signUp, utils.errors.errorCodes.emailIsAlreadyTaken))
         }
