@@ -942,14 +942,17 @@ function signIn(req, res){
       service.userService.updateUser(user, callback)
     },
       function(user, callback){
-        var isInvitedUserInstall =isInvitedUser(req.body.invitation,user)
-
+        var isInvitedUserInstall = isInvitedUser(req.body.invitation,user)
         var updateMpDistinctId = false
         var existingUserZuid = req.zuid
+        req.zuid = user._id
+        req.adata.distinct_id = user._id
+        user.mpDistinctId = helpers.req.getHeader(req,'x-mixpanelid')
+        //do not wait for mixpanel response
         service.trackingService.trackUserLogin(req, user, updateMpDistinctId, existingUserZuid, isInvitedUserInstall, function(err, resp){
           utils.l.d("Sign In: Mixpanel tracking done for user: ", user)
         })
-        return callback(null, user)
+        models.user.save(user, callback)
     },
       function(user, callback){
       req.logIn(u, callback)
