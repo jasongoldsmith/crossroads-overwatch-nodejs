@@ -19,7 +19,7 @@ var defaults = {
   enforceSSL: true,
   devMode: false,
   logLevel: 'info',
-  appName:'Crossroads',
+  appName:'Crossroads For Overwatch',
   tinyUrlHost:'http://dev.crsrd.co/',
   testHostUrl:'http://localhost:3000',
   hostUrl: function() {

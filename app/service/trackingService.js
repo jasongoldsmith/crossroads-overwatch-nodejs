@@ -147,7 +147,7 @@ function needMPIdfresh(req, user){
   return updateMpDistinctId
 }
 
-function trackUserLogin(req, user,updateMpDistinctId,existingMPUserId,isInvitedUserInstall, callback) {
+function trackUserLogin(req, user, updateMpDistinctId, existingMPUserId, isInvitedUserInstall, callback) {
   if(updateMpDistinctId) {
     if(user._id.toString() != existingMPUserId.toString()) {
       helpers.m.removeUser(existingMPUserId, callback)

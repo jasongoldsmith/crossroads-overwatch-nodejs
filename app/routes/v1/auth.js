@@ -857,48 +857,6 @@ function isInvitedUser(invitation,user){
   return invitedUser
 }
 
-function handleLoginForMixpanel(req, user, callback){
-  utils.async.waterfall([
-    function(callback){
-      var isInvitedUserInstall = isInvitedUser(req.body.invitation, user)
-
-      var updateMpDistinctId = service.trackingService.needMPIdfresh(req, user)
-      var existingUserZuid = req.zuid
-      if(updateMpDistinctId){// An existing user logging for first time after installing the app. Create mp user
-        req.zuid = user._id
-        req.adata.distinct_id=user._id
-        service.trackingService.trackUserLogin(req,user,updateMpDistinctId,existingUserZuid,isInvitedUserInstall,function(err,data){
-          if(!err){
-            utils.l.d('setting mp refresh data')
-            var mpDistincId = helpers.req.getHeader(req,'x-mixpanelid')
-            user.mpDistinctId = mpDistincId
-            user.mpDistinctIdRefreshed=true
-          }
-          models.user.save(user, callback)
-        })
-      }else {// An existing user logging in either as a result of log out or app calling login when launched.
-        req.zuid = user._id
-        req.adata.distinct_id=user._id
-        if(existingUserZuid.toString() != user._id.toString()){
-          //app calling due to log out then zuid and user._id are different.
-          // With logout cookie is cleared and next api call will issue new zuid
-          // Fire appInit and remove mp user created due to new session id.
-          helpers.m.removeUser(existingUserZuid)
-          helpers.m.incrementAppInit(req)
-          helpers.m.trackRequest("appInit", {}, req, user)
-        }
-        models.user.save(user, callback)
-      }
-    }
-  ], function(err, resp){
-    if(err){
-      return callback(err)
-    } else {
-      return callback(null, resp)
-    }
-  })
-}
-
 function signUp(req, res){
   var u = null
   utils.async.waterfall(
@@ -937,9 +895,12 @@ function signUp(req, res){
         service.userService.updateUser(user, callback)
       })
     },
-    //  function(user, callback){
-    //  handleLoginForMixpanel(req, user, callback)
-    //},
+      function(user, callback){
+        service.trackingService.trackUserSignup(req, user, function(err, resp){
+          utils.l.d("Sign Up: Mixpanel tracking done for user: ", user)
+        })
+        return callback(null, user)
+    },
       function(user, callback){
       req.logIn(u, callback)
     }
@@ -980,9 +941,16 @@ function signIn(req, res){
       u = user
       service.userService.updateUser(user, callback)
     },
-    //  function(user, callback){
-    //  handleLoginForMixpanel(req, user, callback)
-    //},
+      function(user, callback){
+        var isInvitedUserInstall =isInvitedUser(req.body.invitation,user)
+
+        var updateMpDistinctId = false
+        var existingUserZuid = req.zuid
+        service.trackingService.trackUserLogin(req, user, updateMpDistinctId, existingUserZuid, isInvitedUserInstall, function(err, resp){
+          utils.l.d("Sign In: Mixpanel tracking done for user: ", user)
+        })
+        return callback(null, user)
+    },
       function(user, callback){
       req.logIn(u, callback)
     }
