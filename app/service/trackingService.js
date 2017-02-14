@@ -150,6 +150,7 @@ function needMPIdfresh(req, user){
 function trackUserLogin(req, user, existingMPUserId, isInvitedUserInstall, callback) {
     if(user._id.toString() != existingMPUserId.toString()) {
       helpers.m.removeUser(existingMPUserId)
+      helpers.m.incrementAppInit(req)
       utils.l.d('removing existingMPUserId', existingMPUserId)
     }
     var mpDistincId = helpers.req.getHeader(req,'x-mixpanelid')
@@ -165,7 +166,6 @@ function trackUserLogin(req, user, existingMPUserId, isInvitedUserInstall, callb
       utils._.extend(data.trackingData, utils.constants.existingUserInstallData)
 
     parseAdsData(data)
-    helpers.m.incrementAppInit(req)
     helpers.m.updateUserSource(req, data.trackingData)
     helpers.m.setOrUpdateUserVerifiedStatus(user)
     callback(null, null)
