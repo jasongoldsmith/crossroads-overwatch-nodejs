@@ -35,13 +35,13 @@ var errorCodes = {
   invalidPassword: {
     code: 3,
     types: [errorTypes.signUp, errorTypes.signIn, errorTypes.updatePassword, errorTypes.updateEmail],
-    title: "Invalid Password Provided",
+    title: "Invalid Password",
     message: "Please enter a password with more than 4 characters."
   },
   emailIsAlreadyTaken : {
     code: 4,
     types: [errorTypes.signUp, errorTypes.updateEmail],
-    title: "Email is already taken",
+    title: "Email Unavailable",
     message: "An account already exists with that email address."
   },
   noUserFoundWithTheEmailProvided: {
@@ -65,8 +65,8 @@ var errorCodes = {
   consoleIdNotProvided: {
     code: 8,
     types: [errorTypes.addConsole],
-    title: "BattleTag/GamerTag not provided",
-    message: "Please enter your BattleTag/Gamertag."
+    title: "GamerTag not provided",
+    message: "Please enter your Gamertag."
   },
   userAlreadyOwnsThisConsole: {
     code: 9,
@@ -90,26 +90,26 @@ var errorCodes = {
   battleTagEmptyReceivedFromBattleNet: {
     code: 12,
     types: [errorTypes.addConsole],
-    title: "Battletag is not available in battle.net",
+    title: "Invalid BattleTag",
     message: "We can't find a BattleTag associated with your Battle.net account. Please sign in on Battle.net and create a BattleTag."
   },
   accessTokenProfileNotReceivedFromBattleNet: {
     code: 13,
     types: [errorTypes.addConsole],
-    title: "Access Token Or Profile is empty. Try logging in again",
+    title: "Profile Access Error",
     message: "Sorry, we couldn't load your profile. Please try logging in again!"
   },
   oldPasswordDoesNotMatchTheCurrentPassword: {
     code: 14,
     types: [errorTypes.updatePassword],
-    title: "Old password does not match the current password",
-    message: "The current password you entered does not match our records."
+    title: "Password Error",
+    message: "Your passwords do not match."
   },
   newPasswordIsSameAsOldPassword: {
     code: 15,
     types: [errorTypes.updatePassword],
-    title: "New password has to be different from the old password",
-    message: "Your new password must be different than your current password."
+    title: "Password Error",
+    message: "Your new password must be different than your old password."
   },
   consoleDoesNotExistForUser: {
     code: 16,
@@ -120,8 +120,8 @@ var errorCodes = {
   newEmailSameAsCurrentEmail: {
     code: 17,
     types: [errorTypes.updateEmail],
-    title: "New email is same as old email",
-    message: "The new email must be different than your current one."
+    title: "Email Error",
+    message: "The new email must be different than the existing email."
   },
   incorrectPassword: {
     code: 18,
@@ -132,7 +132,8 @@ var errorCodes = {
   missingFields: {
     code: 19,
     types: [errorTypes.report],
-    title: "Required field cannot be empty"
+    title: "Missing Fields",
+    message: "Please complete the required fields."
   }
 }
 
