@@ -205,7 +205,7 @@ function requestResetPassword(email, callback) {
 			utils.l.d("resetPassword msg to send::" + msg)
 			utils.l.d("resetPassword msg to send::" + msg)
 			emailMsg.body = msg
-			return callback(null, emailMsg)
+			return callback(null, emailMsg, longUrl)
 
 			//TODO: To use tinyURL once we build a dedicated db for it
 			//tinyUrlService.createTinyUrl(longUrl, function(err, shortUrl) {
@@ -217,10 +217,10 @@ function requestResetPassword(email, callback) {
 			//	return callback(null, emailMsg)
 			//})
 		},
-		function (emailMsg, callback) {
+		function (emailMsg, longUrl, callback) {
 			if(utils.config.enableSESIntegration) {
 				utils.l.d("SES integration is enabled")
-				helpers.ses.sendEmail([email], utils.constants.SES_EMAIL_SENDER, emailMsg.subject,
+				helpers.ses.sendEmailForResetPassword([email], utils.constants.SES_EMAIL_SENDER, longUrl, emailMsg.subject,
 					emailMsg.body, function(err, response) {
 						if(err) {
 							utils.l.s("err in send email", err)

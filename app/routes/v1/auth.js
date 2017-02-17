@@ -897,9 +897,22 @@ function signUp(req, res){
     },
       function(user, callback){
         service.trackingService.trackUserSignup(req, user, function(err, resp){
+          if(err){
+            utils.l.e("Sign Up: Mixpanel tracking err for user: ", user)
+            utils.l.e("Sign Up: Mixpanel tracking err: ", err)
+          }
           utils.l.d("Sign Up: Mixpanel tracking done for user: ", user)
         })
         return callback(null, user)
+    }, function(user, callback){
+      helpers.ses.sendEmailForWelcome(user.email, utils.constants.SES_EMAIL_SENDER, "Welcome to Crossroads for Overwatch", function(err, resp){
+        if(err){
+          utils.l.e("Sign Up: Welcome email err for user: ", user)
+          utils.l.e("Sign Up: Welcome email err: ", err)
+        }
+        utils.l.d("Sign Up: Welcome email sent to user: ", user)
+      })
+      return callback(null, user)
     },
       function(user, callback){
       req.logIn(u, callback)
