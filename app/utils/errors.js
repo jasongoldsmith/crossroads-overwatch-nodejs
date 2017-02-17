@@ -42,7 +42,7 @@ var errorCodes = {
     code: 4,
     types: [errorTypes.signUp, errorTypes.updateEmail],
     title: "Email Unavailable",
-    message: "An account already exists with that email address."
+    message: "An account already exists with that email address. Please try logging in."
   },
   noUserFoundWithTheEmailProvided: {
     code: 5,
