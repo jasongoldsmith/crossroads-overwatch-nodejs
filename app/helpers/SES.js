@@ -1,7 +1,7 @@
 var AWS = require('aws-sdk');
 var utils = require('../utils')
 
-AWS.config.update(utils.config.awsKey)
+AWS.config.update(utils.config.awsSESKey)
 var ses = new AWS.SES()
 
 function sendEmail(to, from, subject, body, callback) {
