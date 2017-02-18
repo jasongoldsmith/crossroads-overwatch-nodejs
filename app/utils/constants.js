@@ -220,7 +220,9 @@ function isEmailValid(email){
   return emailValidator.validate(email)
 }
 
-var SES_EMAIL_SENDER = "support@crossroadsapp.co"
+//var SES_EMAIL_SENDER = "support@crossroadsapp.co"
+var SES_EMAIL_SENDER = "contact@crossroadsapp.co"
+
 var SNS_EMAIL_RECEIVERS = ["contact@crossroadsapp.co", "preeti@forcecatalyst.com"]
 
 module.exports = {
