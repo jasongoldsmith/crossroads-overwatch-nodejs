@@ -248,12 +248,12 @@ function addConsole(user, consoleType, consoleId, callback) {
       user.clanName = defaultGroup.groupName
       getOverwatchProfile(userConsoleData.consoleId, callback)
     }, function(overwatchProfiles, callback){
-      var overwathConsole = userConsoleData.consoleType == utils.constants.consoleTypes.ps4 ? "psn": "xbl"
+      var overwatchConsole = userConsoleData.consoleType == utils.constants.consoleTypes.ps4 ? "psn": "xbl"
       if(overwatchProfiles.length > 0){
-        var consoleProfile = utils._.find(overwatchProfiles, {console: overwathConsole})
+        var consoleProfile = utils._.find(overwatchProfiles, {console: overwatchConsole})
         var userConsole = utils._.find(user.consoles, {'consoleType': userConsoleData.consoleType})
-        user.profileUrl = utils._.isInvalidOrBlank(consoleProfile.profileUrl) ? user.profileUrl:  consoleProfile.profileUrl
-        userConsole.clanTag  = utils._.isInvalidOrBlank(consoleProfile.level)? null : consoleProfile.level
+        user.imageUrl = utils._.isInvalidOrBlank(consoleProfile) || utils._.isInvalidOrBlank(consoleProfile.imageUrl) ? user.imageUrl:  consoleProfile.imageUrl
+        userConsole.clanTag  = utils._.isInvalidOrBlank(consoleProfile) || utils._.isInvalidOrBlank(consoleProfile.level)? null : "[Lvl " + consoleProfile.level + "]"
       }
       updateUser(user, function (err, updatedUser) {
         if(err) {
@@ -1015,7 +1015,7 @@ function getOverwatchProfile(consoleTag, callback){
       var split = utils._.split(obj.careerLink, '/')
       console.log("split", split)
       var respObj = {
-        profileUrl: obj.portrait,
+        imageUrl: obj.portrait,
         level: obj.level,
         tag: obj.platformDisplayName,
         console: split[2],
