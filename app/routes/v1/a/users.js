@@ -296,6 +296,16 @@ function updateEmail(req, res){
   })
 }
 
+function getOverwatchProfile(req, res){
+  service.userService.getOverwatchProfile(req.body.tag, function(err, resp){
+    if (err) {
+      routeUtils.handleAPIError(req, res, err, err)
+    } else {
+      routeUtils.handleAPISuccess(req, res, {value: resp})
+    }
+  })
+}
+
 routeUtils.rGet(router, '/self', 'GetSelfUser', getSelfUser)
 routeUtils.rGet(router, '/list', 'list', list)
 routeUtils.rPost(router, '/listById', 'listById', listById)
@@ -309,5 +319,6 @@ routeUtils.rPost(router, '/changePrimaryConsole', 'changePrimaryConsole', change
 routeUtils.rGet(router, '/getMetrics', 'getUserMetrics', getUserMetrics)
 routeUtils.rGet(router, '/getPendingEventInvites', 'getPendingEventInvites', getPendingEventInvites)
 routeUtils.rPost(router, '/updateEmail', 'updateEmail', updateEmail)
+routeUtils.rPost(router, '/getOverwatchProfile', 'getOverwatchProfile', getOverwatchProfile)
 
 module.exports = router

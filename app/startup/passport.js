@@ -98,10 +98,11 @@ function handleBattleNetUserLogin(req, authData, done){
 }
 
 function updateUserWithBattleNetInfo(user, accessToken, refreshToken, battletag, callback){
+  var userConsoleData = {}
+
   utils.async.waterfall([
     function(callback){
       utils.l.d("updateUserWithBattleNetInfo")
-      var userConsoleData = {}
       userConsoleData.verifyStatus = utils.constants.accountVerifyStatusMap.verified
       userConsoleData.consoleId = battletag
       userConsoleData.consoleType = utils.constants.consoleTypes.pc
@@ -123,7 +124,21 @@ function updateUserWithBattleNetInfo(user, accessToken, refreshToken, battletag,
       utils.l.d("default group", defaultGroup)
       user.clanId = defaultGroup._id,
         user.clanName = defaultGroup.groupName
-      //TODO: is clan tag needed??
+      service.userService.getOverwatchProfile(user.battleTag, callback)
+    }, function(overwatchProfiles, callback){
+      //TODO: add support adding profile for regions - Pick the profile based on region
+      if(overwatchProfiles.length > 0){
+        var pcProfile = utils._.find(overwatchProfiles, { 'region': 'us', 'console': 'pc'})
+        if(utils._.isInvalidOrEmpty(pcProfile)){
+          //if US-PC profile is not present, then take any PC profile
+          pcProfile = utils._.find(overwatchProfiles, {'console': 'pc'})
+        }
+        utils.l.d("addConsole PC , pc overwatch profile", pcProfile)
+        var pcConsole = utils._.find(user.consoles, {'consoleType': utils.constants.consoleTypes.pc})
+        user.profileUrl = utils._.isInvalidOrBlank(pcProfile.profileUrl) ? user.profileUrl:  pcProfile.profileUrl
+        pcConsole.clanTag  = utils._.isInvalidOrBlank(pcProfile.level)? null : pcProfile.level
+      }
+      console.log("user", user)
       service.userService.updateUser(user, function (err, updatedUser) {
         if(err) {
           utils.l.s("Unable to update the user", err)

@@ -9,6 +9,7 @@ var passwordHash = require('password-hash')
 var helpers = require('../helpers')
 var temporal = require('temporal')
 var passport = require('passport')
+var request = require("request")
 
 function preUserTimeout(notifTrigger,sysConfig){
   utils.l.d("Starting preUserTimeout")
@@ -207,8 +208,9 @@ function addConsolePC(req, res, user, consoleType, callback){
 
 //This add console method should be used for xbox and ps. Please refer to addConsolePC() for adding PC as the console.
 function addConsole(user, consoleType, consoleId, callback) {
-  consoleType = consoleType.toString().toUpperCase()
   var userConsoleData = {}
+
+  consoleType = consoleType.toString().toUpperCase()
   utils.async.waterfall([
     function(callback){
       models.user.isConsoleIdAvailable(user._id, consoleType, consoleId, callback)
@@ -244,7 +246,15 @@ function addConsole(user, consoleType, consoleId, callback) {
       utils.l.d("default group", defaultGroup)
       user.clanId = defaultGroup._id,
       user.clanName = defaultGroup.groupName
-      //TODO: is clan tag needed??
+      getOverwatchProfile(userConsoleData.consoleId, callback)
+    }, function(overwatchProfiles, callback){
+      var overwathConsole = userConsoleData.consoleType == utils.constants.consoleTypes.ps4 ? "psn": "xbl"
+      if(overwatchProfiles.length > 0){
+        var consoleProfile = utils._.find(overwatchProfiles, {console: overwathConsole})
+        var userConsole = utils._.find(user.consoles, {'consoleType': userConsoleData.consoleType})
+        user.profileUrl = utils._.isInvalidOrBlank(consoleProfile.profileUrl) ? user.profileUrl:  consoleProfile.profileUrl
+        userConsole.clanTag  = utils._.isInvalidOrBlank(consoleProfile.level)? null : consoleProfile.level
+      }
       updateUser(user, function (err, updatedUser) {
         if(err) {
           utils.l.s("Unable to update the user", err)
@@ -987,6 +997,36 @@ function listGroups(user, callback) {
   ], callback)
 }
 
+function getOverwatchProfile(consoleTag, callback){
+  var tag = utils._.replace(consoleTag, '#', '-')
+  var url = 'https://playoverwatch.com/en-us/search/account-by-name/' + tag
+    //var url = "https://playoverwatch.com.cn/search/account-by-name/디코티어-3871"
+  request.get(url , {json:true, timeout: 5000}, function(err, resp){
+    var result = []
+    if(err){
+      utils.l.e("getOverwatchProfile Error: ", err)
+      return callback(null, result)
+    }
+    utils.l.d("getOverwatchProfile result: ", resp)
+    if(utils._.isInvalid(resp)|| utils._.isInvalidOrEmpty(resp.body)){
+      return callback(null, result)
+    }
+    result = utils._.map(resp.body, function(obj){
+      var split = utils._.split(obj.careerLink, '/')
+      console.log("split", split)
+      var respObj = {
+        profileUrl: obj.portrait,
+        level: obj.level,
+        tag: obj.platformDisplayName,
+        console: split[2],
+        region: split[3]
+      }
+      return respObj
+    })
+    return callback(null, result)
+  })
+}
+
 module.exports = {
   userTimeout: userTimeout,
   preUserTimeout: preUserTimeout,
@@ -1012,5 +1052,6 @@ module.exports = {
   subscribeUserNotifications:subscribeUserNotifications,
   updateGroupStats:updateGroupStats,
   refreshGroups:refreshGroups,
-  subscribeUsersForGroup:subscribeUsersForGroup
+  subscribeUsersForGroup:subscribeUsersForGroup,
+  getOverwatchProfile: getOverwatchProfile
 }

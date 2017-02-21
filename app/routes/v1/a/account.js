@@ -22,7 +22,7 @@ var service = require('../../../service/index')
 //}
 
 function updateHelmet(req, res) {
-  service.accountService.handlUpdateHelmet(req.user, function(err, updatedUser) {
+  service.userService.getOverwatchProfile(req.user.battleTag, function(err, updatedUser) {
     if (err) {
       routeUtils.handleAPIError(req, res, err, err)
     } else {
