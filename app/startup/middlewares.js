@@ -155,7 +155,7 @@ function handleIdentifyUser(req, next) {
 }
 
 function identifyUser() {
-  console.log('*************************************  trace zuid.3 ')
+  utils.l.d('*************************************  trace zuid.3 ')
   return function (req, res, next) {
     handleIdentifyUser(req, next)
   }

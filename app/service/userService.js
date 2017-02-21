@@ -184,7 +184,7 @@ function addConsolePC(req, res, user, consoleType, callback){
       function(callback) {
         var passportHandler = passport.authenticate('battlenet', function (err, response) {
           resp = response
-          console.log("auth resp ==" , resp)
+          utils.l.i("addConsolePC: auth resp ==" , resp)
 
           if (err) {
             return callback(err);
@@ -976,9 +976,9 @@ function listGroups(user, callback) {
       //filter groups based on user's primary console
       var primaryConsole = utils._.find(user.consoles, ['isPrimary', true])
       var filteredList = []
-      console.log("primary console", primaryConsole)
+      utils.l.i("listGroups: primary console", primaryConsole)
       utils.async.map(userGroupList, function(userGroup, callback){
-        console.log("group list", userGroupList)
+        utils.l.d("listGroups: group list", userGroupList)
         if(utils.underscore.contains(userGroup.consoleTypes, primaryConsole.consoleType)){
           filteredList.push(userGroup)
         }
@@ -1013,7 +1013,7 @@ function getOverwatchProfile(consoleTag, callback){
     }
     result = utils._.map(resp.body, function(obj){
       var split = utils._.split(obj.careerLink, '/')
-      console.log("split", split)
+      utils.l.d("getOverwatchProfile: split", split)
       var respObj = {
         imageUrl: obj.portrait,
         level: obj.level,

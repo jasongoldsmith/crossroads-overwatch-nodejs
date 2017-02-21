@@ -138,14 +138,12 @@ function updateUserWithBattleNetInfo(user, accessToken, refreshToken, battletag,
         user.imageUrl = utils._.isInvalidOrBlank(pcProfile) || utils._.isInvalidOrBlank(pcProfile.imageUrl) ? user.imageUrl:  pcProfile.imageUrl
         pcConsole.clanTag  = utils._.isInvalidOrBlank(pcProfile) || utils._.isInvalidOrBlank(pcProfile.level)? null : "Lvl " + pcProfile.level
       }
-      console.log("user", user)
       service.userService.updateUser(user, function (err, updatedUser) {
         if(err) {
           utils.l.s("Unable to update the user", err)
           return callback({error: "Something went wrong. Please try again"}, null)
         } else {
           utils.l.d("updateUserWithBattleNetInfo user", updatedUser)
-
           return callback(null, updatedUser)
         }
       })
@@ -173,17 +171,18 @@ function createNewUserWithBattleNet(accessToken, refreshToken, battletag, callba
 module.exports = function (passport, config) {
   // serialize sessions
   passport.serializeUser(function(user, callback) {
-    console.log('1*************************************  serializeUser');
+    utils.l.d('1*************************************  serializeUser');
 
-    console.log('serializing user: ');console.log(user);
+    utils.l.d('serializing user: ');
+    utils.l.d(user);
     return callback(null, user.id)
   })
 
   passport.deserializeUser(function(id, callback) {
-    console.log('1*************************************  deserializeUser');
+    utils.l.d('1*************************************  deserializeUser');
     utils.l.i("deserialize", id);
     models.user.getById(id, function (err, user) {
-      console.log('deserializing user:',user);
+      utils.l.d('deserializing user:',user);
 
       return callback(err, user)
     })
@@ -267,7 +266,7 @@ module.exports = function (passport, config) {
     region: "us",
     passReqToCallback : true
   }, function(req, accessToken, refreshToken, profile, done){
-    console.log("passport callback")
+    utils.l.d("passport callback")
     var authData = {
       accessToken : accessToken,
       refreshToken: refreshToken,
@@ -283,7 +282,7 @@ module.exports = function (passport, config) {
     region: "us",
     passReqToCallback : true
   }, function(req, accessToken, refreshToken, profile, done){
-    console.log("passport callback")
+    utils.l.d("passport callback")
     var authData = {
       accessToken : accessToken,
       refreshToken: refreshToken,
