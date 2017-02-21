@@ -136,7 +136,7 @@ function updateUserWithBattleNetInfo(user, accessToken, refreshToken, battletag,
         utils.l.d("addConsole PC , pc overwatch profile", pcProfile)
         var pcConsole = utils._.find(user.consoles, {'consoleType': utils.constants.consoleTypes.pc})
         user.imageUrl = utils._.isInvalidOrBlank(pcProfile) || utils._.isInvalidOrBlank(pcProfile.imageUrl) ? user.imageUrl:  pcProfile.imageUrl
-        pcConsole.clanTag  = utils._.isInvalidOrBlank(pcProfile) || utils._.isInvalidOrBlank(pcProfile.level)? null : "[Lvl " + pcProfile.level + "]"
+        pcConsole.clanTag  = utils._.isInvalidOrBlank(pcProfile) || utils._.isInvalidOrBlank(pcProfile.level)? null : "Lvl " + pcProfile.level
       }
       console.log("user", user)
       service.userService.updateUser(user, function (err, updatedUser) {

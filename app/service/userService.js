@@ -253,7 +253,7 @@ function addConsole(user, consoleType, consoleId, callback) {
         var consoleProfile = utils._.find(overwatchProfiles, {console: overwatchConsole})
         var userConsole = utils._.find(user.consoles, {'consoleType': userConsoleData.consoleType})
         user.imageUrl = utils._.isInvalidOrBlank(consoleProfile) || utils._.isInvalidOrBlank(consoleProfile.imageUrl) ? user.imageUrl:  consoleProfile.imageUrl
-        userConsole.clanTag  = utils._.isInvalidOrBlank(consoleProfile) || utils._.isInvalidOrBlank(consoleProfile.level)? null : "[Lvl " + consoleProfile.level + "]"
+        userConsole.clanTag  = utils._.isInvalidOrBlank(consoleProfile) || utils._.isInvalidOrBlank(consoleProfile.level)? null : "Lvl " + consoleProfile.level
       }
       updateUser(user, function (err, updatedUser) {
         if(err) {
