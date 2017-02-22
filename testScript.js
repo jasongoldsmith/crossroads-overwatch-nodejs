@@ -17,6 +17,7 @@ var eventFullReminder = "eventFullReminder"
 var eventStartReminder = "eventStartReminder"
 var dailyOneTimeReminder = "dailyOneTimeReminder"
 var eventUpcomingReminder = "eventUpcomingReminder"
+var archieOldUpcomingEvents = "archieOldUpcomingEvents"
 
 var destinyService = require('./app/service/destinyInterface')
 var userService = require('./app/service/userService')
@@ -25,6 +26,8 @@ var notifService = require('./app/service/eventNotificationService')
 var activityService = require('./app/service/activityService')
 var actService = require('./app/service/accountService')
 var eventNotifTrigService = require('./app/service/eventNotificationTriggerService')
+var eventService = require('./app/service/eventService')
+
 var fs = require('fs')
 
 var command = process.argv[2]
@@ -381,6 +384,13 @@ switch(command) {
       utils.l.d("data",data)
     })
     break;
+  case archieOldUpcomingEvents:
+    eventService.archieOldUpcomingEvents(new Date(), function(err, resp){
+      if(err){
+        utils.l.i("archieOldUpcomingEvents: err", err)
+      }
+      utils.l.d("archieOldUpcomingEvents resp: ", resp)
+    })
   default:
     return;
 }

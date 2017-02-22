@@ -421,6 +421,15 @@ function clearCommentsByUser(user,callback){
 		{"multi":true}).exec(callback)
 }
 
+function getUpcomingEventForPreviousDay(todaysDate, callback){
+	var previousDate = moment().utc().endOf('day')
+	utils.l.d("getUpcomingEventForPreviousDay: previous date", previousDate)
+
+	previousDate = previousDate.subtract(1, 'days')
+	utils.l.d("getUpcomingEventForPreviousDay: previous date", previousDate)
+	Event.find({launchStatus: "upcoming", launchDate: {"$lte": previousDate}}, callback)
+}
+
 module.exports = {
 	model: Event,
 	createEvent: createEvent,
@@ -438,5 +447,6 @@ module.exports = {
 	getByQueryLean: getByQueryLean,
 	getByQueryLeanWithComments: getByQueryLeanWithComments,
 	getAllCurrentEventPlayers: getAllCurrentEventPlayers,
-	clearCommentsByUser: clearCommentsByUser
+	clearCommentsByUser: clearCommentsByUser,
+	getUpcomingEventForPreviousDay: getUpcomingEventForPreviousDay
 }

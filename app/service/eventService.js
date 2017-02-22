@@ -970,6 +970,34 @@ function cancelInvite(user, data, callback) {
   ], callback)
 }
 
+function archieOldUpcomingEvents(date, callback){
+  models.event.getUpcomingEventForPreviousDay(date, function(err, events){
+    if(err){
+      return callback(err)
+    }
+    utils.l.d("archieOldUpcomingEvents: number of events to archieve and delete" +  events.length)
+    utils.async.map(events, function(event) {
+      utils.l.d("job archiving event: ", event)
+      models.archiveEvent.createArchiveEvent(event, function(err, archievedEvent ){
+        if(err){
+          utils.l.e("archieOldUpcomingEvents: err archieving event: "+  event._id)
+          return callback(null, null)
+        }
+        utils.l.d("job removing event: ", event)
+        event.remove(function (err, deletedEvent) {
+          if(err) {
+            utils.l.s("There was an issue in deleting this event", err)
+            return callback(err, null)
+          } else {
+            helpers.firebase.createEventV2(event, null, true)
+            return callback(null, deletedEvent)
+          }
+        })
+      })
+    })
+  })
+}
+
 module.exports = {
   createEvent: createEvent,
   joinEvent: joinEvent,
@@ -988,5 +1016,6 @@ module.exports = {
   invite: invite,
   handleCreatorChangeForFullCurrentEvent: handleCreatorChangeForFullCurrentEvent,
   acceptInvite: acceptInvite,
-  cancelInvite: cancelInvite
+  cancelInvite: cancelInvite,
+  archieOldUpcomingEvents: archieOldUpcomingEvents
 }
