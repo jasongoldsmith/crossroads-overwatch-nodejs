@@ -333,7 +333,7 @@ function launchEvent(eventId, callback){
 	utils.l.d("Updating event launch status "+eventId);
 	utils.async.waterfall([
 				function(callback) {
-					Event.findByIdAndUpdate(eventId,{ "$set": {launchStatus: utils.constants.eventLaunchStatusList.now}},callback)
+					Event.findByIdAndUpdate(eventId,{ "$set": {launchStatus: utils.constants.eventLaunchStatusList.now, updated: new Date()}},callback)
 				}
 			],function(err, updatedEvent) {
 				if (err) {
