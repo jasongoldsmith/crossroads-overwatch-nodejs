@@ -361,6 +361,7 @@ function changePrimaryConsole(user, consoleType, callback) {
     console.isPrimary = false
   })
   consoleObject.isPrimary = true
+  user.imageUrl = utils._.isInvalidOrBlank(consoleObject.imageUrl)? user.imageUrl : consoleObject.imageUrl
   models.groups.getDefaultGroupForConsole(consoleType, function(err, defaultGroup){
     if(err){
       return callback(err)
