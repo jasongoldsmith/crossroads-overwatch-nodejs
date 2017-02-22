@@ -115,28 +115,26 @@ function updateUserWithBattleNetInfo(user, accessToken, refreshToken, battletag,
       user.battleNetAccessToken = accessToken
       user.battleNetRefreshToken = refreshToken
       user.battleTag = battletag
-      models.user.addUserToGroupsBasedOnConsole(user._id, userConsoleData.consoleType, callback)
-    }, function(userGroups, callback){
-      utils.l.d("updateUserWithBattleNetInfo user groups", userGroups)
 
+      models.user.addUserToGroupsBasedOnConsole(user._id, userConsoleData.consoleType, callback)
+    },
+    function(userGroups, callback){
+      utils.l.d("updateUserWithBattleNetInfo user groups", userGroups)
       models.groups.getDefaultGroupForConsole(utils.constants.consoleTypes.pc, callback)
-    }, function(defaultGroup, callback){
+    },
+    function(defaultGroup, callback){
       utils.l.d("default group", defaultGroup)
       user.clanId = defaultGroup._id,
         user.clanName = defaultGroup.groupName
-      service.userService.getOverwatchProfile(user.battleTag, callback)
-    }, function(overwatchProfiles, callback){
-      //TODO: add support adding profile for regions - Pick the profile based on region
-      if(overwatchProfiles.length > 0){
-        var pcProfile = utils._.find(overwatchProfiles, { 'region': 'us', 'console': 'pc'})
-        if(utils._.isInvalidOrEmpty(pcProfile)){
-          //if US-PC profile is not present, then take any PC profile
-          pcProfile = utils._.find(overwatchProfiles, {'console': 'pc'})
-        }
-        utils.l.d("addConsole PC , pc overwatch profile", pcProfile)
+      service.userService.getOverwatchProfilesForAConsole(userConsoleData.consoleType, userConsoleData.consoleId, user.battleTag, user.clanId, callback)
+    },
+    function(overwatchProfile, callback){
+      utils.l.d("addConsole PC , pc overwatch profile", overwatchProfile)
+      if(utils._.isValidNonEmpty(overwatchProfile)){
         var pcConsole = utils._.find(user.consoles, {'consoleType': utils.constants.consoleTypes.pc})
-        user.imageUrl = utils._.isInvalidOrBlank(pcProfile) || utils._.isInvalidOrBlank(pcProfile.imageUrl) ? user.imageUrl:  pcProfile.imageUrl
-        pcConsole.clanTag  = utils._.isInvalidOrBlank(pcProfile) || utils._.isInvalidOrBlank(pcProfile.level)? null : "Lvl " + pcProfile.level
+        user.imageUrl =utils._.isInvalidOrBlank(overwatchProfile.imageUrl) ? user.imageUrl:  overwatchProfile.imageUrl
+        pcConsole.clanTag  = utils._.isInvalidOrBlank(overwatchProfile.console.clanTag)? null : overwatchProfile.console.clanTag
+        pcConsole.imageUrl = utils._.isInvalidOrBlank(overwatchProfile.console.imageUrl) ? "" :  overwatchProfile.console.imageUrl
       }
       service.userService.updateUser(user, function (err, updatedUser) {
         if(err) {
@@ -182,7 +180,7 @@ module.exports = function (passport, config) {
     utils.l.d('1*************************************  deserializeUser');
     utils.l.i("deserialize", id);
     models.user.getById(id, function (err, user) {
-      utils.l.d('deserializing user:',user);
+      utils.l.d('deserializing user:', user);
 
       return callback(err, user)
     })

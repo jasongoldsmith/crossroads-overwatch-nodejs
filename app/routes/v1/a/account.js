@@ -22,11 +22,37 @@ var service = require('../../../service/index')
 //}
 
 function updateHelmet(req, res) {
-  service.userService.getOverwatchProfile(req.user.battleTag, function(err, updatedUser) {
+  utils.l.d("updateHelmet called")
+  var user = req.user
+  var primaryConsole = utils._.find(user.consoles, {'isPrimary': true})
+  utils.l.d("updateHelmet primary console", primaryConsole)
+  utils.async.waterfall([
+    function(callback) {
+      service.userService.getOverwatchProfilesForAConsole(primaryConsole.consoleType, primaryConsole.consoleId, user.battleTag, user.clanId, callback)
+    }, function(overwatchProfile, callback){
+      utils.l.d("updateHelmet , overwatch profile", overwatchProfile)
+      if(utils._.isInvalidOrEmpty(overwatchProfile)){
+        utils.l.d("updateHelmet, no overwatch profile present for user " + user._id + "for console: " + primaryConsole.consoleType + "consoleId: " + primaryConsole.consoleId)
+        return callback(null, user)
+      }
+      user.imageUrl =utils._.isInvalidOrBlank(overwatchProfile.imageUrl) ? user.imageUrl:  overwatchProfile.imageUrl
+      primaryConsole.clanTag  = utils._.isInvalidOrBlank(overwatchProfile.console.clanTag)? null : overwatchProfile.console.clanTag
+      primaryConsole.imageUrl = utils._.isInvalidOrBlank(overwatchProfile.console.imageUrl) ? "" :  overwatchProfile.console.imageUrl
+      service.userService.updateUser(user, function (err, updatedUser) {
+        if(err) {
+          utils.l.s("Unable to update the user", err)
+          return callback({error: "Something went wrong. Please try again"}, null)
+        } else {
+          utils.l.d("updateUserWithBattleNetInfo user", updatedUser)
+          return callback(null, updatedUser)
+        }
+      })
+    }
+  ], function(err, user){
     if (err) {
       routeUtils.handleAPIError(req, res, err, err)
     } else {
-      routeUtils.handleAPISuccess(req, res, {value: updatedUser})
+      routeUtils.handleAPISuccess(req, res, {value: user})
     }
   })
 }

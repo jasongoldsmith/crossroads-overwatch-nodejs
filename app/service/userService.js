@@ -246,14 +246,14 @@ function addConsole(user, consoleType, consoleId, callback) {
       utils.l.d("default group", defaultGroup)
       user.clanId = defaultGroup._id,
       user.clanName = defaultGroup.groupName
-      getOverwatchProfile(userConsoleData.consoleId, callback)
-    }, function(overwatchProfiles, callback){
-      var overwatchConsole = userConsoleData.consoleType == utils.constants.consoleTypes.ps4 ? "psn": "xbl"
-      if(overwatchProfiles.length > 0){
-        var consoleProfile = utils._.find(overwatchProfiles, {console: overwatchConsole})
+      getOverwatchProfilesForAConsole(userConsoleData.consoleType, userConsoleData.consoleId, user.battleTag, user.clanId, callback)
+    }, function(overwatchProfile, callback){
+      if(utils._.isValidNonEmpty(overwatchProfile)){
+        utils.l.d("addConsole , overwatch profile", overwatchProfile)
         var userConsole = utils._.find(user.consoles, {'consoleType': userConsoleData.consoleType})
-        user.imageUrl = utils._.isInvalidOrBlank(consoleProfile) || utils._.isInvalidOrBlank(consoleProfile.imageUrl) ? user.imageUrl:  consoleProfile.imageUrl
-        userConsole.clanTag  = utils._.isInvalidOrBlank(consoleProfile) || utils._.isInvalidOrBlank(consoleProfile.level)? null : "Lvl " + consoleProfile.level
+        user.imageUrl = utils._.isInvalidOrBlank(overwatchProfile.imageUrl) ? user.imageUrl:  overwatchProfile.imageUrl
+        userConsole.clanTag  = utils._.isInvalidOrBlank(overwatchProfile.console.clanTag)? null : overwatchProfile.console.clanTag
+        userConsole.imageUrl = utils._.isInvalidOrBlank(overwatchProfile.console.imageUrl) ? "" :  overwatchProfile.console.imageUrl
       }
       updateUser(user, function (err, updatedUser) {
         if(err) {
@@ -998,7 +998,7 @@ function listGroups(user, callback) {
   ], callback)
 }
 
-function getOverwatchProfile(consoleTag, callback){
+function getOverwatchProfiles(consoleTag, callback){
   var tag = utils._.replace(consoleTag, '#', '-')
   var url = 'https://playoverwatch.com/en-us/search/account-by-name/' + tag
     //var url = "https://playoverwatch.com.cn/search/account-by-name/디코티어-3871"
@@ -1028,6 +1028,63 @@ function getOverwatchProfile(consoleTag, callback){
   })
 }
 
+function getOverwatchProfilesForAConsole(consoleType, consoleId, battleTag, region, callback){
+  var resp = {}
+  utils.async.waterfall([
+    function(callback){
+      getOverwatchProfiles(consoleId, callback)
+    }, function(overwatchProfiles, callback){
+      if(utils._.isInvalidOrEmpty(overwatchProfiles)){
+        return callback(null, resp)
+      }
+      switch(consoleType) {
+          case utils.constants.consoleTypes.xboxone : {
+          var overwatchConsole = utils.constants.mappingBetweenBackendConsoleAndOverwatchConsoleNames.xboxone
+          var consoleProfile = utils._.find(overwatchProfiles, {'console': overwatchConsole})
+          if(utils._.isInvalidOrEmpty(consoleProfile)){
+            return callback(null, resp)
+          }
+          resp.imageUrl = utils._.isInvalidOrBlank(consoleProfile.imageUrl) ? "":  consoleProfile.imageUrl
+          resp.console = {}
+          resp.console.clanTag  = utils._.isInvalidOrBlank(consoleProfile.level)? null : "Lvl " + consoleProfile.level
+          resp.console.imageUrl = utils._.isInvalidOrBlank(consoleProfile.imageUrl) ? "" :  consoleProfile.imageUrl
+          break;
+        }
+        case utils.constants.consoleTypes.ps4 : {
+          var overwatchConsole = utils.constants.mappingBetweenBackendConsoleAndOverwatchConsoleNames.ps4
+          var consoleProfile = utils._.find(overwatchProfiles, {'console': overwatchConsole})
+          if(utils._.isInvalidOrEmpty(consoleProfile)){
+            return callback(null, resp)
+          }
+          resp.imageUrl = utils._.isInvalidOrBlank(consoleProfile.imageUrl) ? "":  consoleProfile.imageUrl
+          resp.console = {}
+          resp.console.clanTag  = utils._.isInvalidOrBlank(consoleProfile.level)? null : "Lvl " + consoleProfile.level
+          resp.console.imageUrl = utils._.isInvalidOrBlank(consoleProfile.imageUrl) ? "" :  consoleProfile.imageUrl
+          break;
+        }
+        case utils.constants.consoleTypes.xboxone : {
+          var overwatchConsole = utils.constants.mappingBetweenBackendConsoleAndOverwatchConsoleNames.pc
+          var consoleProfile = utils._.find(overwatchProfiles, {'console': overwatchConsole, 'region': utils.constants.mappingBetweenBackendGroupIdAndOverwatchRegionNames[region]})
+          if(utils._.isInvalidOrEmpty(consoleProfile)){
+            //If PC-Region profile is empty, look for any other pc profile
+            consoleProfile = utils._.find(overwatchProfiles, {'console': overwatchConsole})
+            if(utils._.isInvalidOrEmpty(consoleProfile)){
+              return callback(null, resp)
+            }
+          }
+          resp.imageUrl = utils._.isInvalidOrBlank(consoleProfile.imageUrl) ? "":  consoleProfile.imageUrl
+          resp.console = {}
+          //TODO: check if console level & image needs to be taken if profile if PC only (not region based)
+          resp.console.clanTag  = utils._.isInvalidOrBlank(consoleProfile.level)? null : "Lvl " + consoleProfile.level
+          resp.console.imageUrl = utils._.isInvalidOrBlank(consoleProfile.imageUrl) ? "" :  consoleProfile.imageUrl
+          break;
+        }
+      }
+      return callback(null, resp)
+    }
+  ], callback)
+}
+
 module.exports = {
   userTimeout: userTimeout,
   preUserTimeout: preUserTimeout,
@@ -1054,5 +1111,5 @@ module.exports = {
   updateGroupStats:updateGroupStats,
   refreshGroups:refreshGroups,
   subscribeUsersForGroup:subscribeUsersForGroup,
-  getOverwatchProfile: getOverwatchProfile
+  getOverwatchProfilesForAConsole: getOverwatchProfilesForAConsole
 }

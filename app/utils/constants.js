@@ -224,6 +224,18 @@ var SES_EMAIL_SENDER = "support@crossroadsapp.co"
 
 var SNS_EMAIL_RECEIVERS = ["contact@crossroadsapp.co", "preeti@forcecatalyst.com"]
 
+var mappingBetweenBackendConsoleAndOverwatchConsoleNames = {
+  pc: "pc",
+  ps4: "psn",
+  xboxone: "xbl"
+}
+
+var mappingBetweenBackendGroupIdAndOverwatchRegionNames = {
+  US: "us",
+  EU: "eu",
+  Asia: "kr" //For now, just using Korea as Overwatch is being played only in kr. Once more regions are added in Asia, this needs to be updated.
+}
+
 module.exports = {
   l: lodash,
   baseUrl: baseUrl,
@@ -253,5 +265,7 @@ module.exports = {
   isValidConsoleType: isValidConsoleType,
   isEmailValid: isEmailValid,
   SES_EMAIL_SENDER: SES_EMAIL_SENDER,
-  SNS_EMAIL_RECEIVERS: SNS_EMAIL_RECEIVERS
+  SNS_EMAIL_RECEIVERS: SNS_EMAIL_RECEIVERS,
+  mappingBetweenBackendConsoleAndOverwatchConsoleNames: mappingBetweenBackendConsoleAndOverwatchConsoleNames,
+  mappingBetweenBackendGroupIdAndOverwatchRegionNames: mappingBetweenBackendGroupIdAndOverwatchRegionNames
 }
