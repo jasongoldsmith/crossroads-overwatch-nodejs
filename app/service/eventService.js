@@ -981,6 +981,7 @@ function archieOldUpcomingEvents(date, callback){
       models.archiveEvent.createArchiveEvent(event, function(err, archievedEvent ){
         if(err){
           utils.l.e("archieOldUpcomingEvents: err archieving event: "+  event._id)
+          utils.l.e("err:", err)
           return callback(null, null)
         }
         utils.l.d("job removing event: ", event)
