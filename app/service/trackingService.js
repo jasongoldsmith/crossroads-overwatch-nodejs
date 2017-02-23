@@ -162,8 +162,6 @@ function trackUserLogin(req, user, existingMPUserId, isInvitedUserInstall, callb
     // We have to maintain this order as it is sent by fb and branch as a deep link
     if(isInvitedUserInstall)
       utils._.extend(data.trackingData, utils.constants.invitedUserInstallData)
-    else
-      utils._.extend(data.trackingData, utils.constants.existingUserInstallData)
 
     parseAdsData(data)
     helpers.m.updateUserSource(req, data.trackingData)
