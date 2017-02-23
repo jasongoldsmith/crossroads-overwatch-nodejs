@@ -160,11 +160,12 @@ function trackUserLogin(req, user, existingMPUserId, isInvitedUserInstall, callb
     data.trackingData.distinct_id = user._id
     // expecting trackingData.ads to be in the format "/<source>/<campaign>/<ad>/<creative>?sasda"
     // We have to maintain this order as it is sent by fb and branch as a deep link
-    if(isInvitedUserInstall)
+    if(isInvitedUserInstall){
       utils._.extend(data.trackingData, utils.constants.invitedUserInstallData)
+      helpers.m.updateUserSource(req, data.trackingData)
+    }
 
     parseAdsData(data)
-    helpers.m.updateUserSource(req, data.trackingData)
     helpers.m.setOrUpdateUserVerifiedStatus(user)
     callback(null, null)
 }
