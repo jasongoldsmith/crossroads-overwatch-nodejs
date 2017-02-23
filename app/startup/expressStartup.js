@@ -133,7 +133,7 @@ module.exports = function (app, passport) {
       var updateMpDistinctId = false
       utils.l.d("expressStartup::timeDiff::"+timeDiff+"::lastActiveTime::"+req.user.lastActiveTime+"::userLastActiveUpdateInterval::"+userLastActiveUpdateInterval)
       utils.l.d("expressStartup::updateMpDistinctId::"+updateMpDistinctId+"::req.user.mpDistinctId::"+req.user.mpDistinctId+"::"+mpDistincId)
-
+      //TODO: keep last active time update
       if(timeDiff > userLastActiveUpdateInterval || utils._.isInvalidOrBlank(req.user.lastActiveTime) || updateMpDistinctId){
         var updateData = timeDiff > userLastActiveUpdateInterval || utils._.isInvalidOrBlank(req.user.lastActiveTime) ? {lastActiveTime: new Date(),notifStatus: []}:{}
         if(updateMpDistinctId) {

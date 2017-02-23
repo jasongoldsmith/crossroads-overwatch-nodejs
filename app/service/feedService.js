@@ -78,7 +78,23 @@ function getFeed(user, consoleType, isPublicFeed, createMyEventsList, callback) 
 						We need to use a toObject since we compute isInvited later
 						We need to have a new object to ensure that we don't impact that flag for each event
 						 */
-						playerList.push(playerObj.toObject())
+						var consoleToUse = {
+							consoleId : "",
+							clanTag: "",
+							imageUrl: ""
+						}
+						playerObj = playerObj.toObject()
+						if(utils._.isInvalidOrEmpty(user)){
+							utils.l.d("Get Feed: user obj empty")
+						} else {
+							var userPrimaryConsole = utils._.find(user.consoles, {"isPrimary": true})
+							consoleToUse = utils._.find(playerObj.consoles, {"consoleType": userPrimaryConsole.consoleType })
+						}
+						playerObj.consoleId = consoleToUse.consoleId
+						//Clan tag could still be empty as support for fetching user's overwatch profile was added later.
+						playerObj.clanTag = utils._.isInvalidOrBlank(consoleToUse.clanTag)? "" : consoleToUse.clanTag
+						playerObj.imageUrl = utils._.isInvalidOrBlank(consoleToUse.imageUrl)? playerObj.imageUrl : consoleToUse.imageUrl
+						playerList.push(playerObj)
 					}
 				})
 				utils._.remove(event.players)
