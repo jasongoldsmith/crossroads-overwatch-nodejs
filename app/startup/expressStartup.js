@@ -114,6 +114,7 @@ module.exports = function (app, passport) {
   app.use(middlewares.visitTracker());
 
   app.use('/api/v1/a', function(req, res, next) {
+    //TODO: clean up the code here
     //utils.l.i("req in /api/v1/a", {path: req.path, headers: req.headers, body: req.body, files:req.files});
     if (!req.isAuthenticated()) {
       return routeUtils.handleAPIUnauthorized(req, res)
@@ -123,12 +124,13 @@ module.exports = function (app, passport) {
       //Set mixpanel distinct ID for users from old version
       var mpDistincId = helpers.req.getHeader(req,'x-mixpanelid')
 
-      var mpRefreshed = utils._.isValidNonBlank(req.user.mpDistinctIdRefreshed)? req.user.mpDistinctIdRefreshed: false
+      var mpRefreshed = false
       utils.l.d('1111:::::mpRefreshNeeded::::::::'+mpRefreshed)
       mpRefreshed = utils._.isValidNonBlank(req.user.mpDistinctId) && mpRefreshed
       utils.l.d('2222:::::mpRefreshNeeded::::::::'+mpRefreshed)
-      var updateMpDistinctId = (utils._.isInvalidOrBlank(req.user.mpDistinctId) || !mpRefreshed ) && utils._.isValidNonBlank(mpDistincId) ? true:false
+      //var updateMpDistinctId = (utils._.isInvalidOrBlank(req.user.mpDistinctId) || !mpRefreshed ) && utils._.isValidNonBlank(mpDistincId) ? true:false
 
+      var updateMpDistinctId = false
       utils.l.d("expressStartup::timeDiff::"+timeDiff+"::lastActiveTime::"+req.user.lastActiveTime+"::userLastActiveUpdateInterval::"+userLastActiveUpdateInterval)
       utils.l.d("expressStartup::updateMpDistinctId::"+updateMpDistinctId+"::req.user.mpDistinctId::"+req.user.mpDistinctId+"::"+mpDistincId)
 
