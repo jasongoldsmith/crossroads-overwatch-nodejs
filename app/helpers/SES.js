@@ -62,14 +62,14 @@ function sendEmailHtml(to, from, subject, html, callback) {
 }
 
 function sendEmailForResetPassword(to, from, resetLink, subject, text, callback){
-  sendEmailText(to, from, subject, text, callback)
-  //console.log("link", resetLink)
-  //var htmlData = fs.readFileSync(path.normalize(__dirname + '/../views/account/resetPasswordEmail.ejs'),'utf8')
-  //
-  //var ejs_string = htmlData,
-  //  template = ejs.compile(ejs_string),
-  //  html = template({link: resetLink});
-  //sendEmailHtml(to, from, subject, html, callback)
+  //sendEmailText(to, from, subject, text, callback)
+  console.log("link", resetLink)
+  var htmlData = fs.readFileSync(path.normalize(__dirname + '/../views/account/resetPasswordEmail.ejs'),'utf8')
+
+  var ejs_string = htmlData,
+    template = ejs.compile(ejs_string),
+    html = template({link: resetLink});
+  sendEmailHtml(to, from, subject, html, callback)
 }
 
 function sendEmailForWelcome(to, from, subject, callback){
