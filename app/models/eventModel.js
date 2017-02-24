@@ -37,6 +37,26 @@ function getByQuery(query, user, callback) {
 		})
 }
 
+function getByQueryExpanded(query, user, callback) {
+	Event
+			.find(query)
+			.populate("eType")
+			.populate("creator", "-passWord")
+			.populate("players", "-passWord")
+			.populate("comments.user", "-passWord")
+			.lean()
+			.batchSize(50)
+			.sort({launchDate:"ascending"})
+			.exec(function (err, events) {
+				if (err) {
+					utils.l.s("Something went wrong in getting events from database", err)
+					return callback({error: "Something went wrong. Please try again later."}, null)
+				} else {
+					return callback(err, events)
+				}
+			})
+}
+
 function getByQueryLean(query, callback) {
 	Event
 		.find(query, "-comments").lean()
@@ -87,6 +107,11 @@ function getEventsByQuery(query, callback) {
 function getById(id, callback) {
 	if (!id) return callback("Invalid id:" + id)
 	getByQuery({'_id':id}, null, utils.firstInArrayCallback(callback))
+}
+
+function getByIdExpanded(id, callback) {
+	if (!id) return callback("Invalid id:" + id)
+	getByQueryExpanded({'_id':id}, null, utils.firstInArrayCallback(callback))
 }
 
 function update(event, callback) {
@@ -439,6 +464,7 @@ module.exports = {
 	getByQuery: getByQuery,
 	getEventsByQuery: getEventsByQuery,
 	getById: getById,
+	getByIdExpanded: getByIdExpanded,
 	launchEvent: launchEvent,
 	update: update,
 	listEventCount: listEventCount,

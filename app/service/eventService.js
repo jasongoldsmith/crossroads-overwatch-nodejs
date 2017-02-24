@@ -493,15 +493,41 @@ function handleDuplicateCurrentEvent(event, callback) {
   ], callback)
 }
 
-function listEventById(data, callback) {
+function listEventById(user, data, callback) {
   utils.async.waterfall([
     function (callback) {
-      models.event.getById(data.id, callback)
+      models.event.getByIdExpanded(data.id, callback)
     },
     function (event, callback) {
       if(utils._.isInvalidOrBlank(event)){
         return callback({ error: "Sorry, looks like that event is no longer available."},null)
       }
+      var players = []
+      utils._.map(event.players, function(player){
+        var consoleToUse = {
+          consoleId : "",
+          clanTag: "",
+          imageUrl: ""
+        }
+        if(utils._.isInvalidOrEmpty(user)){
+          utils.l.d("listEventById: user obj empty")
+          consoleToUse = utils._.find(player.consoles, {"isPrimary": true})
+        } else {
+          var userPrimaryConsole = utils._.find(user.consoles, {"isPrimary": true})
+          utils.l.d("listEventById: userPrimaryConsole", userPrimaryConsole)
+          consoleToUse = utils._.find(player.consoles, {"consoleType": userPrimaryConsole.consoleType })
+          utils.l.d("listEventById: consoleToUse", consoleToUse)
+        }
+        player.consoleId = consoleToUse.consoleId
+        //Clan tag could still be empty as support for fetching user's overwatch profile was added later.
+        player.clanTag = utils._.isInvalidOrBlank(consoleToUse.clanTag)? "" : consoleToUse.clanTag
+        player.imageUrl = utils._.isInvalidOrBlank(consoleToUse.imageUrl)? player.imageUrl : consoleToUse.imageUrl
+        utils.l.d("listEventById: Player obj after update", player)
+        players.push(player)
+      })
+      utils._.remove(event.players)
+      utils._.assign(event.players, players)
+      event.creator = utils._.find(players, {"_id": event.creator._id})
       addIsActiveFlagToEventPlayers(event, callback)
     },
     function (eventObj, callback) {
@@ -587,7 +613,7 @@ function handleCreatorChangeForFullCurrentEvent(event, callback) {
 function addIsActiveFlagToEventPlayers(event, callback) {
   getUserActiveTimeout(function(err, userActiveTimeOutInMins) {
     // We need to convert a mongo object to a plain object to add new fields (isActive)
-    var eventObj = event.toObject()
+    var eventObj = event
 
     // We need to only add new fields and decide the creator for "full" events
     var activeCutOffTime = utils.moment().subtract(userActiveTimeOutInMins, 'minutes')

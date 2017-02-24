@@ -63,7 +63,7 @@ function listAll(req, res) {
 
 function listById(req, res) {
 	utils.l.d("Get event by id request" + JSON.stringify(req.body))
-	service.eventService.listEventById(req.body, function(err, event) {
+	service.eventService.listEventById(req.user, req.body, function(err, event) {
 		if (err) {
 			routeUtils.handleAPIError(req, res, err, err, {utm_dnt:"listById"})
 		} else {
