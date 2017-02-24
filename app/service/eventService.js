@@ -528,6 +528,37 @@ function listEventById(user, data, callback) {
       utils._.remove(event.players)
       utils._.assign(event.players, players)
       event.creator = utils._.find(players, {"_id": event.creator._id})
+
+      utils.async.map(event.comments, function(comment, callback){
+        utils.l.d("listEventById: comment user", comment.user)
+        var consoleToUse = {
+          consoleId : "",
+          clanTag: "",
+          imageUrl: ""
+        }
+        if(utils._.isInvalidOrEmpty(user)){
+          utils.l.d("listEventById: user obj empty")
+          consoleToUse = utils._.find(comment.user.consoles, {"isPrimary": true})
+        } else {
+          var userPrimaryConsole = utils._.find(user.consoles, {"isPrimary": true})
+          utils.l.d("listEventById: comment userPrimaryConsole", userPrimaryConsole)
+          consoleToUse = utils._.find(comment.user.consoles, {"consoleType": userPrimaryConsole.consoleType })
+          utils.l.d("listEventById: comment consoleToUse", consoleToUse)
+        }
+        comment.user.consoleId = consoleToUse.consoleId
+        comment.user.clanTag = utils._.isInvalidOrBlank(consoleToUse.clanTag)? "" : consoleToUse.clanTag
+        comment.user.imageUrl = utils._.isInvalidOrBlank(consoleToUse.imageUrl)? comment.user.imageUrl : consoleToUse.imageUrl
+        utils.l.d("listEventById: comment", comment)
+        return callback(null, comment)
+      }, function(err, result){
+        if(err){
+          utils.l.e("listEventById: err in setting user deatils in comment: ", err)
+          return callback(null, err)
+        }
+        return callback(null, event)
+      })
+
+    }, function(event, callback){
       addIsActiveFlagToEventPlayers(event, callback)
     },
     function (eventObj, callback) {
