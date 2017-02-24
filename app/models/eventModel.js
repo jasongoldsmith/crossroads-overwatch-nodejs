@@ -39,7 +39,7 @@ function getByQuery(query, user, callback) {
 
 function getByQueryLean(query, callback) {
 	Event
-		.find(query, "-comments")
+		.find(query, "-comments").lean()
 		.batchSize(50)
 		.sort({launchDate:"ascending"})
 		.exec(function (err, events) {

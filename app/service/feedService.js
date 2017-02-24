@@ -68,8 +68,8 @@ function getFeed(user, consoleType, isPublicFeed, createMyEventsList, callback) 
 				return player._id
 			})
 			utils._.map(eventsList, function(event) {
+        console.log("event before", event)
 				event.eType = utils._.get(activitiesMap, event.eType)
-				event.creator = utils._.get(playersMap, event.creator)
 				var playerList = []
 				utils._.map(event.players, function(playerId) {
 					var playerObj = utils._.get(playersMap, playerId)
@@ -104,6 +104,7 @@ function getFeed(user, consoleType, isPublicFeed, createMyEventsList, callback) 
 				})
 				utils._.remove(event.players)
 				utils._.assign(event.players, playerList)
+				event.creator = utils._.find(playerList, {"_id": event.creator})
 			})
 
 			addIsInvitedFlagToEventPlayers(eventsList, callback)
