@@ -437,14 +437,8 @@ function findUserByEmail(email, callback){
 }
 
 function createUserWithEmailAndPassword(uid, email, password, callback){
-  var obj = new User({_id: uid, email: email, password: passwordHash.generate(password)})
-  utils.async.waterfall([
-    function(callback){
-      handleMissingImageUrl(obj, callback)
-    }, function(userData, callback){
-      save(userData, callback)
-    }
-  ], callback)
+  var obj = new User({_id: uid, email: email, password: passwordHash.generate(password), imageUrl: utils.constants.unverifiedProfilePic})
+  save(obj, callback)
 }
 
 function addUserToGroupsBasedOnConsole(userId, consoleType, callback){
