@@ -38,6 +38,7 @@ function updateHelmet(req, res) {
       user.imageUrl =utils._.isInvalidOrBlank(overwatchProfile.imageUrl) ? user.imageUrl:  overwatchProfile.imageUrl
       primaryConsole.clanTag  = utils._.isInvalidOrBlank(overwatchProfile.console.clanTag)? null : overwatchProfile.console.clanTag
       primaryConsole.imageUrl = utils._.isInvalidOrBlank(overwatchProfile.console.imageUrl) ? "" :  overwatchProfile.console.imageUrl
+      primaryConsole.verifyStatus = overwatchProfile.console.verifyStatus
       service.userService.updateUser(user, function (err, updatedUser) {
         if(err) {
           utils.l.s("Unable to update the user", err)

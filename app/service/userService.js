@@ -254,6 +254,7 @@ function addConsole(user, consoleType, consoleId, callback) {
         user.imageUrl = utils._.isInvalidOrBlank(overwatchProfile.imageUrl) ? user.imageUrl:  overwatchProfile.imageUrl
         userConsole.clanTag  = utils._.isInvalidOrBlank(overwatchProfile.console.clanTag)? null : overwatchProfile.console.clanTag
         userConsole.imageUrl = utils._.isInvalidOrBlank(overwatchProfile.console.imageUrl) ? "" :  overwatchProfile.console.imageUrl
+        userConsole.verifyStatus = overwatchProfile.console.verifyStatus
       }
       updateUser(user, function (err, updatedUser) {
         if(err) {
@@ -1077,6 +1078,7 @@ function getOverwatchProfilesForAConsole(consoleType, consoleId, battleTag, regi
           //TODO: check if console level & image needs to be taken if profile if PC only (not region based)
           resp.console.clanTag  = utils._.isInvalidOrBlank(consoleProfile.level)? null : "Lvl " + consoleProfile.level
           resp.console.imageUrl = utils._.isInvalidOrBlank(consoleProfile.imageUrl) ? "" :  consoleProfile.imageUrl
+          resp.console.verifyStatus =  utils._.isInvalidOrBlank(consoleProfile.imageUrl) && utils._.isInvalidOrBlank(consoleProfile.level) ? "FAILED_INITIATION" :"VERIFIED"
           break;
         }
       }
