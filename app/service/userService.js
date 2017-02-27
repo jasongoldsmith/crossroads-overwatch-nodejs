@@ -1003,7 +1003,7 @@ function getOverwatchProfiles(consoleTag, callback){
   var tag = utils._.replace(consoleTag, '#', '-')
   var url = 'https://playoverwatch.com/en-us/search/account-by-name/' + tag
     //var url = "https://playoverwatch.com.cn/search/account-by-name/디코티어-3871"
-  request.get(url , {json:true, timeout: 5000}, function(err, resp){
+  request.get(url , {json:true, timeout: 10000}, function(err, resp){
     var result = []
     if(err){
       utils.l.e("getOverwatchProfile Error: ", err)
