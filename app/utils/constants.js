@@ -238,6 +238,12 @@ var mappingBetweenBackendGroupIdAndOverwatchRegionNames = {
 
 var unverifiedProfilePic = "https://s3-us-west-1.amazonaws.com/w3.crossroadsapp.co/overwatch/default_profile.png"
 
+var contactUsSourceCodesMapping = {
+  1 : "Singup Error",
+  2: "Login Error",
+  3: "In-App"
+}
+
 module.exports = {
   l: lodash,
   baseUrl: baseUrl,
@@ -270,5 +276,6 @@ module.exports = {
   SNS_EMAIL_RECEIVERS: SNS_EMAIL_RECEIVERS,
   mappingBetweenBackendConsoleAndOverwatchConsoleNames: mappingBetweenBackendConsoleAndOverwatchConsoleNames,
   mappingBetweenBackendGroupIdAndOverwatchRegionNames: mappingBetweenBackendGroupIdAndOverwatchRegionNames,
-  unverifiedProfilePic: unverifiedProfilePic
+  unverifiedProfilePic: unverifiedProfilePic,
+  contactUsSourceCodesMapping: contactUsSourceCodesMapping
 }

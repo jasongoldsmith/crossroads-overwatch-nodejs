@@ -12,7 +12,8 @@ function createReport(req, res) {
         var err = utils.errors.formErrorObject(utils.errors.errorTypes.report, utils.errors.errorCodes.missingFields)
         routeUtils.handleAPIError(req, res, err, err)
     } else {
-        var subject = "Overwatch Contact Us"
+        var sourceText = utils._.isInvalidOrEmpty(req.body.source) || utils._.isInvalidOrBlank(req.body.source.sourceCode)? "" : utils.constants.contactUsSourceCodesMapping[req.body.source.sourceCode]
+        var subject = "Overwatch Contact Us " + sourceText
         var email = req.isAuthenticated() ? req.user.email : req.body.email
         if(utils._.isInvalidOrBlank(email)){
             var err = utils.errors.formErrorObject(utils.errors.errorTypes.report, utils.errors.errorCodes.missingFields)
