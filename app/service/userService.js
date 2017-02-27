@@ -1049,7 +1049,8 @@ function getOverwatchProfilesForAConsole(consoleType, consoleId, battleTag, regi
           resp.console = {}
           resp.console.clanTag  = utils._.isInvalidOrBlank(consoleProfile.level)? null : "Lvl " + consoleProfile.level
           resp.console.imageUrl = utils._.isInvalidOrBlank(consoleProfile.imageUrl) ? "" :  consoleProfile.imageUrl
-          break;
+          resp.console.verifyStatus =  utils._.isInvalidOrBlank(consoleProfile.imageUrl) && utils._.isInvalidOrBlank(consoleProfile.level) ? "FAILED_INITIATION" :"VERIFIED"
+            break;
         }
         case utils.constants.consoleTypes.ps4 : {
           var overwatchConsole = utils.constants.mappingBetweenBackendConsoleAndOverwatchConsoleNames.ps4
@@ -1061,9 +1062,10 @@ function getOverwatchProfilesForAConsole(consoleType, consoleId, battleTag, regi
           resp.console = {}
           resp.console.clanTag  = utils._.isInvalidOrBlank(consoleProfile.level)? null : "Lvl " + consoleProfile.level
           resp.console.imageUrl = utils._.isInvalidOrBlank(consoleProfile.imageUrl) ? "" :  consoleProfile.imageUrl
+          resp.console.verifyStatus =  utils._.isInvalidOrBlank(consoleProfile.imageUrl) && utils._.isInvalidOrBlank(consoleProfile.level) ? "FAILED_INITIATION" :"VERIFIED"
           break;
         }
-        case utils.constants.consoleTypes.xboxone : {
+        case utils.constants.consoleTypes.pc : {
           var overwatchConsole = utils.constants.mappingBetweenBackendConsoleAndOverwatchConsoleNames.pc
           var consoleProfile = utils._.find(overwatchProfiles, {'console': overwatchConsole, 'region': utils.constants.mappingBetweenBackendGroupIdAndOverwatchRegionNames[region]})
           if(utils._.isInvalidOrEmpty(consoleProfile)){
