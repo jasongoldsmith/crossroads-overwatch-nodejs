@@ -48,7 +48,7 @@ var errorCodes = {
     code: 5,
     types: [errorTypes.signIn],
     title: "Email Address Error",
-    message: "An account with that email address does not exist."
+    message: "We cannot find a Crossroads account with the email address you provided. Check for any typos or try signing up for Crossroads!"
   },
   consoleTypeNotProvided: {
     code: 6,
