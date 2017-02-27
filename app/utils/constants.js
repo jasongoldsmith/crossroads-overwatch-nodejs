@@ -239,7 +239,7 @@ var mappingBetweenBackendGroupIdAndOverwatchRegionNames = {
 var unverifiedProfilePic = "https://s3-us-west-1.amazonaws.com/w3.crossroadsapp.co/overwatch/default_profile.png"
 
 var contactUsSourceCodesMapping = {
-  1 : "Singup Error",
+  1 : "Sign Up Error",
   2: "Login Error",
   3: "In-App",
   4: "Add Console Error"
