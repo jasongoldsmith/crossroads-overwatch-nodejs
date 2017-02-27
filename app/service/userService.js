@@ -1089,6 +1089,85 @@ function getOverwatchProfilesForAConsole(consoleType, consoleId, battleTag, regi
   ], callback)
 }
 
+function updateProfileForAllUsers(callback){
+  console.log("updateProfileForAllUsers")
+  var defaultProfilePic = "https://s3-us-west-1.amazonaws.com/w3.crossroadsapp.co/overwatch/default_profile.png"
+  utils.async.waterfall([
+    function(callback){
+      console.log("updateProfileForAllUsers start")
+      var isDone = false
+      var pageSize = 200
+      var pageNum = 0
+      var usersCount = 0
+      utils.async.whilst(
+        function(){
+          console.log("updateProfileForAllUsers in while condition" + isDone)
+          return !isDone
+        },
+        function (callback){
+          console.log("updateProfileForAllUsers in while loop")
+          pageNum++
+          models.user.getUsersGivenPageNumAndPageSize(pageNum, pageSize, function(err, users){
+            if(utils._.isInvalidOrEmpty(users)){
+              isDone = true
+              return callback(null, usersCount)
+            }
+            usersCount += users.length
+            utils.async.map(users, function(user, callback){
+              utils.l.i("updateProfileForAllUsers: pageNum", pageNum)
+              if(utils._.isInvalidOrEmpty(user.consoles)){
+                utils.l.i("There are no consoles for user " , user)
+                return callback(null, user)
+              }
+              var primaryConsole = utils._.find(user.consoles, {'isPrimary': true})
+              utils.async.waterfall([
+                function(callback) {
+                  getOverwatchProfilesForAConsole(primaryConsole.consoleType, primaryConsole.consoleId, user.battleTag, user.clanId, callback)
+                }, function(overwatchProfile, callback){
+                  utils.l.i("updateProfileForAllUsers , overwatch profile", overwatchProfile)
+                  if(utils._.isInvalidOrEmpty(overwatchProfile)){
+                    utils.l.i("updateProfileForAllUsers, no overwatch profile present for user " + user._id + "for console: " + primaryConsole.consoleType + "consoleId: " + primaryConsole.consoleId)
+                    return callback(null, user)
+                  }
+                  user.imageUrl =utils._.isInvalidOrBlank(overwatchProfile.imageUrl) ? defaultProfilePic:  overwatchProfile.imageUrl
+                  primaryConsole.clanTag  = utils._.isInvalidOrBlank(overwatchProfile.console.clanTag)? null : overwatchProfile.console.clanTag
+                  primaryConsole.imageUrl = utils._.isInvalidOrBlank(overwatchProfile.console.imageUrl) ? "" :  overwatchProfile.console.imageUrl
+                  primaryConsole.verifyStatus = overwatchProfile.console.verifyStatus
+                  updateUser(user, function (err, updatedUser) {
+                    if(err) {
+                      utils.l.s("Unable to update the user", err)
+                      return callback({error: "Something went wrong. Please try again"}, null)
+                    } else {
+                      utils.l.d("updateUserWithBattleNetInfo user", updatedUser)
+                      return callback(null, updatedUser)
+                    }
+                  })
+                }
+              ], callback)
+            }, function(err, result){
+              if(err){
+                return callback(err)
+              }
+              return callback(null, usersCount)
+            })
+          })
+        }, function(err, result){
+          console.log("calculateEventNumOfPeople in while callback" + usersCount)
+          if(err){
+            return callback(err)
+          }
+          return callback(null, usersCount)
+        }
+      )
+    }
+  ], function(err, result){
+    if(err){
+      return callback(null, err)
+    } else {
+      return callback(null, {value: "Num of updated user events= " + result})
+    }
+  })
+}
 module.exports = {
   userTimeout: userTimeout,
   preUserTimeout: preUserTimeout,
@@ -1115,5 +1194,6 @@ module.exports = {
   updateGroupStats:updateGroupStats,
   refreshGroups:refreshGroups,
   subscribeUsersForGroup:subscribeUsersForGroup,
-  getOverwatchProfilesForAConsole: getOverwatchProfilesForAConsole
+  getOverwatchProfilesForAConsole: getOverwatchProfilesForAConsole,
+  updateProfileForAllUsers: updateProfileForAllUsers
 }

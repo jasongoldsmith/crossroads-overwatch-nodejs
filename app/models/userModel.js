@@ -515,6 +515,10 @@ function isEmailAvailableForUser(userId, email, callback){
   })
 }
 
+function getUsersGivenPageNumAndPageSize(pageNum, pageSize, callback){
+  User.find({}).skip(pageSize * (pageNum-1)).limit(pageSize).exec(callback)
+}
+
 module.exports = {
   model: User,
   getUserById: getUserById,
@@ -549,5 +553,6 @@ module.exports = {
   findById: findById,
   updateUserPassword: updateUserPassword,
   updateUserEmail: updateUserEmail,
-  isEmailAvailableForUser: isEmailAvailableForUser
+  isEmailAvailableForUser: isEmailAvailableForUser,
+  getUsersGivenPageNumAndPageSize: getUsersGivenPageNumAndPageSize
 }
