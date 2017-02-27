@@ -241,7 +241,8 @@ var unverifiedProfilePic = "https://s3-us-west-1.amazonaws.com/w3.crossroadsapp.
 var contactUsSourceCodesMapping = {
   1 : "Singup Error",
   2: "Login Error",
-  3: "In-App"
+  3: "In-App",
+  4: "Add Console Error"
 }
 
 module.exports = {
