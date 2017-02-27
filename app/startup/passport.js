@@ -132,7 +132,7 @@ function updateUserWithBattleNetInfo(user, accessToken, refreshToken, battletag,
       utils.l.d("addConsole PC , pc overwatch profile", overwatchProfile)
       if(utils._.isValidNonEmpty(overwatchProfile)){
         var pcConsole = utils._.find(user.consoles, {'consoleType': utils.constants.consoleTypes.pc})
-        user.imageUrl =utils._.isInvalidOrBlank(overwatchProfile.imageUrl) ? user.imageUrl:  overwatchProfile.imageUrl
+        user.imageUrl =utils._.isInvalidOrBlank(overwatchProfile.imageUrl) ? utils.constants.unverifiedProfilePic:  overwatchProfile.imageUrl
         pcConsole.clanTag  = utils._.isInvalidOrBlank(overwatchProfile.console.clanTag)? null : overwatchProfile.console.clanTag
         pcConsole.imageUrl = utils._.isInvalidOrBlank(overwatchProfile.console.imageUrl) ? "" :  overwatchProfile.console.imageUrl
         pcConsole.verifyStatus = overwatchProfile.console.verifyStatus

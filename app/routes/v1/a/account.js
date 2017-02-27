@@ -35,7 +35,7 @@ function updateHelmet(req, res) {
         utils.l.d("updateHelmet, no overwatch profile present for user " + user._id + "for console: " + primaryConsole.consoleType + "consoleId: " + primaryConsole.consoleId)
         return callback(null, user)
       }
-      user.imageUrl =utils._.isInvalidOrBlank(overwatchProfile.imageUrl) ? user.imageUrl:  overwatchProfile.imageUrl
+      user.imageUrl =utils._.isInvalidOrBlank(overwatchProfile.imageUrl) ? utils.constants.unverifiedProfilePic:  overwatchProfile.imageUrl
       primaryConsole.clanTag  = utils._.isInvalidOrBlank(overwatchProfile.console.clanTag)? null : overwatchProfile.console.clanTag
       primaryConsole.imageUrl = utils._.isInvalidOrBlank(overwatchProfile.console.imageUrl) ? "" :  overwatchProfile.console.imageUrl
       primaryConsole.verifyStatus = overwatchProfile.console.verifyStatus

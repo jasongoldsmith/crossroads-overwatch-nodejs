@@ -236,6 +236,8 @@ var mappingBetweenBackendGroupIdAndOverwatchRegionNames = {
   Asia: "kr" //For now, just using Korea as Overwatch is being played only in kr. Once more regions are added in Asia, this needs to be updated.
 }
 
+var unverifiedProfilePic = "https://s3-us-west-1.amazonaws.com/w3.crossroadsapp.co/overwatch/default_profile.png"
+
 module.exports = {
   l: lodash,
   baseUrl: baseUrl,
@@ -267,5 +269,6 @@ module.exports = {
   SES_EMAIL_SENDER: SES_EMAIL_SENDER,
   SNS_EMAIL_RECEIVERS: SNS_EMAIL_RECEIVERS,
   mappingBetweenBackendConsoleAndOverwatchConsoleNames: mappingBetweenBackendConsoleAndOverwatchConsoleNames,
-  mappingBetweenBackendGroupIdAndOverwatchRegionNames: mappingBetweenBackendGroupIdAndOverwatchRegionNames
+  mappingBetweenBackendGroupIdAndOverwatchRegionNames: mappingBetweenBackendGroupIdAndOverwatchRegionNames,
+  unverifiedProfilePic: unverifiedProfilePic
 }

@@ -251,7 +251,7 @@ function addConsole(user, consoleType, consoleId, callback) {
       if(utils._.isValidNonEmpty(overwatchProfile)){
         utils.l.d("addConsole , overwatch profile", overwatchProfile)
         var userConsole = utils._.find(user.consoles, {'consoleType': userConsoleData.consoleType})
-        user.imageUrl = utils._.isInvalidOrBlank(overwatchProfile.imageUrl) ? user.imageUrl:  overwatchProfile.imageUrl
+        user.imageUrl = utils._.isInvalidOrBlank(overwatchProfile.imageUrl) ? utils.constants.unverifiedProfilePic:  overwatchProfile.imageUrl
         userConsole.clanTag  = utils._.isInvalidOrBlank(overwatchProfile.console.clanTag)? null : overwatchProfile.console.clanTag
         userConsole.imageUrl = utils._.isInvalidOrBlank(overwatchProfile.console.imageUrl) ? "" :  overwatchProfile.console.imageUrl
         userConsole.verifyStatus = overwatchProfile.console.verifyStatus
