@@ -365,7 +365,7 @@ function constructFindUserQuery(username, consoleId) {
   var query = {}
 
   if(username) {
-    query.userName = username
+    query.email = username
   }
 
   if(consoleId) {
