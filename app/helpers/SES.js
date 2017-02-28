@@ -73,12 +73,15 @@ function sendEmailForResetPassword(to, from, resetLink, subject, text, callback)
 }
 
 function sendEmailForWelcome(to, from, subject, callback){
-  var htmlData = fs.readFileSync(path.normalize(__dirname + '/../views/account/welcomeEmail.ejs'),'utf8')
+  var text = "Crossroads is a platform for connecting players to achieve maximum fun. It's completely free, lets you schedule your teams in advance, and automatically converts all time zones. If you have any suggestions or feedback to improve your experience, we welcome your input at research@crossroadsapp.co!"
+  sendEmailText(to, from, subject, text, callback)
 
-  var ejs_string = htmlData,
-    template = ejs.compile(ejs_string),
-    html = template({});
-  sendEmailHtml([to], from, subject, html, callback)
+  //var htmlData = fs.readFileSync(path.normalize(__dirname + '/../views/account/welcomeEmail.ejs'),'utf8')
+  //
+  //var ejs_string = htmlData,
+  //  template = ejs.compile(ejs_string),
+  //  html = template({});
+  //sendEmailHtml([to], from, subject, html, callback)
 }
 
 module.exports = {

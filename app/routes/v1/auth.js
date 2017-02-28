@@ -905,7 +905,7 @@ function signUp(req, res){
         })
         return callback(null, user)
     }, function(user, callback){
-      helpers.ses.sendEmailForWelcome(user.email, utils.constants.SES_EMAIL_SENDER, "Welcome to Crossroads for Overwatch", function(err, resp){
+      helpers.ses.sendEmailForWelcome([user.email], utils.constants.SES_EMAIL_SENDER, "Welcome to Crossroads for Overwatch", function(err, resp){
         if(err){
           utils.l.e("Sign Up: Welcome email err for user: ", user)
           utils.l.e("Sign Up: Welcome email err: ", err)
