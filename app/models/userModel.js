@@ -249,8 +249,8 @@ function updateUser(data, allowClanUpdate, callback) {
             if (data.passWord) {
               data.passWord = passwordHash.generate(data.passWord)
             }
-            if(data.userName) {
-              data.userName = data.userName.toLowerCase().trim()
+            if(data.email) {
+              data.email = data.email.toLowerCase().trim()
             }
             utils._.extend(user, data)
             user.save(callback)
