@@ -234,8 +234,14 @@ function joinEvent(user, data, callback) {
 				utils.l.d("player already exists, sending the event as it is")
 				return callback(null, event)
 			} else {
+				var userPrimaryConsole = utils._.find(user.consoles, {'isPrimary': true})
+				if(utils._.isInvalidOrEmpty(userPrimaryConsole) || !utils._.isEqual(userPrimaryConsole.consoleType, event.consoleType)){
+					var err = utils.errors.formErrorObject(utils.errors.errorTypes.joinEvent, utils.errors.errorCodes.joinEventForDifferentConsole)
+					return callback(err, null)
+				}
 				if (event.status == "full") {
-					return callback({ error: "Sorry, that event is full. Please refresh."}, null)
+					var err = utils.errors.formErrorObject(utils.errors.errorTypes.joinEvent, utils.errors.errorCodes.joinEventFull)
+					return callback(err, null)
 				} else {
 					event.players.push(user._id)
 					update(event, callback)

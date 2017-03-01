@@ -10,7 +10,8 @@ var errorTypes = {
   changePrimaryConsole: "Change Primary Console",
   updateEmail: "Update Email",
   report: "report",
-  resetPassword: 'resetPassword'
+  resetPassword: 'resetPassword',
+  joinEvent: 'joinEvent'
 }
 
 var errorCodes = {
@@ -134,6 +135,18 @@ var errorCodes = {
     types: [errorTypes.report],
     title: "Missing Fields",
     message: "Please complete the required fields."
+  },
+  joinEventFull: {
+    code: 20,
+    types: [errorTypes.joinEvent],
+    title: "Join Event",
+    message: "Sorry, that event is full. Please refresh"
+  },
+  joinEventForDifferentConsole : {
+    code: 21,
+    types: [errorTypes.joinEvent],
+    title: "Join Event",
+    message: "Sorry, this activity is for a different console"
   }
 }
 
