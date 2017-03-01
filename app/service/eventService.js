@@ -518,7 +518,7 @@ function listEventById(user, data, callback) {
           utils.l.d("listEventById: userPrimaryConsole", userPrimaryConsole)
           var consoleToUseTemp = utils._.find(player.consoles, {"consoleType": userPrimaryConsole.consoleType })
           if(utils._.isInvalidOrEmpty(consoleToUseTemp)){
-            consoleToUse = userPrimaryConsole
+            consoleToUse = utils._.find(player.consoles, {"isPrimary": true})
           }else {
             consoleToUse =  consoleToUseTemp
           }
@@ -547,13 +547,13 @@ function listEventById(user, data, callback) {
           utils.l.d("listEventById: user obj empty")
           consoleToUse = utils._.find(comment.user.consoles, {"isPrimary": true})
         } else {
-          consoleToUse = utils._.find(comment.user.consoles, {"isPrimary": true})
+          //consoleToUse = utils._.find(comment.user.consoles, {"isPrimary": true})
 
           var userPrimaryConsole = utils._.find(user.consoles, {"isPrimary": true})
           utils.l.d("listEventById: comment userPrimaryConsole", userPrimaryConsole)
           var consoleToUseTemp = utils._.find(comment.user.consoles, {"consoleType": userPrimaryConsole.consoleType })
           if(utils._.isInvalidOrEmpty(consoleToUseTemp)){
-            consoleToUse = userPrimaryConsole
+            consoleToUse = utils._.find(comment.user.consoles, {"isPrimary": true})
           }else {
             consoleToUse =  consoleToUseTemp
           }

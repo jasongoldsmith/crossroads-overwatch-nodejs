@@ -93,7 +93,7 @@ function getFeed(user, consoleType, isPublicFeed, createMyEventsList, callback) 
 							utils.l.d("Get Feed: userPrimaryConsole", userPrimaryConsole)
 							var consoleToUseTemp = utils._.find(playerObj.consoles, {"consoleType": userPrimaryConsole.consoleType })
 							if(utils._.isInvalidOrEmpty(consoleToUseTemp)){
-								consoleToUse = userPrimaryConsole
+								consoleToUse = utils._.find(playerObj.consoles, {"isPrimary": true})
 							}else {
 								consoleToUse =  consoleToUseTemp
 							}
