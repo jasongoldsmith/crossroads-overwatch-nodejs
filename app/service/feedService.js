@@ -93,7 +93,7 @@ function getFeed(user, consoleType, isPublicFeed, createMyEventsList, callback) 
 							utils.l.i("Get Feed: userPrimaryConsole", userPrimaryConsole)
 							var consoleToUseTemp = utils._.find(playerObj.consoles, {"consoleType": userPrimaryConsole.consoleType })
 							utils.l.i("Get Feed: consoleToUse", consoleToUse)
-							utils.l.i("Get Feed: conosle temp empty? ", utils._.isInvalidOrEmpty(consoleToUseTemp))
+							utils.l.i("Get Feed: conosle temp empty? ", utils._.isInvalidOrEmpty(consoleToUseTemp) + event._id)
 							utils.l.i("Get Feed: consoleToUseTemp", consoleToUseTemp)
 						}
 						playerObj.consoleId = consoleToUse.consoleId
