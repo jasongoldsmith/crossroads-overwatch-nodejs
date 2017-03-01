@@ -249,6 +249,18 @@ switch(command) {
       utils.l.d("updateProfilesForAllUsers: count of users updated", countOfUsers)
     })
     break;
+  case "addUsersToGroupsForPsn":
+    userService.addUsersToGroupsForAConsole(utils.constants.consoleTypes.ps4, function(err, countOfUsers){
+      utils.l.d("updateProfilesForAllUsers: err", err)
+      utils.l.d("updateProfilesForAllUsers: count of users updated", countOfUsers)
+    })
+    break;
+  case "addUsersGroupsForXbox":
+    userService.addUsersToGroupsForAConsole(utils.constants.consoleTypes.xboxone, function(err, countOfUsers){
+      utils.l.d("updateProfilesForAllUsers: err", err)
+      utils.l.d("updateProfilesForAllUsers: count of users updated", countOfUsers)
+    })
+    break;
   default:
     break;
 }

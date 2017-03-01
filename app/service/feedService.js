@@ -68,7 +68,6 @@ function getFeed(user, consoleType, isPublicFeed, createMyEventsList, callback) 
 				return player._id
 			})
 			utils._.map(eventsList, function(event) {
-        console.log("event before", event)
 				event.eType = utils._.get(activitiesMap, event.eType)
 				var playerList = []
 				utils._.map(event.players, function(playerId) {

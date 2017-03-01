@@ -519,6 +519,16 @@ function getUsersGivenPageNumAndPageSize(pageNum, pageSize, callback){
   User.find({}).skip(pageSize * (pageNum-1)).limit(pageSize).exec(callback)
 }
 
+function getUsersForConsoleGivenPageNumAndPageSize(consoleType, pageNum, pageSize, callback){
+  User.find({
+    "consoles": {
+      "$elemMatch" : {
+        consoleType: consoleType
+      }
+    }
+  }).skip(pageSize * (pageNum-1)).limit(pageSize).exec(callback)
+}
+
 module.exports = {
   model: User,
   getUserById: getUserById,
@@ -554,5 +564,6 @@ module.exports = {
   updateUserPassword: updateUserPassword,
   updateUserEmail: updateUserEmail,
   isEmailAvailableForUser: isEmailAvailableForUser,
-  getUsersGivenPageNumAndPageSize: getUsersGivenPageNumAndPageSize
+  getUsersGivenPageNumAndPageSize: getUsersGivenPageNumAndPageSize,
+  getUsersForConsoleGivenPageNumAndPageSize: getUsersForConsoleGivenPageNumAndPageSize
 }

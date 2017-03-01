@@ -1168,6 +1168,59 @@ function updateProfileForAllUsers(callback){
     }
   })
 }
+
+function addUsersToGroupsForAConsole(consoleType, callback){
+  console.log("addPSNUsersToNonDefaultGroups")
+  utils.async.waterfall([
+    function(callback){
+      console.log("addPSNUsersToNonDefaultGroups start")
+      var isDone = false
+      var pageSize = 200
+      var pageNum = 0
+      var usersCount = 0
+      utils.async.whilst(
+        function(){
+          console.log("addPSNUsersToNonDefaultGroups in while condition" + isDone)
+          return !isDone
+        },
+        function (callback){
+          console.log("addPSNUsersToNonDefaultGroups in while loop")
+          pageNum++
+          models.user.getUsersForConsoleGivenPageNumAndPageSize(consoleType, pageNum, pageSize, function(err, users){
+            console.log("getUsersForConsoleGivenPageNumAndPageSize: num of users", utils._.isInvalidOrEmpty(users)? 0 : users.length)
+            if(utils._.isInvalidOrEmpty(users)){
+              isDone = true
+              return callback(null, usersCount)
+            }
+            usersCount += users.length
+            utils.async.map(users, function(user, callback){
+              utils.l.i("addPSNUsersToNonDefaultGroups: pageNum", pageNum)
+              models.user.addUserToGroupsBasedOnConsole(user._id, consoleType, callback)
+            }, function(err, result){
+              if(err){
+                return callback(err)
+              }
+              return callback(null, usersCount)
+            })
+          })
+        }, function(err, result){
+          console.log("addPSNUsersToNonDefaultGroups in while callback" + usersCount)
+          if(err){
+            return callback(err)
+          }
+          return callback(null, usersCount)
+        }
+      )
+    }
+  ], function(err, result){
+    if(err){
+      return callback(null, err)
+    } else {
+      return callback(null, {value: "Num of updated user events= " + result})
+    }
+  })
+}
+
 module.exports = {
   userTimeout: userTimeout,
   preUserTimeout: preUserTimeout,
@@ -1195,5 +1248,6 @@ module.exports = {
   refreshGroups:refreshGroups,
   subscribeUsersForGroup:subscribeUsersForGroup,
   getOverwatchProfilesForAConsole: getOverwatchProfilesForAConsole,
-  updateProfileForAllUsers: updateProfileForAllUsers
+  updateProfileForAllUsers: updateProfileForAllUsers,
+  addUsersToGroupsForAConsole: addUsersToGroupsForAConsole
 }
