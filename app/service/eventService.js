@@ -513,10 +513,12 @@ function listEventById(user, data, callback) {
           utils.l.d("listEventById: user obj empty")
           consoleToUse = utils._.find(player.consoles, {"isPrimary": true})
         } else {
-          var userPrimaryConsole = utils._.find(user.consoles, {"isPrimary": true})
-          utils.l.d("listEventById: userPrimaryConsole", userPrimaryConsole)
-          consoleToUse = utils._.find(player.consoles, {"consoleType": userPrimaryConsole.consoleType })
-          utils.l.d("listEventById: consoleToUse", consoleToUse)
+          consoleToUse = utils._.find(player.consoles, {"isPrimary": true})
+
+          //var userPrimaryConsole = utils._.find(user.consoles, {"isPrimary": true})
+          //utils.l.d("listEventById: userPrimaryConsole", userPrimaryConsole)
+          //consoleToUse = utils._.find(player.consoles, {"consoleType": userPrimaryConsole.consoleType })
+          //utils.l.d("listEventById: consoleToUse", consoleToUse)
         }
         player.consoleId = consoleToUse.consoleId
         //Clan tag could still be empty as support for fetching user's overwatch profile was added later.
@@ -540,10 +542,12 @@ function listEventById(user, data, callback) {
           utils.l.d("listEventById: user obj empty")
           consoleToUse = utils._.find(comment.user.consoles, {"isPrimary": true})
         } else {
-          var userPrimaryConsole = utils._.find(user.consoles, {"isPrimary": true})
-          utils.l.d("listEventById: comment userPrimaryConsole", userPrimaryConsole)
-          consoleToUse = utils._.find(comment.user.consoles, {"consoleType": userPrimaryConsole.consoleType })
-          utils.l.d("listEventById: comment consoleToUse", consoleToUse)
+          consoleToUse = utils._.find(comment.user.consoles, {"isPrimary": true})
+
+          //var userPrimaryConsole = utils._.find(user.consoles, {"isPrimary": true})
+          //utils.l.d("listEventById: comment userPrimaryConsole", userPrimaryConsole)
+          //consoleToUse = utils._.find(comment.user.consoles, {"consoleType": userPrimaryConsole.consoleType })
+          //utils.l.d("listEventById: comment consoleToUse", consoleToUse)
         }
         comment.user.consoleId = consoleToUse.consoleId
         comment.user.clanTag = utils._.isInvalidOrBlank(consoleToUse.clanTag)? "" : consoleToUse.clanTag

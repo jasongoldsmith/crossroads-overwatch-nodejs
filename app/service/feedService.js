@@ -87,10 +87,11 @@ function getFeed(user, consoleType, isPublicFeed, createMyEventsList, callback) 
 							utils.l.d("Get Feed: user obj empty")
 							consoleToUse = utils._.find(playerObj.consoles, {"isPrimary": true})
 						} else {
-							var userPrimaryConsole = utils._.find(user.consoles, {"isPrimary": true})
-							utils.l.d("Get Feed: userPrimaryConsole", userPrimaryConsole)
-							consoleToUse = utils._.find(playerObj.consoles, {"consoleType": userPrimaryConsole.consoleType })
-							utils.l.d("Get Feed: consoleToUse", consoleToUse)
+							consoleToUse = utils._.find(playerObj.consoles, {"isPrimary": true})
+							//var userPrimaryConsole = utils._.find(user.consoles, {"isPrimary": true})
+							//utils.l.d("Get Feed: userPrimaryConsole", userPrimaryConsole)
+							//consoleToUse = utils._.find(playerObj.consoles, {"consoleType": userPrimaryConsole.consoleType })
+							//utils.l.d("Get Feed: consoleToUse", consoleToUse)
 
 						}
 						playerObj.consoleId = consoleToUse.consoleId
