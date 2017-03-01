@@ -70,6 +70,7 @@ function getFeed(user, consoleType, isPublicFeed, createMyEventsList, callback) 
 			utils._.map(eventsList, function(event) {
 				event.eType = utils._.get(activitiesMap, event.eType)
 				var playerList = []
+				utils.l.i("Get Feed: event console type: ", event.consoleType)
 				utils._.map(event.players, function(playerId) {
 					var playerObj = utils._.get(playersMap, playerId)
 					if(utils._.isValid(playerObj)) {
@@ -87,12 +88,14 @@ function getFeed(user, consoleType, isPublicFeed, createMyEventsList, callback) 
 							utils.l.d("Get Feed: user obj empty")
 							consoleToUse = utils._.find(playerObj.consoles, {"isPrimary": true})
 						} else {
-							consoleToUse = utils._.find(playerObj.consoles, {"isPrimary": true})
-							//var userPrimaryConsole = utils._.find(user.consoles, {"isPrimary": true})
-							//utils.l.d("Get Feed: userPrimaryConsole", userPrimaryConsole)
-							//consoleToUse = utils._.find(playerObj.consoles, {"consoleType": userPrimaryConsole.consoleType })
-							//utils.l.d("Get Feed: consoleToUse", consoleToUse)
-
+							//consoleToUse = utils._.find(playerObj.consoles, {"isPrimary": true})
+							var userPrimaryConsole = utils._.find(user.consoles, {"isPrimary": true})
+							utils.l.i("Get Feed: userPrimaryConsole", userPrimaryConsole)
+							var consoleToUseTemp = utils._.find(playerObj.consoles, {"consoleType": userPrimaryConsole.consoleType })
+							if(utils._.isInvalidOrEmpty(consoleToUseTemp)){
+								consoleToUse = userPrimaryConsole
+							}
+							utils.l.i("Get Feed: consoleToUse", consoleToUse)
 						}
 						playerObj.consoleId = consoleToUse.consoleId
 						//Clan tag could still be empty as support for fetching user's overwatch profile was added later.
