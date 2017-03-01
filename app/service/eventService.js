@@ -513,14 +513,17 @@ function listEventById(user, data, callback) {
           utils.l.d("listEventById: user obj empty")
           consoleToUse = utils._.find(player.consoles, {"isPrimary": true})
         } else {
-          consoleToUse = utils._.find(player.consoles, {"isPrimary": true})
-
+          //consoleToUse = utils._.find(player.consoles, {"isPrimary": true})
           var userPrimaryConsole = utils._.find(user.consoles, {"isPrimary": true})
           utils.l.d("listEventById: userPrimaryConsole", userPrimaryConsole)
           var consoleToUseTemp = utils._.find(player.consoles, {"consoleType": userPrimaryConsole.consoleType })
+          if(utils._.isInvalidOrEmpty(consoleToUseTemp)){
+            consoleToUse = userPrimaryConsole
+          }else {
+            consoleToUse =  consoleToUseTemp
+          }
           utils.l.d("listEventById: consoleToUse", consoleToUse)
           utils.l.d("listEventById: consoleToUseTemp", consoleToUseTemp)
-
         }
         player.consoleId = consoleToUse.consoleId
         //Clan tag could still be empty as support for fetching user's overwatch profile was added later.
@@ -549,6 +552,11 @@ function listEventById(user, data, callback) {
           var userPrimaryConsole = utils._.find(user.consoles, {"isPrimary": true})
           utils.l.d("listEventById: comment userPrimaryConsole", userPrimaryConsole)
           var consoleToUseTemp = utils._.find(comment.user.consoles, {"consoleType": userPrimaryConsole.consoleType })
+          if(utils._.isInvalidOrEmpty(consoleToUseTemp)){
+            consoleToUse = userPrimaryConsole
+          }else {
+            consoleToUse =  consoleToUseTemp
+          }
           utils.l.d("listEventById: comment consoleToUse", consoleToUse)
           utils.l.d("listEventById: comment consoleToUseTemp", consoleToUseTemp)
 

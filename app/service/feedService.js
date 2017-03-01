@@ -88,13 +88,18 @@ function getFeed(user, consoleType, isPublicFeed, createMyEventsList, callback) 
 							utils.l.d("Get Feed: user obj empty")
 							consoleToUse = utils._.find(playerObj.consoles, {"isPrimary": true})
 						} else {
-							consoleToUse = utils._.find(playerObj.consoles, {"isPrimary": true})
+							//consoleToUse = utils._.find(playerObj.consoles, {"isPrimary": true})
 							var userPrimaryConsole = utils._.find(user.consoles, {"isPrimary": true})
-							utils.l.i("Get Feed: userPrimaryConsole", userPrimaryConsole)
+							utils.l.d("Get Feed: userPrimaryConsole", userPrimaryConsole)
 							var consoleToUseTemp = utils._.find(playerObj.consoles, {"consoleType": userPrimaryConsole.consoleType })
-							utils.l.i("Get Feed: consoleToUse", consoleToUse)
-							utils.l.i("Get Feed: conosle temp empty? " +  utils._.isInvalidOrEmpty(consoleToUseTemp) + "Event Id: " + event._id)
-							utils.l.i("Get Feed: consoleToUseTemp", consoleToUseTemp)
+							if(utils._.isInvalidOrEmpty(consoleToUseTemp)){
+								consoleToUse = userPrimaryConsole
+							}else {
+								consoleToUse =  consoleToUseTemp
+							}
+							utils.l.d("Get Feed: consoleToUse", consoleToUse)
+							utils.l.i("Get Feed: console temp empty? " +  utils._.isInvalidOrEmpty(consoleToUseTemp) + "Event Id: " + event._id)
+							utils.l.d("Get Feed: consoleToUseTemp", consoleToUseTemp)
 						}
 						playerObj.consoleId = consoleToUse.consoleId
 						//Clan tag could still be empty as support for fetching user's overwatch profile was added later.
