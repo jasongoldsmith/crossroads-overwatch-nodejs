@@ -223,7 +223,7 @@ function subscirbeUserGroup(userGroup,installation, callback){
         registerDeviceToken(userGroup.user,installation,callback)
     },function(installationUpdated, callback){
       if(utils._.isValidNonBlank(installationUpdated.deviceSubscription) && utils._.isValidNonBlank(installationUpdated.deviceSubscription.deviceEndpointArn)){
-        utils.async.mapSeries(userGroup.consoles,
+        utils.async.mapSeries(userGroup.consoleTypes,
           function(consoleType,asyncCallback){
             var appStats = utils._.find(userGroup.group.appStats,{consoleType:consoleType})
             if(utils._.isValidNonBlank(appStats) && appStats.memberCount >= utils.config.minUsersForGroupNotification && !userGroup.muteNotification)

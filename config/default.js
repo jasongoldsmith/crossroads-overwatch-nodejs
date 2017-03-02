@@ -104,7 +104,7 @@ var defaults = {
   userLastActiveUpdateInterval:2,
   disableEnvetUpdateForComments: process.env.DISABLE_EVENT_UPDATE_COMMENTS || true,
   defaultHelmetUrl:'https://www.bungie.net/common/destiny_content/icons/3e0b919ea55d420156cdf384b66a7f8a.jpg',
-  minUsersForGroupNotification:2,
+  minUsersForGroupNotification:0,
   battleNetClientId : process.env.BATTLE_NET_CLIENT_ID,
   battleNetClientSecret : process.env.BATTLE_NET_CLIENT_SECRET,
   battleNetCallbackUrl : process.env.BATTLE_NET_CALLBACK_URL,
