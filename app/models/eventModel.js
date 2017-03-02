@@ -236,6 +236,7 @@ function joinEvent(user, data, callback) {
 			} else {
 				var userPrimaryConsole = utils._.find(user.consoles, {'isPrimary': true})
 				if(utils._.isInvalidOrEmpty(userPrimaryConsole) || !utils._.isEqual(userPrimaryConsole.consoleType, event.consoleType)){
+					utils.l.e("joinEvent: err for user "+  user._id + " err: ", err)
 					var err = utils.errors.formErrorObject(utils.errors.errorTypes.joinEvent, utils.errors.errorCodes.joinEventForDifferentConsole)
 					return callback(err, null)
 				}

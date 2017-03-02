@@ -70,7 +70,6 @@ function getFeed(user, consoleType, isPublicFeed, createMyEventsList, callback) 
 			utils._.map(eventsList, function(event) {
 				event.eType = utils._.get(activitiesMap, event.eType)
 				var playerList = []
-				utils.l.i("Get Feed: event console type: ", event.consoleType)
 				utils._.map(event.players, function(playerId) {
 					var playerObj = utils._.get(playersMap, playerId)
 					if(utils._.isValid(playerObj)) {
@@ -94,11 +93,11 @@ function getFeed(user, consoleType, isPublicFeed, createMyEventsList, callback) 
 							var consoleToUseTemp = utils._.find(playerObj.consoles, {"consoleType": userPrimaryConsole.consoleType })
 							if(utils._.isInvalidOrEmpty(consoleToUseTemp)){
 								consoleToUse = utils._.find(playerObj.consoles, {"isPrimary": true})
+								utils.l.i("Get Feed: console temp empty for Event Id: " + event._id)
 							}else {
 								consoleToUse =  consoleToUseTemp
 							}
 							utils.l.d("Get Feed: consoleToUse", consoleToUse)
-							utils.l.i("Get Feed: console temp empty? " +  utils._.isInvalidOrEmpty(consoleToUseTemp) + "Event Id: " + event._id)
 							utils.l.d("Get Feed: consoleToUseTemp", consoleToUseTemp)
 						}
 						playerObj.consoleId = consoleToUse.consoleId
