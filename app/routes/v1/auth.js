@@ -983,10 +983,12 @@ function signIn(req, res){
 function resetPasswordLaunch(req, res) {
   var token = req.param("token")
   models.user.getUserByData({passwordResetToken:token},function(err, user){
+    utils.l.d("resetPasswordLaunch, user", user)
+    var consoleId =  utils._.isInvalidOrEmpty(user) || utils._.isInvalidOrEmpty(user.consoles)? null : utils.primaryConsole(user).consoleId
     if(user) {
       res.render("account/resetPassword", {
         token: token,
-        consoleId: utils.primaryConsole(user).consoleId,
+        consoleId: consoleId,
         email: user.email,
         appName: utils.config.appName
       })
