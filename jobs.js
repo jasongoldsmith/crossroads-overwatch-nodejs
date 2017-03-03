@@ -858,6 +858,55 @@ function getNewDate(minutes) {
   return new Date(Date.now() + (minutes * 60000)).toISOString()
 }
 
+function exportIncompleteSignups(){
+  var emailList = []
+  var path = '/Users/dasasr/projects/traveler/admin/prod/userEmailsIncompleteSignup.csv'
+
+  var fd = null
+  fs.open(path, 'w', function(err, fdLocal) {
+    if (err) {
+      throw 'error opening file: ' + err;
+    }
+    fd =  fdLocal;
+  });
+
+  var cursor =  models.user.model
+    .find({ $where: "this.consoles.length <= 0" })
+    .stream()
+
+  cursor.on('data', function (doc) {
+    utils.l.d('################# got user',doc._id)
+    setPasswordTokenOnUser(doc,fd,function(err,data){
+      utils.l.d('&&&&& COMPLETED subScribeUsergropu UPDATE &&&&')
+    })
+  }).on('error', function (err) {
+    utils.l.d('error getting userGroup',err)
+  }).on('close', function () {
+    utils.l.d('Completed processing subscribeUsersForGroup for group')
+    //fs.writeFileSync("/Users/dasasr/projects/traveler/admin/prod/userEmailsIncompleteSignup.csv",emailList)
+    fs.close(fd, function() {
+      console.log('file written');
+    })
+
+//    return callback(null,null)
+  });
+}
+var os = require("os");
+function setPasswordTokenOnUser(user, fd,callback) {
+  if(utils._.isInvalidOrBlank(user)) {
+    return callback({error:"An account with that email address does not exist."}, null)
+  }
+  var uuidStr = helpers.uuid.getRandomUUID()
+  utils.l.d("uuidStr",uuidStr)
+  models.user.model.update({_id:user._id},{"$set":{passwordResetToken:uuidStr}}, callback)
+  var record = user.email+","+"https://owlive.crossroadsapp.co/api/v1/auth/resetPasswordLaunch/"+uuidStr
+  utils.l.d("record",record)
+  //emailList.push(record)
+  fs.write(fd, record+os.EOL, null, 'utf8', function(err) {
+    if (err) utils.l.i('error writing file: ' , err)
+  });
+}
+
 module.exports = {
   updatePassWord: updatePassWord,
   deleteOldFullEvents: deleteOldFullEvents,
@@ -879,5 +928,6 @@ module.exports = {
   groupStatsUpdate:groupStatsUpdate,
   subscribeUsersForGroup:subscribeUsersForGroup,
   updateGroupStats:updateGroupStats,
-  migrateInstllationsToSNS:migrateInstllationsToSNS
+  migrateInstllationsToSNS:migrateInstllationsToSNS,
+  exportIncompleteSignups:exportIncompleteSignups
 }

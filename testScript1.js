@@ -3,7 +3,7 @@ var router = express.Router()
 var utils = require('./app/utils')
 var helpers = require('./app/helpers')
 var fs = require('fs')
-
+var jobs = require('./jobs')
 var command = process.argv[2]
 
 switch(command) {
@@ -25,6 +25,9 @@ switch(command) {
       html, function(err, response) {
         utils.l.d("response",response)
       })
+    break;
+  case "exportIncompleteSignups":
+    jobs.exportIncompleteSignups()
     break;
   default:
     break;

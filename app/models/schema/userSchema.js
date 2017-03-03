@@ -78,7 +78,7 @@ UserSchema.index({'consoles.verifyToken': 1})
 UserSchema.index({'verifyToken': 1})
 UserSchema.index({'date': 1})
 UserSchema.index({"groups.groupId": 1})
-
+UserSchema.index({"passwordResetToken":1})
 
 UserSchema.pre('validate', function(next) {
   this.uDate = new Date()
