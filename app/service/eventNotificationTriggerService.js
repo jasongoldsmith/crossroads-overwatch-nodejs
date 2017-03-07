@@ -401,7 +401,7 @@ function hasNotifStatus(notifStatusList, notifStatus){
 }
 
 function createNotificationAndSend(event, user, comment, notification){
-  utils.l.i("createNotificationAndSend event: ", event)
+  utils.l.d("createNotificationAndSend event: ", event)
   //utils.l.d("createNotificationAndSend::event="+utils.l.eventLog(event)+"\nnotification::" + JSON.stringify(notification))
   notificationService.getNotificationDetails(event, notification, user, comment, function(err, notificationResponse) {
 

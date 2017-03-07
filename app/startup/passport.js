@@ -179,7 +179,7 @@ module.exports = function (passport, config) {
 
   passport.deserializeUser(function(id, callback) {
     utils.l.d('1*************************************  deserializeUser');
-    utils.l.i("deserialize", id);
+    utils.l.d("deserialize", id);
     models.user.getById(id, function (err, user) {
       utils.l.d('deserializing user:', user);
 

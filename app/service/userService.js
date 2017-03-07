@@ -978,7 +978,7 @@ function listGroups(user, callback) {
       //filter groups based on user's primary console
       var primaryConsole = utils._.find(user.consoles, ['isPrimary', true])
       var filteredList = []
-      utils.l.i("listGroups: primary console", primaryConsole)
+      utils.l.d("listGroups: primary console", primaryConsole)
       utils.async.map(userGroupList, function(userGroup, callback){
         utils.l.d("listGroups: group list", userGroupList)
         if(utils.underscore.contains(userGroup.consoleTypes, primaryConsole.consoleType)){
