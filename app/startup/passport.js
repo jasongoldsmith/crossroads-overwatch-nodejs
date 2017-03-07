@@ -26,13 +26,13 @@ function handleAddConsolePCWithBattleNetLogin(req, authData, done){
       if(utils._.isInvalidOrBlank(authData.accessToken) || utils._.isInvalidOrEmpty(authData.profile)){
         utils.l.e("handleAddConsolePCWithBattleNetLogin access token or profile null")
 
-        var err = utils.errors.formErrorObject(utils.errors.errorTypes.addConsole, utils.errors.errorTypes.accessTokenProfileNotReceivedFromBattleNet, null)
+        var err = utils.errors.formErrorObject(utils.errors.errorTypes.addConsole, utils.errors.errorCodes.accessTokenProfileNotReceivedFromBattleNet, null)
         return callback(err)
 
       }
       if(utils._.isInvalidOrBlank(authData.profile.battletag)){
         utils.l.e("handleAddConsolePCWithBattleNetLogin battle tag is null.")
-        var err = utils.errors.formErrorObject(utils.errors.errorTypes.addConsole, utils.errors.errorTypes.battleTagEmptyReceivedFromBattleNet, null)
+        var err = utils.errors.formErrorObject(utils.errors.errorTypes.addConsole, utils.errors.errorCodes.battleTagEmptyReceivedFromBattleNet, null)
         return callback(err)
       }
       //TODO: check if the battle tag is already taken, if taken update the account
