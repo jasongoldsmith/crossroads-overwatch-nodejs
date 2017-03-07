@@ -7,7 +7,6 @@ var helpers = require('../../../helpers')
 var service = require('../../../service')
 
 function create(req, res) {
-	console.log("user", req.user)
 	utils.l.i("Event create request: " + JSON.stringify(req.body))
 	service.eventService.createEvent(req.user, req.body, function(err, event) {
 		if (err) {
