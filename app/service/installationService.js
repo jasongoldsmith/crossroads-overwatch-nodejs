@@ -18,6 +18,7 @@ function updateInstallation(pushDeviceType, deviceToken, user, callback){
         userService.subscribeUserNotifications(user,false,callback)
     }]
     ,function(err,result){
+      utils.l.e("updateInstallation err: ", err)
       if(utils._.isValidNonBlank(installationObj))
         return callback(null,installationObj)
       else
