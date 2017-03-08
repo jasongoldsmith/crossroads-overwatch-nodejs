@@ -556,7 +556,14 @@ function updateUserGroup(data, callback) {
   utils.l.d("updateUserGroup::",data)
   var clanName = utils._.isInvalidOrBlank(data.clanName)?"":data.clanName
   var clanImageUrl = utils._.isInvalidOrBlank(data.clanImageUrl)?"":data.clanImageUrl
-  models.user.updateUser({id: data.id, clanId: data.clanId, clanName:clanName, clanImageUrl:clanImageUrl}, true, callback)
+  models.user.updateUser({id: data.id, clanId: data.clanId, clanName:clanName, clanImageUrl:clanImageUrl}, true, function(err, user){
+    if(err){
+      return callback(err)
+    } else {
+      helpers.firebase.updateUser(user)
+      return callback(null, user)
+    }
+  })
 }
 
 //function listGroups(user, callback) {
