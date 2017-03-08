@@ -73,7 +73,66 @@ function subscribeInstallationAsync(page, limit, callback){
   ],callback)
 }
 
+function subscribeUsersWithoutDeviceSubscriptionToSNS(callback){
+  utils.l.i("subscribeUsersWithoutDeviceSubscriptionToSNS")
+  utils.async.waterfall([
+    function(callback){
+      utils.l.d("subscribeUsersWithoutDeviceSubscriptionToSNS start")
+      var isDone = false
+      var pageSize = 200
+      var pageNum = 0
+      var usersCount = 0
+      utils.async.whilst(
+        function(){
+          utils.l.d("subscribeUsersWithoutDeviceSubscriptionToSNS in while condition" + isDone)
+          return !isDone
+        },
+        function (callback){
+          utils.l.d("subscribeUsersWithoutDeviceSubscriptionToSNS in while loop")
+          pageNum++
+          models.installation.getUsersWithoutSubscriptionGivenPageNumAndPageSize(pageNum, pageSize, function(err, installations){
+            utils.l.i("subscribeUsersWithoutDeviceSubscriptionToSNS: num of installations", utils._.isInvalidOrEmpty(installations)? 0 : installations.length)
+            if(utils._.isInvalidOrEmpty(installations)){
+              isDone = true
+              return callback(null, usersCount)
+            }
+            usersCount += installations.length
+            utils.async.map(installations, function(installation, callback){
+              utils.l.d("subscribeUsersWithoutDeviceSubscriptionToSNS: pageNum", pageNum)
+              updateInstallation(installation.deviceType, installation.deviceToken, {_id: installation.user}, function(err, updatedInstallation){
+                if(err){
+                  //ignore error and move on to the next one
+                  utils.l.e("subscribeUsersWithoutDeviceSubscriptionToSNS error for user: " +  installation.user + " err: ", err)
+                }
+                return callback(null, updatedInstallation)
+              })
+            }, function(err, result){
+              if(err){
+                return callback(err)
+              }
+              return callback(null, usersCount)
+            })
+          })
+        }, function(err, result){
+          utils.l.d("subscribeUsersWithoutDeviceSubscriptionToSNS in while callback" + usersCount)
+          if(err){
+            return callback(err)
+          }
+          return callback(null, usersCount)
+        }
+      )
+    }
+  ], function(err, result){
+    if(err){
+      return callback(null, err)
+    } else {
+      return callback(null, {value: "Num of updated user events= " + result})
+    }
+  })
+}
+
 module.exports = {
   updateInstallation: updateInstallation,
-  subscribeInstallation:subscribeInstallation
+  subscribeInstallation:subscribeInstallation,
+  subscribeUsersWithoutDeviceSubscriptionToSNS: subscribeUsersWithoutDeviceSubscriptionToSNS
 }

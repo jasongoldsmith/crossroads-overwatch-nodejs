@@ -21,7 +21,7 @@ var destinyService = require('./app/service/destinyInterface')
 var authService = require('./app/service/authService')
 var notifService = require('./app/service/eventNotificationService')
 var userService = require('./app/service/userService')
-
+var installationService = require('./app/service/installationService')
 
 var command = process.argv[2]
 var event ='{'+
@@ -255,10 +255,16 @@ switch(command) {
       utils.l.d("updateProfilesForAllUsers: count of users updated", countOfUsers)
     })
     break;
-  case "addUsersGroupsForXbox":
+  case "addUsersToGroupsForXbox":
     userService.addUsersToGroupsForAConsole(utils.constants.consoleTypes.xboxone, function(err, countOfUsers){
       utils.l.d("updateProfilesForAllUsers: err", err)
       utils.l.d("updateProfilesForAllUsers: count of users updated", countOfUsers)
+    })
+    break;
+  case "subscribeUsersWithoutDeviceSubscriptionToSNS":
+    installationService.subscribeUsersWithoutDeviceSubscriptionToSNS(function(err, countOfUsers){
+      utils.l.d("subscribeUsersWithoutDeviceSubscriptionToSNS: err", err)
+      utils.l.d("subscribeUsersWithoutDeviceSubscriptionToSNS: count of users updated", countOfUsers)
     })
     break;
   default:

@@ -136,13 +136,13 @@ function unSubscribeGroup(groupId,callback){
  *   - Register a device token to an app
  *   - Subscribe to all users topic
  */
-function registerDeviceToken(user,installation,callback){
+function registerDeviceToken(user, installation,callback){
   var models = require('../models')
   var config = {}
   utils.l.d("registering for insllation::"+installation._id)
   utils.async.waterfall([
     function(callback) {
-      getApplicationArnEndPoint(installation.deviceType,callback)
+      getApplicationArnEndPoint(installation.deviceType, callback)
     },function(appArnEndpoint,callback){
       utils.l.d("appArnEndpoint",appArnEndpoint)
       config.appArnEndpoint = appArnEndpoint

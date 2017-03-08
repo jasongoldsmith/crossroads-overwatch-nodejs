@@ -134,6 +134,9 @@ function findInstallationsPaginated(query, pageNumber, limit, callback){
     .exec(callback)
 }
 
+function getUsersWithoutSubscriptionGivenPageNumAndPageSize(pageNum, pageSize, callback) {
+  Installation.find({deviceSubscription: null}).skip(pageSize * (pageNum-1)).limit(pageSize).exec(callback)
+}
 
 module.exports = {
   model: Installation,
@@ -144,7 +147,8 @@ module.exports = {
   getInstallationByUserList: getInstallationByUserList,
   findByIdAndUpdate:findByIdAndUpdate,
   getInsallationCount:getInsallationCount,
-  findInstallationsPaginated:findInstallationsPaginated
+  findInstallationsPaginated:findInstallationsPaginated,
+  getUsersWithoutSubscriptionGivenPageNumAndPageSize: getUsersWithoutSubscriptionGivenPageNumAndPageSize
 };
 
 
