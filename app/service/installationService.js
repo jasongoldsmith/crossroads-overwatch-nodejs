@@ -99,12 +99,26 @@ function subscribeUsersWithoutDeviceSubscriptionToSNS(callback){
             usersCount += installations.length
             utils.async.map(installations, function(installation, callback){
               utils.l.d("subscribeUsersWithoutDeviceSubscriptionToSNS: pageNum", pageNum)
-              updateInstallation(installation.deviceType, installation.deviceToken, {_id: installation.user}, function(err, updatedInstallation){
+              models.user.findById(installation.user, function(err, user){
                 if(err){
-                  //ignore error and move on to the next one
-                  utils.l.e("subscribeUsersWithoutDeviceSubscriptionToSNS error for user: " +  installation.user + " err: ", err)
+                  usersCount--
+                  utils.l.e("subscribeUsersWithoutDeviceSubscriptionToSNS: Error while getting user by id , user id : " + installation.user+ " err: ", err)
+                  return callback(null, null)
                 }
-                return callback(null, updatedInstallation)
+                if(utils._.isInvalidOrEmpty(user)){
+                  usersCount--
+                  utils.l.e("subscribeUsersWithoutDeviceSubscriptionToSNS: User does not exists for id , user id : " + installation.user)
+                  return callback(null, null)
+                } else {
+                  updateInstallation(installation.deviceType, installation.deviceToken, user, function(err, updatedInstallation){
+                    if(err){
+
+                      //ignore error and move on to the next one
+                      utils.l.e("subscribeUsersWithoutDeviceSubscriptionToSNS error for user: " +  installation.user + " err: ", err)
+                    }
+                    return callback(null, updatedInstallation)
+                  })
+                }
               })
             }, function(err, result){
               if(err){
