@@ -245,6 +245,11 @@ var contactUsSourceCodesMapping = {
   4: "Add Console Error"
 }
 
+var languagesForOnBoarding = {
+  english: "English",
+  spanish: "Spanish"
+}
+
 module.exports = {
   l: lodash,
   baseUrl: baseUrl,
@@ -278,5 +283,6 @@ module.exports = {
   mappingBetweenBackendConsoleAndOverwatchConsoleNames: mappingBetweenBackendConsoleAndOverwatchConsoleNames,
   mappingBetweenBackendGroupIdAndOverwatchRegionNames: mappingBetweenBackendGroupIdAndOverwatchRegionNames,
   unverifiedProfilePic: unverifiedProfilePic,
-  contactUsSourceCodesMapping: contactUsSourceCodesMapping
+  contactUsSourceCodesMapping: contactUsSourceCodesMapping,
+  languagesForOnBoarding: languagesForOnBoarding
 }

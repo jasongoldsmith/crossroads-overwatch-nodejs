@@ -24,8 +24,30 @@ function listConfigs(req, res) {
       }
       var configs = {
         mixpanelToken: utils.config.mixpanelKey,
+        onBoardingScreens : {
+          required: [],
+          optional: []
+        }
       }
-      return callback(null, configs)
+      utils.async.parallel({
+        required: function(callback) {
+          models.onBoarding.getRequiredOnBoardingScreenByLanguage(utils.constants.languagesForOnBoarding.english, callback)
+        },
+        optional: function(callback) {
+          models.onBoarding.getOptionalOnBoardingScreenByLanguage(utils.constants.languagesForOnBoarding.english, callback)
+        }
+      }, function(err, result){
+        if(err){
+          utils.l.e("Error in getting the onboarding screens, err: ", err)
+        }
+        if(utils._.isValidNonEmpty(result.required)){
+          configs.onBoardingScreens.required = result.required
+        }
+        if(utils._.isValidNonEmpty(result.optional)){
+          configs.onBoardingScreens.optional = result.optional
+        }
+        return callback(null, configs)
+      })
     }
   ],
   function(err, configs) {
