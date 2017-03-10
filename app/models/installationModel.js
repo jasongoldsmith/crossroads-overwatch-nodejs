@@ -138,6 +138,14 @@ function getUsersWithoutSubscriptionGivenPageNumAndPageSize(pageNum, pageSize, c
   Installation.find({deviceSubscription: null}).skip(pageSize * (pageNum-1)).limit(pageSize).exec(callback)
 }
 
+function updateDeviceSubscription(installationId, deviceSubscription, callback){
+  Installation.findByIdAndUpdate(installationId, {deviceSubscription: deviceSubscription}, callback)
+}
+
+function getDuplicateInstallationWithDeviceSubscription(deviceToken, userId, callback){
+  Installation.findOne({deviceToken: deviceToken, user: {$ne: userId}, deviceSubscription: {$exists: true, $ne: null}}, callback)
+}
+
 module.exports = {
   model: Installation,
   getById: getById,
@@ -148,7 +156,9 @@ module.exports = {
   findByIdAndUpdate:findByIdAndUpdate,
   getInsallationCount:getInsallationCount,
   findInstallationsPaginated:findInstallationsPaginated,
-  getUsersWithoutSubscriptionGivenPageNumAndPageSize: getUsersWithoutSubscriptionGivenPageNumAndPageSize
+  getUsersWithoutSubscriptionGivenPageNumAndPageSize: getUsersWithoutSubscriptionGivenPageNumAndPageSize,
+  updateDeviceSubscription: updateDeviceSubscription,
+  getDuplicateInstallationWithDeviceSubscription: getDuplicateInstallationWithDeviceSubscription
 };
 
 

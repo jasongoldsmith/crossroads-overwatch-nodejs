@@ -112,11 +112,26 @@ function subscribeUsersWithoutDeviceSubscriptionToSNS(callback){
                 } else {
                   updateInstallation(installation.deviceType, installation.deviceToken, user, function(err, updatedInstallation){
                     if(err){
-
-                      //ignore error and move on to the next one
-                      utils.l.e("subscribeUsersWithoutDeviceSubscriptionToSNS error for user: " +  installation.user + " err: ", err)
+                      utils.l.e("subscribeUsersWithoutDeviceSubscriptionToSNS error for user: " +  user._id + " err: ", err)
+                      //check for dup token
+                      models.installation.getDuplicateInstallationWithDeviceSubscription(installation.deviceToken, user._id, function(err, dupInstallation){
+                        if(err){
+                          //ignore error and move on to the next one
+                          utils.l.e("subscribeUsersWithoutDeviceSubscriptionToSNS error while looking for duplicate token for user: " +  user._id + " err: ", err)
+                          return callback(null, null)
+                        }
+                        if(utils._.isInvalidOrEmpty(dupInstallation)){
+                          //there is no duplicate installation. When the job runs again we will try to create end point again
+                          utils.l.i("subscribeUsersWithoutDeviceSubscriptionToSNS no duplicate installation for user: " +  user._id)
+                          return callback(null, null)
+                        }
+                        //we have a duplicate token, update the user's end point
+                        utils.l.i("subscribeUsersWithoutDeviceSubscriptionToSNS duplicate installation for user: " +  user._id)
+                        models.installation.updateDeviceSubscription(installation._id, updatedInstallation.deviceSubscription, callback)
+                      })
+                    } else {
+                      return callback(null, updatedInstallation)
                     }
-                    return callback(null, updatedInstallation)
                   })
                 }
               })
