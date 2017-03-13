@@ -234,7 +234,7 @@ function subscirbeUserGroup(userGroup, installation, callback){
               createUserGroupEndPoints(userGroup,consoleType,installationUpdated.deviceSubscription.deviceEndpointArn,asyncCallback)
             else asyncCallback(null,null)
           },
-          function(errList,results){
+          function(errList, results){
             callback(null,null)
           }
         )

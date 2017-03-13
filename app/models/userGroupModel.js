@@ -221,7 +221,7 @@ function updateUserGroupAndConsole(userid, groupId, userConsoleType, callback){
 }
 
 function getUsersWithoutSubscriptionGivenPageNumAndPageSize(pageNum, pageSize, callback){
-  UserGroup.find({serviceEndpoints: []}).skip(pageSize * (pageNum-1)).limit(pageSize).populate("group").exec(callback)
+  UserGroup.find({serviceEndpoints: [], muteNotification: false}).skip(pageSize * (pageNum-1)).limit(pageSize).populate("group").exec(callback)
 }
 
 module.exports = {
