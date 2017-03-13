@@ -262,6 +262,7 @@ function createUserGroupEndPoints(userGroup, consoleType, deviceEndpointArn, cal
             newServiceEndpoint.topicName = topic.key
             return callback(null, newServiceEndpoint)
           }else{
+            utils.l.e("createUserGroupEndPoints err: ", err)
             callback(null,null)
           }
         })
