@@ -224,6 +224,17 @@ function getUsersWithoutSubscriptionGivenPageNumAndPageSize(pageNum, pageSize, c
   UserGroup.find({serviceEndpoints: [], muteNotification: false}).skip(pageSize * (pageNum-1)).limit(pageSize).populate("group").exec(callback)
 }
 
+function getUserGroupByUserIdAndGroupId(userId, groupId, callback) {
+  var query = {
+    user: userId,
+    group: groupId
+  }
+
+  UserGroup
+    .findOne(query).populate("group")
+    .exec(callback)
+}
+
 module.exports = {
   model: UserGroup,
   updateUserGroup:updateUserGroup,
@@ -239,5 +250,6 @@ module.exports = {
   getUserGroups: getUserGroups,
   addUserToGroup: addUserToGroup,
   updateUserGroupAndConsole: updateUserGroupAndConsole,
-  getUsersWithoutSubscriptionGivenPageNumAndPageSize: getUsersWithoutSubscriptionGivenPageNumAndPageSize
+  getUsersWithoutSubscriptionGivenPageNumAndPageSize: getUsersWithoutSubscriptionGivenPageNumAndPageSize,
+  getUserGroupByUserIdAndGroupId: getUserGroupByUserIdAndGroupId
 }
