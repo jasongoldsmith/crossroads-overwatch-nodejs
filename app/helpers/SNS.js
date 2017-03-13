@@ -214,15 +214,19 @@ function subscribeGroup(group,consoleType,callback){
  *
  * Subscribe to a given user group. userGroup has console and group information
  */
-function subscirbeUserGroup(userGroup,installation, callback){
+function subscirbeUserGroup(userGroup, installation, callback){
   utils.async.waterfall([
     function(callback){
+      if(utils._.isInvalidOrEmpty(installation)){
+        utils.l.i("subscribeUserGroup: installation object empty for user: " + userGroup.user)
+        return callback(null, null)
+      }
       if(utils._.isValidNonBlank(installation.deviceSubscription) && utils._.isValidNonBlank(installation.deviceSubscription.deviceEndpointArn))
         callback(null,installation)
       else
         registerDeviceToken(userGroup.user,installation,callback)
     },function(installationUpdated, callback){
-      if(utils._.isValidNonBlank(installationUpdated.deviceSubscription) && utils._.isValidNonBlank(installationUpdated.deviceSubscription.deviceEndpointArn)){
+      if(utils._.isValidNonEmpty(installationUpdated) && utils._.isValidNonBlank(installationUpdated.deviceSubscription) && utils._.isValidNonBlank(installationUpdated.deviceSubscription.deviceEndpointArn)){
         utils.async.mapSeries(userGroup.consoleTypes,
           function(consoleType,asyncCallback){
             var appStats = utils._.find(userGroup.group.appStats,{consoleType:consoleType})

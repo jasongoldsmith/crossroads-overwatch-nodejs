@@ -146,6 +146,10 @@ function getDuplicateInstallationWithDeviceSubscription(deviceToken, userId, cal
   Installation.findOne({deviceToken: deviceToken, user: {$ne: userId}, deviceSubscription: {$exists: true, $ne: null}}, callback)
 }
 
+function findByUser(userId, callback){
+  Installation.findOne({user: userId}, callback)
+}
+
 module.exports = {
   model: Installation,
   getById: getById,
@@ -158,7 +162,8 @@ module.exports = {
   findInstallationsPaginated:findInstallationsPaginated,
   getUsersWithoutSubscriptionGivenPageNumAndPageSize: getUsersWithoutSubscriptionGivenPageNumAndPageSize,
   updateDeviceSubscription: updateDeviceSubscription,
-  getDuplicateInstallationWithDeviceSubscription: getDuplicateInstallationWithDeviceSubscription
+  getDuplicateInstallationWithDeviceSubscription: getDuplicateInstallationWithDeviceSubscription,
+  findByUser: findByUser
 };
 
 

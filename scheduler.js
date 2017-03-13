@@ -267,6 +267,12 @@ switch(command) {
       utils.l.d("subscribeUsersWithoutDeviceSubscriptionToSNS: count of users updated", countOfUsers)
     })
     break;
+  case "subscribeUsersWithoutGroupSubscriptionToSNSTopics":
+    installationService.subscribeUsersWithoutGroupSubscriptionToSNSTopics(function(err, countOfUsers){
+      utils.l.d("subscribeUsersWithoutGroupSubscriptionToSNSTopics: err", err)
+      utils.l.d("subscribeUsersWithoutGroupSubscriptionToSNSTopics: count of users updated", countOfUsers)
+    })
+    break;
   default:
     break;
 }

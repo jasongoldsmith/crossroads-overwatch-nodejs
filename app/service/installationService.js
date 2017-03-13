@@ -160,8 +160,71 @@ function subscribeUsersWithoutDeviceSubscriptionToSNS(callback){
   })
 }
 
+function subscribeUsersWithoutGroupSubscriptionToSNSTopics(callback){
+  utils.l.i("subscribeUsersWithoutGroupSubscriptionToSNSTopics")
+  utils.async.waterfall([
+    function(callback){
+      utils.l.d("subscribeUsersWithoutGroupSubscriptionToSNSTopics start")
+      var isDone = false
+      var pageSize = 200
+      var pageNum = 0
+      var usersCount = 0
+      utils.async.whilst(
+        function(){
+          utils.l.d("subscribeUsersWithoutGroupSubscriptionToSNSTopics in while condition" + isDone)
+          return !isDone
+        },
+        function (callback){
+          utils.l.d("subscribeUsersWithoutGroupSubscriptionToSNSTopics in while loop")
+          pageNum++
+          models.userGroup.getUsersWithoutSubscriptionGivenPageNumAndPageSize(pageNum, pageSize, function(err, userGroups){
+            utils.l.i("subscribeUsersWithoutGroupSubscriptionToSNSTopics: num of user groups", utils._.isInvalidOrEmpty(userGroups)? 0 : userGroups.length)
+            if(utils._.isInvalidOrEmpty(userGroups)){
+              isDone = true
+              return callback(null, usersCount)
+            }
+            usersCount += userGroups.length
+            utils.async.map(userGroups, function(userGroup, callback){
+              utils.l.d("subscribeUsersWithoutGroupSubscriptionToSNSTopics: pageNum", pageNum)
+              models.installation.findByUser(userGroup.user, function(err, installation){
+                if(err){
+                  usersCount--
+                  utils.l.e("subscribeUsersWithoutGroupSubscriptionToSNSTopics: Error while getting installation by user id , user id : " + userGroup.user+ " err: ", err)
+                  return callback(null, null)
+                }
+                helpers.sns.subscirbeUserGroup(userGroup, installation, callback)
+              })
+            }, function(err, result){
+              if(err){
+                utils.l.e("subscribeUsersWithoutGroupSubscriptionToSNSTopics: err: " , err)
+                return callback(err)
+              }
+              return callback(null, usersCount)
+            })
+          })
+        }, function(err, result){
+          utils.l.d("subscribeUsersWithoutGroupSubscriptionToSNSTopics in while callback" + usersCount)
+          if(err){
+            utils.l.e("subscribeUsersWithoutGroupSubscriptionToSNSTopics: err after while completion: " , err)
+            return callback(err)
+          }
+          return callback(null, usersCount)
+        }
+      )
+    }
+  ], function(err, result){
+    if(err){
+      return callback(null, err)
+    } else {
+      utils.l.i("subscribeUsersWithoutGroupSubscriptionToSNSTopics Num of updated users: " + result)
+      return callback(null, {value: "Num of updated users = " + result})
+    }
+  })
+}
+
 module.exports = {
   updateInstallation: updateInstallation,
   subscribeInstallation:subscribeInstallation,
-  subscribeUsersWithoutDeviceSubscriptionToSNS: subscribeUsersWithoutDeviceSubscriptionToSNS
+  subscribeUsersWithoutDeviceSubscriptionToSNS: subscribeUsersWithoutDeviceSubscriptionToSNS,
+  subscribeUsersWithoutGroupSubscriptionToSNSTopics: subscribeUsersWithoutGroupSubscriptionToSNSTopics
 }

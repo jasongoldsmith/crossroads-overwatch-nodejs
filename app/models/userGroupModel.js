@@ -220,6 +220,10 @@ function updateUserGroupAndConsole(userid, groupId, userConsoleType, callback){
   ], callback)
 }
 
+function getUsersWithoutSubscriptionGivenPageNumAndPageSize(pageNum, pageSize, callback){
+  UserGroup.find({serviceEndpoints: []}).skip(pageSize * (pageNum-1)).limit(pageSize).populate("group").exec(callback)
+}
+
 module.exports = {
   model: UserGroup,
   updateUserGroup:updateUserGroup,
@@ -234,5 +238,6 @@ module.exports = {
   getByUser:getByUser,
   getUserGroups: getUserGroups,
   addUserToGroup: addUserToGroup,
-  updateUserGroupAndConsole: updateUserGroupAndConsole
+  updateUserGroupAndConsole: updateUserGroupAndConsole,
+  getUsersWithoutSubscriptionGivenPageNumAndPageSize: getUsersWithoutSubscriptionGivenPageNumAndPageSize
 }
