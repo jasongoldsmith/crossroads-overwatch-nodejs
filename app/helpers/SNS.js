@@ -300,6 +300,7 @@ function unSubscirbeUserGroup(userGroup,callback){
             else asyncCallback(null,null)
           },
           function(errList,results){
+            utils.l.e("unSubscirbeUserGroup errList:", errList)
             callback(null,null)
           }
         )
