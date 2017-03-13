@@ -295,6 +295,7 @@ function unSubscirbeUserGroup(userGroup,callback){
     function(callback){
         utils.async.mapSeries(userGroup.serviceEndpoints,
           function(endPoint,asyncCallback){
+            utils.l.d("unSubscirbeUserGroup: is endpoint valid" + utils._.isValidNonBlank(endPoint) )
             if(utils._.isValidNonBlank(endPoint))
               sns.unsubscribe({SubscriptionArn: endPoint.topicSubscriptionEndpoint}, asyncCallback)
             else asyncCallback(null,null)
