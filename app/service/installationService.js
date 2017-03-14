@@ -115,6 +115,7 @@ function subscribeUsersWithoutDeviceSubscriptionToSNS(callback){
                       utils.l.e("subscribeUsersWithoutDeviceSubscriptionToSNS error for user: " +  user._id + " err: ", err)
                       //check for dup token
                       models.installation.getDuplicateInstallationWithDeviceSubscription(installation.deviceToken, user._id, function(err, dupInstallation){
+                        utils.l.i("subscribeUsersWithoutDeviceSubscriptionToSNS dup installation for token: " + installation.deviceToken + " :", dupInstallation)
                         if(err){
                           //ignore error and move on to the next one
                           utils.l.e("subscribeUsersWithoutDeviceSubscriptionToSNS error while looking for duplicate token for user: " +  user._id + " err: ", err)
@@ -192,7 +193,15 @@ function subscribeUsersWithoutGroupSubscriptionToSNSTopics(callback){
                   utils.l.e("subscribeUsersWithoutGroupSubscriptionToSNSTopics: Error while getting installation by user id , user id : " + userGroup.user+ " err: ", err)
                   return callback(null, null)
                 }
-                helpers.sns.subscirbeUserGroup(userGroup, installation, callback)
+                helpers.sns.subscirbeUserGroup(userGroup, installation, function(err, result){
+                  if(err){
+                    utils.l.e("subscribeUsersWithoutGroupSubscriptionToSNSTopics: subscirbeUserGroup err: " , err)
+                    //ignore err and move on to next one
+                    return callback(null, null)
+                  } else {
+                    return callback(null, result)
+                  }
+                })
               })
             }, function(err, result){
               if(err){
