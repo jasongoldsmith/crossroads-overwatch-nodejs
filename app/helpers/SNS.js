@@ -536,7 +536,7 @@ function publishToSNSTopic(consoleType, groupId, customPayload, alert,callback) 
 
 
       utils.l.i('publishToSNSTopic::topicARN', topicARN)
-      utils.l.i('payloadJson', payload)
+      utils.l.d('payloadJson', payload)
       // first have to stringify the inner APNS object...
       payload.APNS = JSON.stringify(payload.APNS);
       payload.APNS_SANDBOX = JSON.stringify(payload.APNS_SANDBOX)
@@ -545,8 +545,8 @@ function publishToSNSTopic(consoleType, groupId, customPayload, alert,callback) 
       //payload.payload = JSON.stringify(payload.payload);
      payload = JSON.stringify(payload)
 
-      utils.l.i('payload', payload)
-      utils.l.i('alert',alert)
+      utils.l.d('payload', payload)
+      utils.l.d('alert',alert)
       var params = {
         Message: payload,
         MessageStructure: 'json',
