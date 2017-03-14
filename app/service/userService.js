@@ -685,19 +685,10 @@ function subscribeUserGroupNotification(userGroup,user,groupId, muteNotification
     function(callback){
       models.installation.getInstallationByUser(user,callback)
     },function(installation,callback){
-      models.userGroup.updateUserGroup(user._id,groupId,{muteNotification:muteNotification},function(err, updatedUserGroup){
-        if(err){
-          return callback(err)
-        }
-        return callback(null, installation, updatedUserGroup)
-      })
-    },function(installation, updatedUserGroup, callback){
-      helpers.sns.subscirbeUserGroup(updatedUserGroup,installation, function(err, result){
-        if(err){
-          utils.l.e("subscribeUserGroupNotification err while subscribing user", err)
-        }
-        return callback(null, updatedUserGroup)
-      })
+      userGroup.muteNotification = muteNotification
+      helpers.sns.subscirbeUserGroup(userGroup,installation,callback)
+    },function(result,callback){
+      models.userGroup.updateUserGroup(user._id,groupId,{muteNotification:muteNotification},callback)
     }
   ],callback)
 }

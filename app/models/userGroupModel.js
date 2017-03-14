@@ -232,6 +232,7 @@ function getUserGroupByUserIdAndGroupId(userId, groupId, callback) {
 
   UserGroup
     .findOne(query).populate("group")
+    .lean()
     .exec(callback)
 }
 
