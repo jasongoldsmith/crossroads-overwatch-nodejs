@@ -558,16 +558,16 @@ function publishToSNSTopic(consoleType, groupId, customPayload, alert,callback) 
   ],
     function(err, data) {
       if (err) {
-        console.log(err.stack)
+        utils.l.e(err.stack)
         return
       }
-      console.log('push sent')
-      console.log(data)
+      utils.l.i('push sent')
+      utils.l.d(data)
     })
 }
 
 function sendPush() {
-  console.log('inside sendPush')
+  utils.l.d('inside sendPush')
   sns.createPlatformEndpoint({
     PlatformApplicationArn: 'arn:aws:sns:us-west-2:412817206882:app/APNS_SANDBOX/app_apn_dev_clan_id_not_set_PS4',
     Token: '001d20bec1ff5b47faea5957cd487cca34df68fa34a478dea9dc97bbcddfa375',
@@ -577,7 +577,7 @@ function sendPush() {
   },
     function (err, data) {
       if (err) {
-        console.log(err.stack)
+        utils.l.e(err.stack)
         return
     }
       var endpointArn = data.EndpointArn
@@ -597,7 +597,7 @@ function sendPush() {
     // then have to stringify the entire message payload
     payload = JSON.stringify(payload)
 
-    console.log('sending push')
+    utils.l.i('sending push')
     sns.publish({
       Message: payload,
       MessageStructure: 'json',
@@ -605,11 +605,11 @@ function sendPush() {
     },
       function (err, data) {
         if (err) {
-          console.log(err.stack)
+          utils.l.e(err.stack)
           return
         }
-        console.log('push sent')
-        console.log(data)
+        utils.l.i('push sent')
+        utils.l.d(data)
       })
     })
 }
