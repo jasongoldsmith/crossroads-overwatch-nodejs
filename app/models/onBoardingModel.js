@@ -11,7 +11,7 @@ var onBoarding = mongoose.model('onBoarding', onBoardingSchema.schema)
 function getRequiredOnBoardingScreenByLanguage(language, callback){
   var queryLanguage = ""
   if(utils._.isInvalidOrBlank(language)|| !utils.underscore.contains(utils.constants.languagesForOnBoarding, language)){
-    queryLanguage = utils.constants.languagesForOnBoarding.english
+    queryLanguage = utils.constants.languagesForOnBoarding.en
   } else{
     queryLanguage = language
   }
@@ -24,7 +24,7 @@ function getRequiredOnBoardingScreenByLanguage(language, callback){
 function getOptionalOnBoardingScreenByLanguage(language, callback){
   var queryLanguage = ""
   if(utils._.isInvalidOrBlank(language)|| !utils.underscore.contains(utils.constants.languagesForOnBoarding, language)){
-    queryLanguage = utils.constants.languagesForOnBoarding.english
+    queryLanguage = utils.constants.languagesForOnBoarding.en
   } else{
     queryLanguage = language
   }

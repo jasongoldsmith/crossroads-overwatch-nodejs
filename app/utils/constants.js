@@ -246,8 +246,8 @@ var contactUsSourceCodesMapping = {
 }
 
 var languagesForOnBoarding = {
-  english: "English",
-  spanish: "Spanish"
+  en: "English",
+  es: "Spanish"
 }
 
 module.exports = {

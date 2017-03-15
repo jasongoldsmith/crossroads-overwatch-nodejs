@@ -31,10 +31,10 @@ function listConfigs(req, res) {
       }
       utils.async.parallel({
         required: function(callback) {
-          models.onBoarding.getRequiredOnBoardingScreenByLanguage(utils.constants.languagesForOnBoarding.english, callback)
+          models.onBoarding.getRequiredOnBoardingScreenByLanguage(utils.constants.languagesForOnBoarding.en, callback)
         },
         optional: function(callback) {
-          models.onBoarding.getOptionalOnBoardingScreenByLanguage(utils.constants.languagesForOnBoarding.english, callback)
+          models.onBoarding.getOptionalOnBoardingScreenByLanguage(utils.constants.languagesForOnBoarding.en, callback)
         }
       }, function(err, result){
         if(err){
