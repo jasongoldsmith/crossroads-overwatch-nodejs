@@ -306,6 +306,17 @@ function getOverwatchProfile(req, res){
   })
 }
 
+function completeOnBoarding(req, res){
+  req.user.hasCompletedOnBoarding = true
+  service.userService.updateUser(req.user, function(err, resp){
+    if (err) {
+      routeUtils.handleAPIError(req, res, err, err)
+    } else {
+      routeUtils.handleAPISuccess(req, res, {value: resp})
+    }
+  })
+}
+
 routeUtils.rGet(router, '/self', 'GetSelfUser', getSelfUser)
 routeUtils.rGet(router, '/list', 'list', list)
 routeUtils.rPost(router, '/listById', 'listById', listById)
@@ -320,5 +331,6 @@ routeUtils.rGet(router, '/getMetrics', 'getUserMetrics', getUserMetrics)
 routeUtils.rGet(router, '/getPendingEventInvites', 'getPendingEventInvites', getPendingEventInvites)
 routeUtils.rPost(router, '/updateEmail', 'updateEmail', updateEmail)
 routeUtils.rPost(router, '/getOverwatchProfile', 'getOverwatchProfile', getOverwatchProfile)
+routeUtils.rPost(router, '/completeOnBoarding', 'completeOnBoarding', completeOnBoarding)
 
 module.exports = router
