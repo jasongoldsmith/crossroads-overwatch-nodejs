@@ -17,7 +17,8 @@ function getRequiredOnBoardingScreenByLanguage(language, callback){
   }
   onBoarding.find({
     isRequired: true,
-    language: queryLanguage
+    language: queryLanguage,
+    order: {$gte: 0}
   }).sort({order: 1}).exec(callback)
 }
 
@@ -30,7 +31,8 @@ function getOptionalOnBoardingScreenByLanguage(language, callback){
   }
   onBoarding.find({
     isRequired: false,
-    language: queryLanguage
+    language: queryLanguage,
+    order: {$gte: 0}
   }).sort({order: 1}).exec(callback)
 }
 

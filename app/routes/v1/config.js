@@ -6,12 +6,18 @@ var models = require('../../models')
 
 function listConfigs(req, res) {
   utils.l.d("listConfigs request: " + JSON.stringify(req.headers["config_token"]))
+  utils.l.d("listConfigs request: langCode " + JSON.stringify(req.headers["lang_code"]))
   if(!req.headers["config_token"]) {
     utils.l.i("config_token missing in headers")
     routeUtils.handleAPIUnauthorized(req, res)
     return
   }
+  var language = req.headers["lang_code"]
 
+  if(utils._.isInvalidOrBlank(language) || utils._.isInvalidOrBlank(utils.constants.languagesForOnBoarding[language])){
+    language =  utils.constants.languagesForOnBoarding.en
+  }
+  utils.l.d("listConfigs request: language to use" + utils.constants.languagesForOnBoarding[language])
   utils.async.waterfall([
     function(callback) {
       models.sysConfig.getSysConfig('CONFIG_TOKEN', callback)
@@ -31,10 +37,10 @@ function listConfigs(req, res) {
       }
       utils.async.parallel({
         required: function(callback) {
-          models.onBoarding.getRequiredOnBoardingScreenByLanguage(utils.constants.languagesForOnBoarding.en, callback)
+          models.onBoarding.getRequiredOnBoardingScreenByLanguage(language, callback)
         },
         optional: function(callback) {
-          models.onBoarding.getOptionalOnBoardingScreenByLanguage(utils.constants.languagesForOnBoarding.en, callback)
+          models.onBoarding.getOptionalOnBoardingScreenByLanguage(language, callback)
         }
       }, function(err, result){
         if(err){
